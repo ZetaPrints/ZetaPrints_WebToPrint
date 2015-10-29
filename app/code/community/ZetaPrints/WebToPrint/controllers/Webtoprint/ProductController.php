@@ -2,7 +2,9 @@
 
 require_once 'Mage/Adminhtml/controllers/Catalog/ProductController.php';
 
-class ZetaPrints_WebToPrint_Catalog_ProductController extends Mage_Adminhtml_Catalog_ProductController {
+class ZetaPrints_WebToPrint_Webtoprint_ProductController
+  extends Mage_Adminhtml_Catalog_ProductController
+{
   public function templatesGridAction() {
     $this->_initProduct();
     $this->loadLayout();

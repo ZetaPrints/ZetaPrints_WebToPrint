@@ -285,13 +285,13 @@
 
   <admin>
     <routers>
-      <ZetaPrints_WebToPrint>
-        <use>admin</use>
-          <args>
-            <module>ZetaPrints_WebToPrint</module>
-            <frontName>web-to-print-admin</frontName>
-          </args>
-      </ZetaPrints_WebToPrint>
+      <adminhtml>
+        <args>
+          <modules>
+            <ZetaPrints_WebToPrint after="Mage_Adminhtml">ZetaPrints_WebToPrint</ZetaPrints_WebToPrint>
+          </modules>
+        </args>
+      </adminhtml>
     </routers>
   </admin>
 
