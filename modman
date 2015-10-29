@@ -1,0 +1,29 @@
+app/code/community/ZetaPrints/*                                      app/code/community/ZetaPrints/
+app/etc/modules/*                                                    app/etc/modules/
+
+app/design/adminhtml/default/zptheme/                                app/design/adminhtml/default/zptheme/
+
+app/design/frontend/base/default/layout/*                            app/design/frontend/base/default/layout/
+app/design/frontend/base/default/template/catalog/product/view/*     app/design/frontend/base/default/template/catalog/product/view/
+app/design/frontend/base/default/template/email/order/items/order/*  app/design/frontend/base/default/template/email/order/items/order/
+app/design/frontend/base/default/template/web-to-print               app/design/frontend/base/default/template/web-to-print
+
+app/design/frontend/default/*                                        app/design/frontend/default/
+app/design/frontend/rwd/*                                            app/design/frontend/rwd/
+
+app/locale/bg_BG/*                                                   app/locale/bg_BG/
+app/locale/de_DE/*                                                   app/locale/de_DE/
+app/locale/en_US/*                                                   app/locale/en_US/
+app/locale/es_ES/*                                                   app/locale/es_ES/
+app/locale/mk_MK/*                                                   app/locale/mk_MK/
+app/locale/nl_NL/*                                                   app/locale/nl_NL/
+app/locale/ru_RU/*                                                   app/locale/ru_RU/
+app/locale/tr_TR/*                                                   app/locale/tr_TR/
+
+lib/*                                                                lib/
+
+skin/adminhtml/default/*                                             skin/adminhtml/default/
+skin/frontend/base/default/webtoprint/                              skin/frontend/base/default/webtoprint/
+skin/frontend/default/*                                              skin/frontend/default/
+
+build.xml                                                            var/connect/web_to_print_store_incl_theme.xml

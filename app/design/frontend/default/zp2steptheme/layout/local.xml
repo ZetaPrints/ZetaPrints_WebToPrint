@@ -1,0 +1,34 @@
+<layout version="0.1.0">
+  <default>
+    <reference name="root">
+      <action method="setData">
+        <key>webtoprint_2step</key>
+        <value>true</value>
+      </action>
+    </reference>
+  </default>
+
+  <catalog_product_view>
+    <update handle="webtoprint_form" />
+  </catalog_product_view>
+
+  <checkout_cart_index>
+    <update handle="webtoprint" />
+  </checkout_cart_index>
+
+  <checkout_cart_edit>
+    <update handle="webtoprint" />
+  </checkout_cart_edit>
+
+  <review_product_list>
+    <update handle="webtoprint_form" />
+  </review_product_list>
+
+  <sales_order_view>
+    <update handle="webtoprint" />
+  </sales_order_view>
+
+  <wishlist_index_index>
+    <update handle="_webtoprint" />
+  </wishlist_index_index>
+</layout>
