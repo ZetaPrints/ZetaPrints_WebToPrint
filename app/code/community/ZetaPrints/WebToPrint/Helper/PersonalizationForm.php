@@ -478,7 +478,7 @@ jQuery(document).ready(function($) {
 
     if ($isAdmin && !$isOrderComplete) {
       $url = Mage::helper('adminhtml')
-               ->getUrl('web-to-print-admin/order/complete',
+               ->getUrl('adminhtml/webtoprint_order/complete',
                         array('item' => $item->getId()));
 
       $title = $this->__('Complete order on ZetaPrints');

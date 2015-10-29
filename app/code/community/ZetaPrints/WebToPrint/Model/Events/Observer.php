@@ -466,7 +466,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api {
         || $block->getRequest()->getParam('set', null))
       $block->addTab('templates', array(
         'label' => Mage::helper('webtoprint')->__('Web-to-print templates'),
-        'url' => $block->getUrl('web-to-print-admin/catalog_product/templates',
+        'url' => $block->getUrl('adminhtml/webtoprint_product/templates',
                                 array('_current' => true) ),
         'class' => 'ajax' ) );
   }

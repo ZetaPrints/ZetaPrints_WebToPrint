@@ -1,6 +1,6 @@
 <?php
 
-class ZetaPrints_WebToPrint_OrderController
+class ZetaPrints_WebToPrint_Webtoprint_OrderController
   extends Mage_Adminhtml_Controller_Action
   implements ZetaPrints_Api {
 
