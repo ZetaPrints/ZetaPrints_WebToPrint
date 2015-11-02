@@ -1,4 +1,7 @@
-function personalization_form ($) {
+(function () {
+    var ZetaPrints = window.ZetaPrints = window.ZetaPrints || {};
+
+    window.personalization_form = ZetaPrints.PersonalizationForm = function ($) {
   var zp = this;
 
   function scroll_strip(panel) {
@@ -65,7 +68,8 @@ function personalization_form ($) {
         zp.image_edit = {
           'url': {
             'image': zp.url.image,
-            'user_image_template': zp.url['user-image-template'] },
+                            'user_image_template': zp.url['user-image-template']
+                        },
           '$selected_thumbnail': $thumb,
            //!!! Temp solution
           '$input': $thumb.parents().children('input.zetaprints-images'),
@@ -110,8 +114,9 @@ function personalization_form ($) {
       'onClosed': function () {
         if (window.fancybox_remove_save_image_button)
           fancybox_remove_save_image_button($);
-      } });
   }
+            });
+        }
 
   function export_previews_to_string (details) {
     var previews = '';
@@ -751,7 +756,7 @@ function personalization_form ($) {
       return;
 
     //Disable click action
-    $update_preview_button.unbind('click');;
+            $update_preview_button.unbind('click');
 
     show_activity();
 
@@ -977,6 +982,13 @@ function personalization_form ($) {
           return;
         }
 
+                    jQuery(document).trigger(AjaxUpload.Events.UPLOAD_COMPLETE, {
+                        instance: self,
+                        file: file,
+                        response: response,
+                        uploadDiv: $upload_div
+                    });
+
         var $selector = $upload_div.parents('.selector-content');
 
         var upload_field_id = $selector.attr('id');
@@ -1008,8 +1020,15 @@ function personalization_form ($) {
 
             $spinner.hide();
 
-            $selector
-              .find('> .tab-buttons > .hidden')
+                            // Show the current image selector's "My images" tab
+                            //$selector
+                            //    .find('> .tab-buttons > .hidden')
+                            //    .removeClass('hidden');
+
+
+                            // Show all "My images" tabs
+                            $td.closest('form')
+                                .find('.tab-buttons > .hidden')
               .removeClass('hidden');
 
             scroll_strip($images_div);
@@ -1464,7 +1483,8 @@ function personalization_form ($) {
 
           change: function (data) {
             var metadata = {
-              'col-f': data.color }
+                                'col-f': data.color
+                            }
 
             zp_set_metadata(field, metadata);
           }
@@ -1716,4 +1736,9 @@ function personalization_form ($) {
 
   if (this.has_shapes && window.add_in_preview_edit_handlers)
     add_in_preview_edit_handlers();
-}
+    };
+
+    ZetaPrints.PersonalizationForm.Events = {
+        UPLOAD_COMPLETE: 'personalization_form:upload_complete'
+    };
+})();

@@ -209,11 +209,13 @@
         var re = new RegExp('\\b' + name + '\\b');
         return re.test(el.className);
     }
+
     function addClass(el, name){
         if ( ! hasClass(el, name)){
             el.className += ' ' + name;
         }
     }
+
     function removeClass(el, name){
         var re = new RegExp('\\b' + name + '\\b');
         el.className = el.className.replace(re, '');
@@ -310,6 +312,11 @@
         this.enable();
 
         this._rerouteClicks();
+    };
+
+    // Custom events trigger by the uploaded
+    AjaxUpload.Events = {
+        UPLOAD_COMPLETE: 'ajax_upload:complete'
     };
 
     // assigning methods to our class
@@ -419,7 +426,9 @@
                 // We use visibility instead of display to fix problem with Safari 4
                 // The problem is that the value of input doesn't change if it
                 // has display none when user selects a file
+                if (input.parentNode) {
                 input.parentNode.style.visibility = 'hidden';
+                }
 
             });
 
@@ -617,6 +626,14 @@
                     response = doc;
                 }
 
+                if (window.jQuery) {
+                    jQuery(document).trigger(AjaxUpload.Events.UPLOAD_COMPLETE, {
+                        instance: self,
+                        file: file,
+                        response: response,
+                        iframe: iframe
+                    });
+                }
                 settings.onComplete.call(self, file, response);
 
                 // Reload blank page, so that reloading main page
@@ -662,8 +679,10 @@
             form.submit();
 
             // request set, clean up
-            removeNode(form); form = null;
-            removeNode(this._input); this._input = null;
+            removeNode(form);
+            form = null;
+            removeNode(this._input);
+            this._input = null;
 
             // Get response from iframe and fire onComplete event when ready
             this._getResponse(iframe, file);
