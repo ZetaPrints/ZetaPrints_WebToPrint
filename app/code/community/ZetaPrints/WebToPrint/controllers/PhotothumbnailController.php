@@ -28,7 +28,7 @@ class ZetaPrints_WebToPrint_PhotothumbnailController
     $response = zetaprints_get_content_from_url($url);
 
     if (!zetaprints_has_error($response)) {
-      $headers = $response['content']['header'];
+            $headers = isset($response['content']['header']) ? $response['content']['header'] : '';
 
       if (is_array($headers))
         $this->getResponse()
