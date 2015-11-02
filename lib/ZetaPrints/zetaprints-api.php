@@ -952,5 +952,3 @@ function zetaprints_get_content_from_url ($url, $post = null) {
 
   return _zetaprints_ok(compact('headers', 'body'));
 }
-
-?>
