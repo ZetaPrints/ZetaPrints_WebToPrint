@@ -8,5 +8,3 @@ $installer->run("
     ADD COLUMN `exist` bool NOT NULL default true AFTER `public`; ");
 
 $installer->endSetup();
-
-?>

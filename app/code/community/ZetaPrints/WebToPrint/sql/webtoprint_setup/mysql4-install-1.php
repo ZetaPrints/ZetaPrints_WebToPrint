@@ -18,8 +18,6 @@ $installer->run("
     `public` bool,
     `xml` text,
     PRIMARY KEY  (`template_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;" );
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 $installer->endSetup();
-
-?>

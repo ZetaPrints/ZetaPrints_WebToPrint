@@ -8,5 +8,3 @@ $installer->run("
     CHANGE `xml` `xml` MEDIUMTEXT; ");
 
 $installer->endSetup();
-
-?>
