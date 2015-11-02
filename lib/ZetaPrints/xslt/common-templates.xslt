@@ -297,7 +297,7 @@
                 </span></div>
                 <div class="button cancel-upload disabled"><span>
                   <xsl:call-template name="trans">
-                    <xsl:with-param name="key">Upload file</xsl:with-param>
+                    <xsl:with-param name="key">Cancel upload</xsl:with-param>
                   </xsl:call-template>
                 </span></div>
                 <img class="ajax-loader" src="{$ajax-loader-image-url}" alt="Loading..." />
