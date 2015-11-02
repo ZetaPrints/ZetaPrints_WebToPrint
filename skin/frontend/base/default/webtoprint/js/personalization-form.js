@@ -953,7 +953,7 @@
         $(this._button) //Choose button
           .addClass('disabled')
           .next() //Cancel button
-          .addClass('disabled')
+                        .removeClass('disabled')
           .next() //Spinner
           .show();
 
