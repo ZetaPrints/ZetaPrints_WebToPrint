@@ -160,6 +160,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
      */
     public function process_images($observer)
     {
+        /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getEvent()->getProduct();
 
         if (!$product->hasWebtoprintTemplate()) {
@@ -185,7 +186,9 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $media_gallery = array('images' => array());
         }
 
+        $xml = null;
         if ($template_guid) {
+            /** @var ZetaPrints_WebToPrint_Model_Template $template */
             $template = Mage::getModel('webtoprint/template')->load($template_guid);
 
             if (!$template->getId()) {
@@ -196,12 +199,13 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
             unset($template);
         }
+        if ($media_gallery['images'] && $xml === null) {
+            Mage::throwException(sprintf('No XML loaded for template GUID %s', $template_guid));
+        }
 
         //Trying to remove images which no longer exist in template
         foreach ($media_gallery['images'] as &$image) {
-            if (!(isset($image['file'])
-                && strpos(basename($image['file']), 'zetaprints_') === 0)
-            ) {
+            if (!(isset($image['file']) && strpos(basename($image['file']), 'zetaprints_') === 0)) {
                 continue;
             }
 
@@ -254,6 +258,9 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         }
 
         $attributes = $product->getTypeInstance(true)->getSetAttributes($product);
+        if (!isset($attributes['media_gallery']) || !$attributes['media_gallery']) {
+            Mage::throwException('Media gallery attribute not set');
+        }
         $gallery_backend = $attributes['media_gallery']->getBackend();
         unset($attributes);
 
@@ -278,7 +285,8 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $client = new Varien_Http_Client(
                 Mage::getStoreConfig('webtoprint/settings/url')
                 . '/'
-                . (string)$page['PreviewImage']);
+                . (string)$page['PreviewImage']
+            );
 
             $filename = Mage::getBaseDir('var') . "/tmp/zetaprints_{$image_id}";
 
