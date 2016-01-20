@@ -2,16 +2,23 @@
 
 class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 {
+
+    /**
+     * @param object $observer
+     * @throws Mage_Core_Exception
+     */
     public function create_zetaprints_order($observer)
     {
         $update_mode = $observer->getEvent()->hasQuoteItem() ? false : true;
 
+        /** @var Mage_Sales_Model_Quote_Item $quote_item */
         $quote_item = $update_mode
             ? $observer->getEvent()->getItem()
             : $observer->getEvent()->getQuoteItem();
 
-        if ($quote_item->getParentItem())
+        if ($quote_item->getParentItem()) {
             $quote_item = $quote_item->getParentItem();
+        }
 
         $option_model = $quote_item->getOptionByCode('info_buyRequest');
         $options = unserialize($option_model->getValue());
@@ -19,16 +26,18 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         //_zetaprints_debug(array('orig options' => $options));
 
         //Check if quote item is w2p enabled
-        if (!isset($options['zetaprints-TemplateID']))
+        if (!isset($options['zetaprints-TemplateID'])) {
             return;
+        }
 
         if (!isset($options['zetaprints-previews'])
             || !$options['zetaprints-previews']
         ) {
 
             Mage::getSingleton('checkout/session')
-                ->addNotice(Mage::helper('webtoprint')
-                    ->__('The product was added in fallback mode. We will update it manually with your input data.'));
+                ->addNotice(
+                    Mage::helper('webtoprint')->__('The product was added in fallback mode. We will update it manually with your input data.')
+                );
 
             return;
         }
@@ -45,7 +54,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
         $dynamicImaging = false;
 
-        if (!$dynamicImaging = $quote_item->getProduct()->getDynamicImaging())
+        if (!$dynamicImaging = $quote_item->getProduct()->getDynamicImaging()) {
             foreach ($quote_item->getProduct()->getCategoryIds() as $categoryId) {
                 $category = Mage::getModel('catalog/category')->load($categoryId);
 
@@ -55,6 +64,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
                     break;
                 }
             }
+        }
 
         $options['zetaprints-dynamic-imaging'] = $dynamicImaging;
 
@@ -67,26 +77,27 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $user_credentials = Mage::helper('webtoprint')
                 ->get_zetaprints_credentials();
             $params['ID'] = $user_credentials['id'];
-            $params['Hash']
-                = zetaprints_generate_user_password_hash($user_credentials['password']);
+            $params['Hash'] = zetaprints_generate_user_password_hash($user_credentials['password']);
 
             $url = Mage::getStoreConfig('webtoprint/settings/url');
             $key = Mage::getStoreConfig('webtoprint/settings/key');
 
             $order_details = zetaprints_create_order($url, $key, $params);
 
-            if (!$order_details)
+            if (!$order_details) {
                 Mage::throwException('ZetaPrints error');
+            }
 
             //We have to show all previews (for dynamic and static pages) on
             //shopping card and order details, so save preview file names for all pages.
             $previews = '';
 
             foreach ($order_details['template-details']['pages'] as $page) {
-                if (isset($page['updated-preview-image']))
+                if (isset($page['updated-preview-image'])) {
                     $previews .= ',' . substr($page['updated-preview-image'], 8);
-                else if ($order_details['template-details']['missed_pages'])
+                } elseif ($order_details['template-details']['missed_pages']) {
                     $previews .= ',' . substr($page['preview-image'], 8);
+                }
             }
 
             $options['zetaprints-previews'] = substr($previews, 1);
@@ -95,27 +106,33 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $options['zetaprints-order-id'] = $order_details['guid'];
 
             //If order details contain link to low resolution PDF...
-            if ($order_details['pdf'] != '')
+            if ($order_details['pdf'] != '') {
                 //... save it in the item options
                 $options['zetaprints-order-lowres-pdf'] = $order_details['pdf'];
-
+            }
             //_zetaprints_debug(array('new options' => $options));
         }
 
         $option_model->setValue(serialize($options));
 
-        if ($update_mode)
+        if ($update_mode) {
             $option_model->save();
+        }
 
         Mage::getSingleton('core/session')->unsetData('zetaprints-previews');
     }
 
+    /**
+     * @param object $observer
+     */
     public function store_template_values($observer)
     {
+        /** @var Mage_Core_Controller_Request_Http $request */
         $request = $observer->getEvent()->getControllerAction()->getRequest();
 
-        if (!$request->has('zetaprints-previews'))
+        if (!$request->has('zetaprints-previews')) {
             return;
+        }
 
         //Store preview file names in user's session.
         $previews = $request->getParam('zetaprints-previews');
@@ -125,41 +142,55 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             ->setData('zetaprints-previews', $previews);
     }
 
+    /**
+     * @param object $observer
+     */
     public function set_required_options($observer)
     {
+        /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getEvent()->getProduct();
 
-        if ($product->hasWebtoprintTemplate() && $product->getWebtoprintTemplate())
+        if ($product->hasWebtoprintTemplate() && $product->getWebtoprintTemplate()) {
             $product->setRequiredOptions(true);
+        }
     }
 
+    /**
+     * @param object $observer
+     */
     public function process_images($observer)
     {
         $product = $observer->getEvent()->getProduct();
 
-        if (!$product->hasWebtoprintTemplate()) return;
+        if (!$product->hasWebtoprintTemplate()) {
+            return;
+        }
 
         $template_guid = $product->getWebtoprintTemplate();
         $template_guid_orig = $product->getOrigData('webtoprint_template');
 
-        if (($template_guid == $template_guid_orig) && !Mage::registry('webtoprint-template-changed'))
+        if (($template_guid == $template_guid_orig) && !Mage::registry('webtoprint-template-changed')) {
             return;
+        }
 
         $media_gallery = $product->getMediaGallery();
 
-        if (is_array($media_gallery))
+        if (is_array($media_gallery)) {
             foreach ($media_gallery as &$item) {
-                if (!is_array($item) && strlen($item) > 0)
+                if (!is_array($item) && strlen($item) > 0) {
                     $item = Zend_Json::decode($item);
+                }
             }
-        else
+        } else {
             $media_gallery = array('images' => array());
-
+        }
 
         if ($template_guid) {
             $template = Mage::getModel('webtoprint/template')->load($template_guid);
 
-            if (!$template->getId()) return;
+            if (!$template->getId()) {
+                return;
+            }
 
             $xml = new SimpleXMLElement($template->getXml());
 
@@ -170,16 +201,20 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         foreach ($media_gallery['images'] as &$image) {
             if (!(isset($image['file'])
                 && strpos(basename($image['file']), 'zetaprints_') === 0)
-            ) continue;
+            ) {
+                continue;
+            }
 
             if (!$template_guid) {
                 $image['removed'] = 1;
 
-                if ($product->getSmallImage() == $image['file'])
+                if ($product->getSmallImage() == $image['file']) {
                     $product->setSmallImage('no_selection');
+                }
 
-                if ($product->getThumbnail() == $image['file'])
+                if ($product->getThumbnail() == $image['file']) {
                     $product->setThumbnail('no_selection');
+                }
 
                 continue;
             }
@@ -187,30 +222,36 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             foreach ($xml->Pages[0]->Page as $page) {
                 $image_id = basename((string)$page['PreviewImage']);
 
-                if (strpos(basename($image['file']), "zetaprints_{$image_id}"))
+                if (strpos(basename($image['file']), "zetaprints_{$image_id}")) {
                     break;
+                }
 
                 $image['removed'] = 1;
 
-                if ($product->getSmallImage() == $image['file'])
+                if ($product->getSmallImage() == $image['file']) {
                     $product->setSmallImage('no_selection');
+                }
 
-                if ($product->getThumbnail() == $image['file'])
+                if ($product->getThumbnail() == $image['file']) {
                     $product->setThumbnail('no_selection');
+                }
             }
         }
 
         $product->setMediaGallery($media_gallery);
 
-        if (!$template_guid) return;
+        if (!$template_guid) {
+            return;
+        }
 
         $first_image = true;
 
-        foreach ($media_gallery['images'] as $image)
+        foreach ($media_gallery['images'] as $image) {
             if (!isset($image['removed']) && $image['disabled'] === 1) {
                 $first_image = false;
                 break;
             }
+        }
 
         $attributes = $product->getTypeInstance(true)->getSetAttributes($product);
         $gallery_backend = $attributes['media_gallery']->getBackend();
@@ -220,15 +261,19 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $image_id = basename((string)$page['PreviewImage']);
 
             $image_exists = false;
-            if (is_array($media_gallery))
-                foreach ($media_gallery['images'] as &$image)
+            if (is_array($media_gallery)) {
+                foreach ($media_gallery['images'] as &$image) {
                     if (!isset($image['removed']) && isset($image['file'])
                         && strpos(basename($image['file']), "zetaprints_{$image_id}") === 0
-                    )
-
+                    ) {
                         $image_exists = true;
+                    }
+                }
+            }
 
-            if ($image_exists) break;
+            if ($image_exists) {
+                break;
+            }
 
             $client = new Varien_Http_Client(
                 Mage::getStoreConfig('webtoprint/settings/url')
@@ -246,15 +291,18 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $data = array('label' => (string)$page['Name']);
 
             if ($first_image) {
-                if (!$product->getSmallImage() || $product->getSmallImage() == 'no_selection')
+                if (!$product->getSmallImage() || $product->getSmallImage() == 'no_selection') {
                     $product->setSmallImage($file);
+                }
 
-                if (!$product->getThumbnail() || $product->getThumbnail() == 'no_selection')
+                if (!$product->getThumbnail() || $product->getThumbnail() == 'no_selection') {
                     $product->setThumbnail($file);
+                }
 
                 $first_image = false;
-            } else
+            } else {
                 $data['exclude'] = 0;
+            }
 
             $gallery_backend->updateImage($product, $file, $data);
 
@@ -284,13 +332,15 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
     public function delete_zetaprints_order($observer)
     {
+        /** @var Mage_Sales_Model_Order $order */
         $order = $observer->getEvent()->getDataObject();
 
         //Continue only on complete or canceled status of the order
         if (!($order->getState() == Mage_Sales_Model_Order::STATE_COMPLETE
             || $order->getState() == Mage_Sales_Model_Order::STATE_CANCELED)
-        )
+        ) {
             return;
+        }
 
         $url = Mage::getStoreConfig('webtoprint/settings/url');
         $key = Mage::getStoreConfig('webtoprint/settings/key');
@@ -300,15 +350,18 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $options = $item->getProductOptions();
 
             //check if it's web-to-print product then continue
-            if (!isset($options['info_buyRequest']['zetaprints-order-id']))
+            if (!isset($options['info_buyRequest']['zetaprints-order-id'])) {
                 continue;
+            }
 
             $order_guid = $options['info_buyRequest']['zetaprints-order-id'];
 
             //receive current ZetaPrints order status (need it on next step)
             $order_details = zetaprints_get_order_details($url, $key, $order_guid);
 
-            if (!$order_details) continue;
+            if (!$order_details) {
+                continue;
+            }
 
             $old_status = $order_details['status'];
 
@@ -321,31 +374,38 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
      * Generate url to product with for-item parameter and save it as
      * redirect url in quote item. Redirect url will be used as link to already
      * personalized product on cart page
+     *
+     * @param object $observer
      */
     public function save_product_url($observer)
     {
         $item = $observer->getEvent()->getItem();
 
-        if ($item->getParentItem())
+        if ($item->getParentItem()) {
             $item = $item->getParentItem();
+        }
 
         //If redirect URL has already set then exit from the function.
-        if ($item->getRedirectUrl())
+        if ($item->getRedirectUrl()) {
             return;
+        }
 
-        if (!$option_model = $item->getOptionByCode('info_buyRequest'))
+        if (!$option_model = $item->getOptionByCode('info_buyRequest')) {
             return;
+        }
 
         $options = unserialize($option_model->getValue());
 
-        if (!(isset($options['zetaprints-TemplateID']) || isset($options['zetaprints-previews'])))
+        if (!(isset($options['zetaprints-TemplateID']) || isset($options['zetaprints-previews']))) {
             return;
+        }
 
         //Get product model for quote item
         $product = $item->getProduct();
         $option = $item->getOptionByCode('product_type');
-        if ($option)
+        if ($option) {
             $product = $option->getProduct();
+        }
 
         //Generate URL for product with for-item parameter
         $url = Mage::helper('webtoprint')->create_url_for_product($product,
@@ -355,21 +415,26 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         $item->setRedirectUrl($url)->save();
     }
 
+    /**
+     * @param object $observer
+     */
     public function restore_credentials_in_customer($observer)
     {
         //Do not restore credentials if customer's info was updated in admin
         //interface
-        if (Mage::app()->getStore()->isAdmin())
+        if (Mage::app()->getStore()->isAdmin()) {
             return;
+        }
 
         $session = Mage::getSingleton('customer/session');
 
-        if ($id = $session->getZetaprintsUser())
+        if ($id = $session->getZetaprintsUser()) {
             $credentials = array('id' => $id,
                 'password' => $session->getZetaprintsPassword());
-        else
+        } else {
             $credentials = Mage::helper('webtoprint')
                 ->get_credentials_from_zp_cookie();
+        }
 
         if ($credentials) {
             $customer = $observer->getEvent()->getDataObject();
@@ -379,20 +444,24 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         }
     }
 
+    /**
+     * @param Mage_Sales_Model_Order $order
+     */
     public function _complete_order($order)
     {
         foreach ($order->getAllItems() as $item) {
+            /** @var Mage_Sales_Model_Order_Item $item */
             $options = $item->getProductOptions();
 
-            if (isset($options['info_buyRequest']['zetaprints-order-completed']))
+            if (isset($options['info_buyRequest']['zetaprints-order-completed'])) {
                 continue;
+            }
 
             if (isset($options['info_buyRequest']['zetaprints-dynamic-imaging'])
                 && $options['info_buyRequest']['zetaprints-dynamic-imaging']
             ) {
 
-                $previews
-                    = explode(',', $options['info_buyRequest']['zetaprints-previews']);
+                $previews = explode(',', $options['info_buyRequest']['zetaprints-previews']);
 
                 $mediaConfig = Mage::getModel('catalog/product_media_config');
 
@@ -411,9 +480,10 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
                     //Save preview image on M. server
                     if (file_put_contents($filePath, $response['content']['body'])
                         !== false
-                    )
+                    ) {
                         $downloadedPreviews[] = $mediaConfig
                             ->getTmpMediaUrl("previews/{$preview}");
+                    }
                 }
 
                 $options['info_buyRequest']['zetaprints-downloaded-previews']
@@ -431,6 +501,10 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         }
     }
 
+    /**
+     * @param object $observer
+     * @return $this
+     */
     public function complete_zetaprints_order($observer)
     {
         $order = $observer->getEvent()->getOrder();
@@ -443,28 +517,38 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         //our customers when user cancels PayPal payments.
         if ((bool)Mage::getStoreConfig('webtoprint/settings/ignore-unpaid-orders')
             && $order->getState() == Mage_Sales_Model_Order::STATE_PENDING_PAYMENT
-        )
+        ) {
             return $this;
+        }
 
         $this->_complete_order($order);
 
         return $this;
     }
 
+    /**
+     * @param object $observer
+     * @return $this
+     */
     public function complete_zetaprints_order_on_payment($observer)
     {
+        /** @var Mage_Sales_Model_Order $order */
         $order = $observer->getEvent()->getOrder();
 
         if (!($order->getState() == Mage_Sales_Model_Order::STATE_PROCESSING
             || $order->getState() == Mage_Sales_Model_Order::STATE_COMPLETE)
-        )
+        ) {
             return $this;
+        }
 
         $this->_complete_order($order);
 
         return $this;
     }
 
+    /**
+     * @param object $observer
+     */
     public function saveOrderId($observer)
     {
         $params = $observer->getEvent()->getParams();
@@ -476,23 +560,32 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         }
     }
 
+    /**
+     * @param object $observer
+     */
     public function addWebToPrintTab($observer)
     {
         $block = $observer->getEvent()->getBlock();
 
-        if (!$block instanceof Mage_Adminhtml_Block_Catalog_Product_Edit_Tabs)
+        if (!$block instanceof Mage_Adminhtml_Block_Catalog_Product_Edit_Tabs) {
             return;
+        }
 
         if ($block->getProduct()->getAttributeSetId()
             || $block->getRequest()->getParam('set', null)
-        )
+        ) {
             $block->addTab('templates', array(
                 'label' => Mage::helper('webtoprint')->__('Web-to-print templates'),
                 'url' => $block->getUrl('adminhtml/webtoprint_product/templates',
                     array('_current' => true)),
                 'class' => 'ajax'));
+        }
     }
 
+    /**
+     * @param object $observer
+     * @return $this
+     */
     public function registerFormStep($observer)
     {
         Mage::unregister('webtoprint_is_personalisation_step');
@@ -505,23 +598,30 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         return $this;
     }
 
+    /**
+     * @param object $observer
+     * @return $this
+     */
     public function setUrlForNextStep($observer)
     {
         $block = $observer->getBlock();
 
-        if (!($block instanceof Mage_Catalog_Block_Product_View))
+        if (!($block instanceof Mage_Catalog_Block_Product_View)) {
             return $this;
+        }
 
-        if (Mage::registry('webtoprint_is_personalisation_step'))
+        if (Mage::registry('webtoprint_is_personalisation_step')) {
             return $this;
+        }
 
         $is2step = (bool)$block
             ->getLayout()
             ->getBlock('root')
             ->getData('webtoprint_2step');
 
-        if (!$is2step)
+        if (!$is2step) {
             return $this;
+        }
 
         if ($route = Mage::registry('webtoprint_next_step_route')) {
             $block->setData('submit_route_data', $route);
