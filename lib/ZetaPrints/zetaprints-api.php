@@ -854,7 +854,7 @@ function _zp_curl_retrieve_data ($url, $data = null) {
 
     return _zetaprints_error($error);
   }
-  
+
   list($headers, $body) = explode("\r\n\r\n", $output, 2);
 
   return _zetaprints_ok(compact('info', 'headers', 'body'));
@@ -907,7 +907,9 @@ function _zp_process_error ($info, $headers, $previous) {
 }
 
 function _zp_repeat ($error) {
-  return isset($error['repeate_request']) && $error['repeate_request'];
+  static $repeatCounter = 0;
+
+  return ($repeatCounter++ < 4) || (isset($error['repeate_request']) && $error['repeate_request']);
 }
 
 function zetaprints_get_content_from_url ($url, $post = null) {
