@@ -4,18 +4,9 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
 {
     public function indexAction()
     {
-        try {
-            $data = $this->preformUpload();
-            echo json_encode($data);
-        } catch (ZetaPrints_WebToPrint_Exception_DataException $e) {
-            if (class_exists('Iresults_Debug_Model_ExceptionHandler', false)) {
-                Iresults_Debug_Model_ExceptionHandler::handleException($e);
-            } else {
-                Mage::logException($e);
-            }
-
-            echo 'Error';
-        }
+        $this->callbackToResult(function () {
+            return $this->preformUpload();
+        });
     }
 
     public function byUrlAction()
@@ -23,18 +14,33 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
         $request = $this->getRequest();
 
         if ($request->has('url') && $url = $request->get('url')) {
-            try {
-                $data = $this->retrieveImage($url);
-                echo json_encode($data);
-            } catch (ZetaPrints_WebToPrint_Exception_DataException $e) {
-                if (class_exists('Iresults_Debug_Model_ExceptionHandler', false)) {
-                    Iresults_Debug_Model_ExceptionHandler::handleException($e);
-                } else {
-                    Mage::logException($e);
-                }
+            $this->callbackToResult(function () use ($url) {
+                return $this->retrieveImage($url);
+            });
+        }
+    }
 
-                echo 'Error';
+    private function callbackToResult(callable $callback)
+    {
+        try {
+            $data = $callback();
+            echo json_encode($data);
+        } catch (ZetaPrints_WebToPrint_Exception_DataException $e) {
+
+            Mage::log(sprintf(
+                'Caught ZetaPrints exception %s #%s: %s (%s)',
+                get_class($e),
+                $e->getCode(),
+                $e->getMessage(),
+                $this->getExceptionEnvironment()
+            ));
+            if (class_exists('Iresults_Debug_Model_ExceptionHandler', false)) {
+                Iresults_Debug_Model_ExceptionHandler::handleException($e);
+            } else {
+                Mage::logException($e);
             }
+
+            echo 'Error';
         }
     }
 
@@ -167,5 +173,24 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
         }
 
         return $image;
+    }
+
+    private function getExceptionEnvironment()
+    {
+        $environment = array();
+        $customerSession = Mage::getSingleton('customer/session');
+        if ($customerSession->isLoggedIn()) {
+            $customerData = $customerSession->getCustomer();
+            $environment['customerId'] = $customerData->getId();
+        } else {
+            $environment['customerId'] = 'not logged in';
+        }
+
+        $checkoutSession = Mage::getSingleton('checkout/session');
+        if ($checkoutSession) {
+            $environment['quoteId'] = $checkoutSession->getQuoteId();
+        }
+
+        return json_encode($environment);
     }
 }
