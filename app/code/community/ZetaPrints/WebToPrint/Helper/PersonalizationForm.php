@@ -569,13 +569,13 @@ jQuery(document).ready(function($) {
 
               if (isset($userImages[$value])) {
                 $url = Mage::getStoreConfig('webtoprint/settings/url')
-                     . 'photothumbs/' 
+                     . 'photothumbs/'
                      . $userImages[$value]['thumbnail'];
 
                 $tokens = explode('.', $userImages[$value]['thumbnail']);
 
                 $small_url = Mage::getStoreConfig('webtoprint/settings/url')
-                             . 'photothumbs/' 
+                             . 'photothumbs/'
                              . $tokens[0] . '_0x100.' . $tokens[1];
 
                 $value = "<a href=\"{$url}\" target=\"_blank\">" .
@@ -616,7 +616,7 @@ jQuery(document).ready(function($) {
           $productName = $product->getName();
         }
 ?>
-        <div style="display: none;">
+        <div>
           <div id ="zp-user-input-table">
 
             <?php if (isset($productUrl)): ?>
@@ -646,9 +646,9 @@ jQuery(document).ready(function($) {
 
         <br />
 
-        <a id ="zp-user-input-link" href="#zp-user-input-table">
-          <?php echo $this->__('Show customer\'s input data'); ?>
-        </a>
+        <!--<a id ="zp-user-input-link" href="#zp-user-input-table">
+          <?php /*echo $this->__('Show customer\'s input data'); */?>
+        </a>-->
 <?php
       }
     }
