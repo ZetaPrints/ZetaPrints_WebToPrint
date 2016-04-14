@@ -119,7 +119,8 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
             $result['thumbnail'] = $helper->get_photo_thumbnail_url($image['thumbnail']);
         }
 
-        unlink($file_path);
+        // Keep the source file
+        // unlink($file_path);
 
         return $result;
     }
