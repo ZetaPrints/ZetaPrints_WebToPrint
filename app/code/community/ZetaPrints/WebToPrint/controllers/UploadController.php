@@ -1,17 +1,55 @@
 <?php
 
-class ZetaPrints_WebToPrint_UploadController
-    extends Mage_Core_Controller_Front_Action
-    implements ZetaPrints_Api
+class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_Action implements ZetaPrints_Api
 {
-
     public function indexAction()
+    {
+        try {
+            $data = $this->preformUpload();
+            echo json_encode($data);
+        } catch (ZetaPrints_WebToPrint_Exception_DataException $e) {
+            if (class_exists('Iresults_Debug_Model_ExceptionHandler', false)) {
+                Iresults_Debug_Model_ExceptionHandler::handleException($e);
+            } else {
+                Mage::logException($e);
+            }
+
+            echo 'Error';
+        }
+    }
+
+    public function byUrlAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->has('url') && $url = $request->get('url')) {
+            try {
+                $data = $this->retrieveImage($url);
+                echo json_encode($data);
+            } catch (ZetaPrints_WebToPrint_Exception_DataException $e) {
+                if (class_exists('Iresults_Debug_Model_ExceptionHandler', false)) {
+                    Iresults_Debug_Model_ExceptionHandler::handleException($e);
+                } else {
+                    Mage::logException($e);
+                }
+
+                echo 'Error';
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function preformUpload()
     {
         $uploaded_file = $_FILES['customer-image'];
 
         if ($uploaded_file['error'] != UPLOAD_ERR_OK) {
-            echo 'Error';
-            return;
+            throw new ZetaPrints_WebToPrint_Exception_DataErrorException(sprintf(
+                'An error occurred during uploading the files %s',
+                isset($uploaded_file['name']) ? $uploaded_file['name'] : ''
+            ));
         }
 
         $media_config = Mage::getModel('catalog/product_media_config');
@@ -24,8 +62,11 @@ class ZetaPrints_WebToPrint_UploadController
         $result = move_uploaded_file($uploaded_file['tmp_name'], $file_path);
 
         if (!$result) {
-            echo 'Error';
-            return;
+            throw new ZetaPrints_WebToPrint_Exception_DataErrorException(sprintf(
+                'Could not move uploaded file "%s" to "%s"',
+                isset($uploaded_file['name']) ? $uploaded_file['name'] : '',
+                $file_path
+            ));
         }
 
         $helper = Mage::helper('webtoprint');
@@ -42,57 +83,13 @@ class ZetaPrints_WebToPrint_UploadController
             $img_url = str_replace('https://', 'http://', $img_url);
         }
 
+        // TEMP fix
+        //$img_url = 'http://w2p-proxy.devweb.li' . substr($img_url, strlen('http://shop.philatelie.li'));
+
         $params = array(
             'ID' => $user_credentials['id'],
             'Hash' => zetaprints_generate_user_password_hash($user_credentials['password']),
-            'URL' => $img_url);
-
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
-
-        $image = zetaprints_download_customer_image($url, $key, $params);
-
-        unlink($file_path);
-
-        if (is_array($image) && count($image) == 1) {
-            $image = $image[0];
-        } else {
-            echo 'Error';
-            return;
-        }
-
-        $result = array('guid' => $image['guid']);
-
-        if ($image['mime'] === 'image/jpeg' || $image['mime'] === 'image/jpg') {
-            $result['thumbnail'] = $helper
-                ->get_photo_thumbnail_url($image['thumbnail'],
-                    0,
-                    100);
-        } else {
-            $result['thumbnail'] = $helper
-                ->get_photo_thumbnail_url($image['thumbnail']);
-        }
-
-        echo json_encode($result);
-    }
-
-    public function byUrlAction()
-    {
-        $request = $this->getRequest();
-
-        if (!($request->has('url') && $url = $request->get('url'))) {
-            return;
-        }
-
-        $helper = Mage::helper('webtoprint');
-
-        $credentials = $helper->get_zetaprints_credentials();
-
-        $params = array(
-            'ID' => $credentials['id'],
-            'Hash'
-            => zetaprints_generate_user_password_hash($credentials['password']),
-            'URL' => $url
+            'URL' => $img_url
         );
 
         $url = Mage::getStoreConfig('webtoprint/settings/url');
@@ -100,25 +97,74 @@ class ZetaPrints_WebToPrint_UploadController
 
         $image = zetaprints_download_customer_image($url, $key, $params);
 
+
         if (is_array($image) && count($image) == 1) {
             $image = $image[0];
         } else {
-            echo 'Error';
-            return;
+            throw new ZetaPrints_WebToPrint_Exception_InvalidImageDataException(
+                sprintf('Invalid image data for image URL "%s"', $url)
+            );
+        }
+
+        $result = array('guid' => $image['guid']);
+
+        if ($image['mime'] === 'image/jpeg' || $image['mime'] === 'image/jpg') {
+            $result['thumbnail'] = $helper
+                ->get_photo_thumbnail_url(
+                    $image['thumbnail'],
+                    0,
+                    100
+                );
+        } else {
+            $result['thumbnail'] = $helper->get_photo_thumbnail_url($image['thumbnail']);
+        }
+
+        unlink($file_path);
+
+        return $result;
+    }
+
+    /**
+     * @param string $url
+     * @return array|mixed|null
+     */
+    private function retrieveImage($url)
+    {
+        $helper = Mage::helper('webtoprint');
+
+        $credentials = $helper->get_zetaprints_credentials();
+
+        $params = array(
+            'ID' => $credentials['id'],
+            'Hash' => zetaprints_generate_user_password_hash($credentials['password']),
+            'URL' => $url
+        );
+
+        $w2pBaseUrl = Mage::getStoreConfig('webtoprint/settings/url');
+        $key = Mage::getStoreConfig('webtoprint/settings/key');
+
+        $image = zetaprints_download_customer_image($w2pBaseUrl, $key, $params);
+
+        if (is_array($image) && count($image) == 1) {
+            $image = $image[0];
+        } else {
+            throw new ZetaPrints_WebToPrint_Exception_ImageRetrievalException(sprintf(
+                'Could not retrieve image from %s', $url
+            ));
         }
 
         if ($image['mime'] === 'image/jpeg' || $image['mime'] === 'image/jpg') {
             $image['thumbnail_url'] = $helper
-                ->get_photo_thumbnail_url($image['thumbnail'],
+                ->get_photo_thumbnail_url(
+                    $image['thumbnail'],
                     0,
-                    100);
+                    100
+                );
         } else {
             $image['thumbnail_url'] = $helper
                 ->get_photo_thumbnail_url($image['thumbnail']);
         }
 
-        echo json_encode($image);
+        return $image;
     }
 }
-
-?>
