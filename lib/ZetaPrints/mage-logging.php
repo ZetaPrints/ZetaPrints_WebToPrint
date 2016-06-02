@@ -12,7 +12,9 @@ function _zetaprints_debug($msg = null)
         $backtrace = debug_backtrace();
     }
 
+    $coreHttpHelper = Mage::helper('core/http');
     $metaData = array(
+        'ip' => $coreHttpHelper ? $coreHttpHelper->getRemoteAddr() : null,
         'customerId' => null
     );
 
@@ -30,12 +32,10 @@ function _zetaprints_debug($msg = null)
     $calleeName = $backtrace[1]['function'];
 
     if (!$msg) {
-        $msg = "function parameters:\n" . var_export($backtrace[1]['args'], true);
-    } else {
-        if (is_array($msg)) {
-            $msg = "\n" . var_export($msg, true);
-        }
+        $msg = "function parameters:" . json_encode($backtrace[1]['args']);
+    } elseif (is_array($msg)) {
+        $msg = json_encode($msg);
     }
 
-    Mage::log(sprintf('%s %s: %s', $calleeName, json_encode($metaData), $msg));
+    Mage::log(sprintf('[ZetaPrints] %s %s: %s', $calleeName, json_encode($metaData), $msg));
 }
