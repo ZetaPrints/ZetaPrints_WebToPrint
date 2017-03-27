@@ -1,0 +1,13 @@
+{
+    "name": "iresults/zetaprints_webtoprint",
+    "description": "Magento extension for ZetaPrints web-to-print API And Theme",
+    "type": "magento-module",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Daniel Corn",
+            "email": "cod@iresults.li"
+        }
+    ],
+    "require": {}
+}
