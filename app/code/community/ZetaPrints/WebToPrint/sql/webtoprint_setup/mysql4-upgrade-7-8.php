@@ -1,3 +1,7 @@
 <?php
 
-mkdir(Mage::getModel('catalog/product_media_config')->getTmpMediaPath('previews'), 0777, true);
+$tmpMediaPath = Mage::getModel('catalog/product_media_config')->getTmpMediaPath('previews');
+if (!file_exists($tmpMediaPath)) {
+    mkdir($tmpMediaPath, 0777, true);
+}
+
