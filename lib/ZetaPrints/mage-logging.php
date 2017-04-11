@@ -2,20 +2,11 @@
 
 function _zetaprints_debug($msg = null)
 {
-    static $modernPhpVersion = -1;
-    if ($modernPhpVersion === -1) {
-        $modernPhpVersion = version_compare(PHP_VERSION, '5.4.0') >= 0;
-    }
-    if ($modernPhpVersion) {
-        $backtrace = debug_backtrace(0, 2);
-    } else {
-        $backtrace = debug_backtrace();
-    }
-
+    $backtrace = debug_backtrace(0, 2);
     $coreHttpHelper = Mage::helper('core/http');
     $metaData = array(
-        'ip' => $coreHttpHelper ? $coreHttpHelper->getRemoteAddr() : null,
-        'customerId' => null
+        'ip'         => $coreHttpHelper ? $coreHttpHelper->getRemoteAddr() : null,
+        'customerId' => null,
     );
 
     $customerSession = Mage::getSingleton('customer/session');
