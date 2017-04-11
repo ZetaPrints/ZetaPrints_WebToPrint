@@ -966,8 +966,11 @@ function _zp_curl_retrieve_data($url, $data = null)
             ? http_request_body_encode($data, null)
             : _zp_http_request_body_encode($data);
     }
+    if (isset($_SERVER['http_proxy']) && strlen($_SERVER['http_proxy']) > 1) {
+        $options[CURLOPT_PROXY] = $_SERVER['http_proxy'];
+    }
 
-    _zetaprints_debug(compact('options'));
+    _zetaprints_debug(['options' => $options]);
 
     $curl = curl_init();
 
@@ -991,7 +994,7 @@ function _zp_curl_retrieve_data($url, $data = null)
 
     list($headers, $body) = explode("\r\n\r\n", $output, 2);
 
-    return _zetaprints_ok(compact('info', 'headers', 'body'));
+    return _zetaprints_ok(['info' => $info, 'headers' => $headers, 'body' => $body]);
 }
 
 function _zp_invoke_error_handler($message, $error)
@@ -1070,7 +1073,9 @@ function zetaprints_get_content_from_url($url, $post = null)
         }
 
         //Extract $info, $headers and $body variables
-        extract($_data['content']);
+        $headers = $_data['content']['headers'];
+        $info = $_data['content']['info'];
+        $body = $_data['content']['body'];
 
         $headers = function_exists('http_parse_headers')
             ? http_parse_headers($headers)
@@ -1093,14 +1098,10 @@ function zetaprints_get_content_from_url($url, $post = null)
 
     //Do not output images to logs
     $_body = $body;
-
-    if (isset($info['content_type'])
-        && strpos($info['content_type'], 'image') === 0
-    ) {
+    if (isset($info['content_type']) && strpos($info['content_type'], 'image') === 0) {
         $_body = $info['content_type'];
     }
+    _zetaprints_debug(['headers' => $headers, '_body' => $_body]);
 
-    _zetaprints_debug(compact('headers', '_body'));
-
-    return _zetaprints_ok(compact('headers', 'body'));
+    return _zetaprints_ok(['headers' => $headers, 'body' => $body]);
 }
