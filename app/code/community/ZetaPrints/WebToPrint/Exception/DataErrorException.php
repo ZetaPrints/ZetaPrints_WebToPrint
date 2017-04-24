@@ -28,6 +28,6 @@
  * @author COD
  * Created 14.04.16 16:12
  */
-class ZetaPrints_WebToPrint_Exception_UploadErrorException extends ZetaPrints_WebToPrint_Exception_DataException
+class ZetaPrints_WebToPrint_Exception_DataErrorException extends ZetaPrints_WebToPrint_Exception_DataException
 {
 }

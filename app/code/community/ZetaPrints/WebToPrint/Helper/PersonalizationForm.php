@@ -1200,10 +1200,12 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
         $product = $context->getProduct();
 
         if (!$this->get_template_id($product)) {
+            echo __LINE__;
             return false;
         }
 
         if (!$details = $this->getTemplateDetailsForCurrentProduct()) {
+            echo __LINE__;
             return false;
         }
 
