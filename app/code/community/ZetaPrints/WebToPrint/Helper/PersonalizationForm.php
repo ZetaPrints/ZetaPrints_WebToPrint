@@ -1168,7 +1168,7 @@ jQuery(document).ready(function($) {
   use_image_button_text = "<?php echo $this->__('Use image'); ?>";
   selected_image_button_text = "<?php echo $this->__('Selected image'); ?>";
 
-  updating_preview_image_text = "<?php echo $this->__('Updating preview image'); ?>"
+  updating_preview_image_text = "<?php echo $this->__('Updating preview image'); ?>";
   cannot_update_preview = "<?php echo $this->__('Cannot update the preview. Try again.'); ?>";
   cannot_update_preview_second_time = "<?php echo $this->__('Cannot update the preview. Try again or add to cart as is and we will update it manually.'); ?>";
   preview_sharing_link_error_text = "<?php echo $this->__('Error was occurred while preparing preview image'); ?>";
@@ -1186,7 +1186,8 @@ jQuery(document).ready(function($) {
   cant_delete_text = "<?php echo $this->__('Can\'t delete image'); ?>";
   delete_this_image_text = "<?php echo $this->__('Delete this image?'); ?>";
 
-  personalization_form.apply(zp, [$]);
+  new WebToPrint.PersonalizationForm(zp);
+//  personalization_form.apply(zp, [$]);
 });
 //]]>
 </script>
