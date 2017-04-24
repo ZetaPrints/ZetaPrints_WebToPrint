@@ -1197,15 +1197,18 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
 
     public function getJs($context)
     {
+        /** @var Mage_Catalog_Model_Product $product */
         $product = $context->getProduct();
 
         if (!$this->get_template_id($product)) {
-            echo __LINE__;
             return false;
         }
 
+
         if (!$details = $this->getTemplateDetailsForCurrentProduct()) {
-            echo __LINE__;
+
+            throw new Exception('no template details ' . $product->getSku());
+
             return false;
         }
 

@@ -389,9 +389,12 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
         return zetaprints_parse_template_details($xml);
     }
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @return null|string
+     */
     public function getTemplateGuidFromProduct($product)
     {
-
         //Get template GUID from webtoprint_template attribute if such attribute exists
         //and contains value, otherwise use product SKU as template GUID
         if (!($product->hasWebtoprintTemplate()
@@ -400,7 +403,7 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             $templateGuid = $product->getSku();
         }
 
-        if (strlen($templateGuid) != 36) {
+        if (strlen($templateGuid) !== 36) {
             return null;
         }
 
@@ -441,121 +444,129 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getTemplateXmlForCurrentProduct()
     {
-        if (!$xml = Mage::registry('webtoprint-template-xml')) {
-            if (!$product = Mage::registry('product')) {
-                return;
-            }
-
-            if (!$product->getId()) {
-                return;
-            }
-
-            if (!$templateGuid = $this->getTemplateGuidFromProduct($product)) {
-                return;
-            }
-
-            //This flag shows a status of web-to-print user registration
-            $user_was_registered = true;
-
-            //Check a status of web-to-print user registration on ZetaPrints
-            //and if it's not then set user_was_registered flag to false
-            if (!($user_credentials = $this->get_zetaprints_credentials())) {
-                $template = Mage::getModel('webtoprint/template')->load($templateGuid);
-
-                if ($template->getId()) {
-                    $user_was_registered = false;
-                }
-            }
-
-            //Remember a status of web-to-print user registrarion for subsequent
-            //function calls
-            Mage::register('webtoprint-user-was-registered', $user_was_registered);
-
-            if ($user_was_registered) {
-                $url = Mage::getStoreConfig('webtoprint/settings/url');
-                $key = Mage::getStoreConfig('webtoprint/settings/key');
-
-                $data = [
-                    'ID'   => $user_credentials['id'],
-                    'Hash' => zetaprints_generate_user_password_hash(
-                        $user_credentials['password']
-                    ),
-                ];
-
-                if ($product->getConfigureMode()
-                    && $orderId = Mage::registry('webtoprint-order-id')
-                ) {
-                    $data['OrderID'] = $orderId;
-                }
-
-                $template_xml = zetaprints_get_template_details_as_xml(
-                    $url,
-                    $key,
-                    $templateGuid,
-                    $data
-                );
-
-                //!!! Load XML for the template from DB
-                //    if loading from ZP was unsuccessful
-            } else {
-                $template_xml = $template->getXml();
-            }
-
-            try {
-                $xml = new SimpleXMLElement($template_xml);
-            } catch (Exception $e) {
-                Mage::log("Exception: {$e->getMessage()}");
-
-                return false;
-            }
-
-            $session = Mage::getSingleton('core/session');
-
-            if ($session->hasData('zetaprints-previews')) {
-                $previews = unserialize($session->getData('zetaprints-previews'));
-
-                if (is_array($previews)
-                    && !$this->replacePreviewImages($xml, $previews)
-                ) {
-                    $session->setData('zetaprints-previews', '');
-                }
-            }
-
-            $this->generateImageUrls($xml);
-
-            $request = $this->_getRequest();
-
-            //If product page was requested with reorder parameter...
-            if ($request->has('reorder')
-                && strlen($request->getParam('reorder')) == 36
-            ) //...then replace field values from order details
-            {
-                $this->replace_user_input_from_order_details(
-                    $xml,
-                    $this->_getRequest()->getParam('reorder')
-                );
-            } //If product page was requested with for-item parameter...
-            else {
-                if ($request->has('for-item')) //...then replace various template values from item's options
-                {
-                    $this->replace_template_values_from_cart_item(
-                        $xml,
-                        $request->getParam('for-item')
-                    );
-                } else {
-                    if ($product->getConfigureMode()) {
-                        if ($item = Mage::registry('wishlist_item')) {
-                            $xml = $this->updateTemplate(
-                                $xml,
-                                $this->extractUserInput($item->getBuyRequest())
-                            );
-                        }
-                    }
-                }
-            }
-
-            Mage::register('webtoprint-template-xml', $xml);
+        if ($xml = Mage::registry('webtoprint-template-xml')) {
+            return $xml;
         }
+
+        /** @var Mage_Catalog_Model_Product $product */
+        if (!$product = Mage::registry('product')) {
+            return null;
+        }
+
+        if (!$product->getId()) {
+            return null;
+        }
+
+        if (!$templateGuid = $this->getTemplateGuidFromProduct($product)) {
+            return null;
+        }
+
+        /** @var ZetaPrints_WebToPrint_Model_Template $template */
+        $template = null;
+
+        //This flag shows a status of web-to-print user registration
+        $user_was_registered = true;
+
+        //Check a status of web-to-print user registration on ZetaPrints
+        //and if it's not then set user_was_registered flag to false
+        if (!($user_credentials = $this->get_zetaprints_credentials())) {
+            $template = Mage::getModel('webtoprint/template')->load($templateGuid);
+
+            if ($template->getId()) {
+                $user_was_registered = false;
+            }
+        }
+
+        //Remember a status of web-to-print user registration for subsequent function calls
+        if (!Mage::registry('webtoprint-user-was-registered')) {
+            Mage::register('webtoprint-user-was-registered', $user_was_registered);
+        }
+
+
+        if ($user_was_registered) {
+            $url = Mage::getStoreConfig('webtoprint/settings/url');
+            $key = Mage::getStoreConfig('webtoprint/settings/key');
+
+            $data = [
+                'ID'   => $user_credentials['id'],
+                'Hash' => zetaprints_generate_user_password_hash(
+                    $user_credentials['password']
+                ),
+            ];
+
+            if ($product->getConfigureMode() && $orderId = Mage::registry('webtoprint-order-id')) {
+                $data['OrderID'] = $orderId;
+            }
+
+            $template_xml = zetaprints_get_template_details_as_xml(
+                $url,
+                $key,
+                $templateGuid,
+                $data
+            );
+
+            //!!! Load XML for the template from DB
+            //    if loading from ZP was unsuccessful
+        } elseif ($template) {
+            $template_xml = $template->getXml();
+        } else {
+            Mage::log("Exception: Could not load template XML");
+
+            return false;
+        }
+
+        try {
+            $xml = new SimpleXMLElement($template_xml);
+        } catch (Exception $e) {
+            Mage::log("Exception: {$e->getMessage()}");
+
+            return false;
+        }
+
+        if ('' === $xml->asXML()) {
+            throw new Exception('XML is empty');
+        }
+
+        $session = Mage::getSingleton('core/session');
+
+        if ($session->hasData('zetaprints-previews')) {
+            $previews = unserialize($session->getData('zetaprints-previews'));
+
+            if (is_array($previews)
+                && !$this->replacePreviewImages($xml, $previews)
+            ) {
+                $session->setData('zetaprints-previews', '');
+            }
+        }
+
+        $this->generateImageUrls($xml);
+
+        $request = $this->_getRequest();
+
+        if ($request->has('reorder') && strlen($request->getParam('reorder')) == 36) {
+            // If product page was requested with reorder parameter then replace field values from order details
+            $this->replace_user_input_from_order_details(
+                $xml,
+                $this->_getRequest()->getParam('reorder')
+            );
+        } elseif ($request->has('for-item')) {
+            // If product page was requested with for-item parameter then replace various template values from item's options
+            $this->replace_template_values_from_cart_item(
+                $xml,
+                $request->getParam('for-item')
+            );
+        } elseif ($product->getConfigureMode()) {
+            if ($item = Mage::registry('wishlist_item')) {
+                $xml = $this->updateTemplate(
+                    $xml,
+                    $this->extractUserInput($item->getBuyRequest())
+                );
+            }
+        }
+
+//        throw new Exception(__LINE__ . ' ' . get_class($xml) . ' :'. $xml .': '. htmlspecialchars($xml->asXML()));
+
+        Mage::register('webtoprint-template-xml', $xml);
 
         return $xml;
     }
@@ -620,19 +631,29 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
         return $template;
     }
 
+    /**
+     * @return array|null
+     */
     public function getTemplateDetailsForCurrentProduct()
     {
-        if (!$temlateDetails = Mage::registry('webtoprint-template-details')) {
-            if (!$xml = $this->getTemplateXmlForCurrentProduct()) {
-                return;
-            }
-
-            $temlateDetails = zetaprints_parse_template_details($xml);
-
-            Mage::register('webtoprint-template-details', $temlateDetails);
+        $templateDetails = Mage::registry('webtoprint-template-details');
+        if ($templateDetails) {
+            return $templateDetails;
         }
 
-        return $temlateDetails;
+        $xml = $this->getTemplateXmlForCurrentProduct();
+        if (!$xml) {
+            return null;
+        }
+
+        $templateDetails = zetaprints_parse_template_details($xml, $error);
+        if (!$templateDetails && $error) {
+            throw $error;
+        }
+
+        Mage::register('webtoprint-template-details', $templateDetails);
+
+        return $templateDetails;
     }
 
     public function get_template_id($product)
