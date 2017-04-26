@@ -149,7 +149,7 @@ export default class SaveImageButton {
                 .click(function () {
                     zp._shape_to_show = name;
 
-                    preview_controller.get_preview_for_page_number(zp.current_page).preview_click();
+                    preview_controller.get_preview_for_page_number(zp.current_page).open_lightbox();
                     // $('#preview-image-page-' + zp.current_page).click();
 
                     $(this).remove();

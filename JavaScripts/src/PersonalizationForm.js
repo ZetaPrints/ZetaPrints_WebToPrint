@@ -24,6 +24,7 @@ import Lightbox from "./view/Lightbox";
 import LightboxConfiguration from "./model/LightboxConfiguration";
 import Assert from "./helper/Assert";
 import ZoomHelper from "./helper/ZoomHelper";
+import DataHelper from "./helper/DataHelper";
 
 /**
  * @implements DataInterface
@@ -69,7 +70,7 @@ export default class PersonalizationForm {
         this._set_has_image_zoomer(this._detect_initial_has_image_zoomer(product_image_gallery));
 
 
-        ui_helper.product_form.modified = this.has_changed_fields_on_page(zp.current_page);
+        ui_helper.product_form.modified = DataHelper.has_changed_fields_on_page(zp.current_page);
 
         this._register_click_form_button();
         this._register_click_enlarge_editor();
@@ -158,7 +159,7 @@ export default class PersonalizationForm {
             '</div>'
         );
 
-        if (personalization_form_instance.is_all_pages_updated(template_details)
+        if (DataHelper.is_all_pages_updated(template_details)
             || (personalization_form_instance._has_updated_pages(template_details)
             && template_details.missed_pages === '')
             || template_details.missed_pages === 'include') {
@@ -183,7 +184,6 @@ export default class PersonalizationForm {
         });
 
         Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_initialise, zp);
-        // Delegate.delegate('zp_dataset_initialise', zp);
 
         this._patchProductAddToCart();
 
@@ -193,7 +193,6 @@ export default class PersonalizationForm {
 
         this._register_window_load();
         this._register_click_next_page();
-        this._register_preview_lightbox();
         this._register_in_dialog_lightbox();
         this._register_click_edit_thumbnail();
         this._prepareTextFieldEditor();
@@ -346,38 +345,6 @@ export default class PersonalizationForm {
     }
 
     /**
-     * @param {number} page_number
-     * @return {boolean}
-     * @api
-     */
-    has_changed_fields_on_page(page_number) {
-        let $fields = $('#input-fields-page-' + page_number + ', ' +
-            '#stock-images-page-' + page_number);
-
-        if (!$fields.length) {
-            return false;
-        }
-
-        const $filtered_fields = $fields
-            .find('*[name^="zetaprints-_"], *[name^="zetaprints-#"]')
-            .filter('textarea, select, :text, :checked')
-            .filter('*[type!=hidden]');
-
-        const length = $filtered_fields.length;
-        if (!length) {
-            return false;
-        }
-
-        for (let i = 0; i < length; i++) {
-            if ($($filtered_fields[i]).val()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @param {string} guid
      * @param {string} url
      * @param {function} [on_image_load]
@@ -470,6 +437,7 @@ export default class PersonalizationForm {
         const value = target.val();
         const has_value = !!value.length;
 
+        const product_form = UiHelper.instance().product_form;
         const page = data.template_details.pages[data.current_page];
         const image = page.images[name];
 
@@ -477,131 +445,29 @@ export default class PersonalizationForm {
             image.value = value;
 
             if (typeof image.previous_value !== 'undefined') {
-                this._product_form.user_data_changed = image.previous_value !== value;
+                product_form.user_data_changed = image.previous_value !== value;
             }
         }
 
+
+        const fancybox_outer = UiHelper.instance().fancybox_outer;
         if (has_value) {
             $selector.removeClass('no-value');
-
-            UiHelper.instance().fancybox_outer.addClass('modified');
-            this._product_form.modified = true;
+            fancybox_outer.addClass('modified');
+            product_form.modified = true;
 
             //If ZetaPrints advanced theme is enabled then mark shape as edited then image is selected
             Feature.instance().call(Feature.feature.inPreviewEdit, () => {
                 this.in_preview_edit_controller.mark_shape_as_edited(page.shapes[name]);
             });
-            // Delegate.delegate('mark_shape_as_edited', page.shapes[name]);
         } else {
             $selector.addClass('no-value');
-
-            UiHelper.instance().fancybox_outer.removeClass('modified');
+            fancybox_outer.removeClass('modified');
             //If ZetaPrints advanced theme is enabled then or unmark shape then Leave blank is selected
             Feature.instance().call(Feature.feature.inPreviewEdit, () => {
                 this.in_preview_edit_controller.unmark_shape_as_edited(page.shapes[name]);
             });
-            // Delegate.delegate('unmark_shape_as_edited', page.shapes[name]);
         }
-    }
-
-    /**
-     * @param {TemplateDetail} details
-     * @return {boolean}
-     * @api
-     */
-    is_all_pages_updated(details) {
-        let page_number;
-        const pages = details.pages;
-        for (page_number in pages) {
-            if (pages.hasOwnProperty(page_number) && !details.pages[page_number]['updated-preview-image']) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param {Page} page
-     * @api
-     */
-    store_user_data(page) {
-        let name;
-        const fields = page.fields;
-        const images = page.images;
-
-        for (name in fields) {
-            if (fields.hasOwnProperty(name)) {
-                if (!fields[name].value) {
-                    fields[name].value = '';
-                }
-
-                fields[name].previous_value = fields[name].value;
-            }
-        }
-
-        for (name in images) {
-            if (images.hasOwnProperty(name)) {
-                if (!images[name].value) {
-                    images[name].value = '#';
-                }
-
-                images[name].previous_value = images[name].value;
-            }
-        }
-    }
-
-    /**
-     * @param {Page} page
-     * @return {boolean}
-     */
-    is_user_data_changed(page) {
-        let name;
-        const fields = page.fields;
-        const images = page.images;
-
-        for (name in fields) {
-            if (fields.hasOwnProperty(name)
-                && typeof fields[name].previous_value !== 'undefined'
-                && fields[name].previous_value !== fields[name].value
-            ) {
-                return true;
-            }
-        }
-        for (name in images) {
-            if (images.hasOwnProperty(name)
-                && typeof images[name].previous_value !== 'undefined'
-                && images[name].previous_value !== images[name].value
-            ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param pages
-     * @return {boolean}
-     * @api
-     */
-    page_has_updating(pages) {
-        for (let n in pages) {
-            if (pages.hasOwnProperty(n) && typeof pages[n].is_updating !== 'undefined' && pages[n].is_updating) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     *
-     * @param {number|string} page_number
-     * @param {*[]} links
-     * @param {string} filename
-     */
-    update_preview_sharing_link_for_page(page_number, links, filename) {
-        links[page_number] = preview_image_sharing_link_template + filename;
     }
 
     /**
@@ -656,29 +522,6 @@ export default class PersonalizationForm {
             }
         }
         return true;
-    }
-
-    /**
-     * @param details
-     * @return {string}
-     * @api
-     */
-    export_previews_to_string(details) {
-        let previews = '';
-        let number;
-
-        const pages = details.pages;
-        for (number in pages) {
-            if (pages.hasOwnProperty(number)) {
-                const page = pages[number];
-
-                if (page['updated-preview-image']) {
-                    previews += ',' + page['updated-preview-image'].split('preview/')[1];
-                }
-            }
-        }
-
-        return previews.substring(1);
     }
 
     /**
@@ -1011,19 +854,18 @@ export default class PersonalizationForm {
 
         const lightbox_configuration = new LightboxConfiguration({
             'opacity': true,
-            'overlayShow': false,
+            'showOverlay': false,
             'transitionIn': 'elastic',
             'changeSpeed': 200,
             'speedIn': 500,
             'speedOut': 500,
-            'titleShow': false,
+            'showTitle': false,
         });
         lightbox_configuration.willShow = function () {
             let is_in_preview = false;
 
             if (UiHelper.instance().update_preview_button.length) {
                 Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreview.fancybox_remove_update_preview_button, $);
-                // Delegate.delegate('fancybox_remove_update_preview_button', $);
                 is_in_preview = true;
             }
 
@@ -1032,139 +874,17 @@ export default class PersonalizationForm {
             }
 
             Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_add_use_image_button, $, data, is_in_preview);
-            // Delegate.delegate('fancybox_add_use_image_button', $, zp, is_in_preview);
         };
         lightbox_configuration.didShow = function () {
             Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_update_preview_button, $);
-            // Delegate.delegate('fancybox_update_preview_button', $);
         };
         lightbox_configuration.didClose = function () {
             Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_remove_use_image_button, $);
-            // Delegate.delegate('fancybox_remove_use_image_button', $);
         };
 
         const lightbox = new Lightbox();
         lightbox.register('a.in-dialog', lightbox_configuration);
     }
-
-    /**
-     * @private
-     */
-    _register_preview_lightbox() {
-        const personalization_form_instance = this;
-        const data = personalization_form_instance.data;
-        const in_preview_edit_controller = personalization_form_instance.in_preview_edit_controller;
-        const shape_repository = personalization_form_instance.shape_repository;
-        const lightbox_configuration = new LightboxConfiguration({
-            'opacity': true,
-            'overlayShow': false,
-            'transitionIn': 'elastic',
-            'speedIn': 500,
-            'speedOut': 500,
-            'titleShow': false,
-            'hideOnContentClick': true,
-            'showNavArrows': false,
-        });
-        lightbox_configuration.willShow = function () {
-            if (UiHelper.instance().select_image_button.length) {
-                Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_remove_use_image_button, $);
-                // Delegate.delegate('fancybox_remove_use_image_button', $);
-            }
-            if ($('#zp-save-image-button').length) {
-                Feature.instance().call(
-                    Feature.feature.fancybox.saveImageButton,
-                    SaveImageButton.fancybox_remove_save_image_button,
-                    $
-                );
-                // Delegate.delegate('fancybox_remove_save_image_button', $);
-            }
-
-            if (!data.template_details.pages[data.current_page].static) {
-                Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreview.fancybox_add_update_preview_button, $, data);
-                // Delegate.delegate('fancybox_add_update_preview_button', $, zp);
-            }
-        };
-        lightbox_configuration.didShow = function () {
-            UiHelper.instance().fancybox_image.attr('title', click_to_close_text);
-
-            //!!! Needs to be implemented via zp object.
-            //!!! Page state should be saved in page object.
-            if (personalization_form_instance.has_changed_fields_on_page(data.current_page)) {
-                UiHelper.instance().fancybox_outer.addClass('modified');
-            } else {
-                UiHelper.instance().fancybox_outer.removeClass('modified');
-            }
-
-
-            Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_add, this);
-            // Delegate.delegate('fancybox_resizing_add', this);
-
-            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreview.fancybox_update_update_preview_button, $, data);
-            // Delegate.delegate('fancybox_update_update_preview_button', $);
-
-
-            if (false === (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit))) {
-                return;
-
-                // window.place_all_shapes_for_page => InPreviewEditController.place_all_shapes_for_page
-                // && window.highlight_shape => InPreviewEditController.highlight_shape
-                // && window.popup_field_by_name => InPreviewEditController.popup_field_by_name
-                // && window.fancy_shape_handler => InPreviewEditController.fancy_shape_handler
-            }
-
-            const $fancy_inner = UiHelper.instance().fancybox_content;
-
-            in_preview_edit_controller.place_all_shapes_for_page(
-                shape_repository.get_shapes_of_current_page(),
-                $fancy_inner,
-                (event) => {
-                    in_preview_edit_controller.fancy_shape_handler(event);
-                }
-            );
-
-            if (data._shape_to_show) {
-                const shape = shape_repository.get_shape(data.current_page, data._shape_to_show);
-                data._shape_to_show = undefined;
-
-                in_preview_edit_controller.highlight_shape(shape, $fancy_inner);
-
-                in_preview_edit_controller.popup_field_by_name(
-                    shape.name,
-                    undefined,
-                    shape._fields ? shape._fields : shape.name
-                );
-            }
-        };
-        lightbox_configuration.didClose = function () {
-            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreview.fancybox_remove_update_preview_button, $);
-            // Delegate.delegate('fancybox_remove_update_preview_button', $);
-            Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_hide);
-        };
-        lightbox_configuration.willClose = function () {
-            if (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
-                $('div.zetaprints-field-shape', UiHelper.instance().fancybox_content).removeClass('highlighted');
-                in_preview_edit_controller.popdown_field_by_name();
-            }
-        };
-
-        const lightbox = new Lightbox();
-        lightbox.register('a.zetaprints-template-preview', lightbox_configuration);
-    }
-
-    // /**
-    //  * Add TemplateID parameter to the form
-    //  *
-    //  * @param {DataInterface} zp
-    //  * @private
-    //  */
-    // _add_template_id_parameter_to_form(zp) {
-    //     const guid = zp.template_details.guid;
-    //     /**
-    //      * @type {ProductForm}
-    //      */
-    //     const product_form = UiHelper.instance().product_form;
-    //     $('<input type="hidden" name="zetaprints-TemplateID" value="' + guid + '" />').appendTo(product_form);
-    // }
 
     /**
      * @param {DataInterface} zp
@@ -1316,7 +1036,7 @@ export default class PersonalizationForm {
          */
         const product_form = UiHelper.instance().product_form;
 
-        const value = this.export_previews_to_string(template_details);
+        const value = DataHelper.export_previews_to_string(template_details);
         product_form.append($('<input type="hidden" name="zetaprints-previews" value="' + value + '" />'));
 
         const guid = template_details.guid;
@@ -1384,7 +1104,7 @@ export default class PersonalizationForm {
             $.fancybox.close();
         } else {
             Logger.debug(this.preview_controller.get_preview_for_page_number(current_page));
-            this.preview_controller.get_preview_for_page_number(current_page).preview_click();
+            this.preview_controller.get_preview_for_page_number(current_page).open_lightbox();
 
             const preview_image_page = document.getElementById('preview-image-page-' + current_page);
             if (preview_image_page) {
@@ -1423,7 +1143,7 @@ export default class PersonalizationForm {
         const changed_pages = [];
 
         for (n in pages) {
-            if (pages.hasOwnProperty(n) && this.is_user_data_changed(pages[n])) {
+            if (pages.hasOwnProperty(n) && DataHelper.is_user_data_changed(pages[n])) {
                 changed_pages[changed_pages.length] = n;
             }
         }
@@ -1608,7 +1328,6 @@ export default class PersonalizationForm {
         }
 
         Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_update_state, zp, name, false);
-        // Delegate.delegate('zp_dataset_update_state', zp, name, false);
     }
 
     /**

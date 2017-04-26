@@ -418,7 +418,6 @@ export default class ImageEditor {
      * @private
      */
     _update_editor_state(data) {
-        // Delegate.delegate('fancybox_update_save_image_button', $, true);
         Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, true);
 
 
@@ -888,7 +887,6 @@ export default class ImageEditor {
         this._set_info_bar_state();
 
         Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button);
-        // Delegate.delegate('fancybox_update_save_image_button', $);
     }
 
     /**
@@ -946,7 +944,6 @@ export default class ImageEditor {
         this._show_crop(data);
 
         Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, !metadata || ignore_metadata);
-        // Delegate.delegate('fancybox_update_save_image_button', $, !metadata || ignore_metadata);
     }
 
     /**

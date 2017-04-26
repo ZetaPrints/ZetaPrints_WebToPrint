@@ -43,7 +43,7 @@ export default class SelectImage {
                 .click(function () {
                     zp._shape_to_show = this._detect_share_name();
 
-                    preview_controller.get_preview_for_page_number(zp.current_page).preview_click();
+                    preview_controller.get_preview_for_page_number(zp.current_page).open_lightbox();
                     // $('#preview-image-page-' + zp.current_page).click();
 
                     $(this).remove();
@@ -107,9 +107,8 @@ export default class SelectImage {
     }
 
     /**
-     * @param {jQuery|function} $
      */
-    static fancybox_remove_use_image_button($) {
+    static fancybox_remove_use_image_button() {
         UiHelper.instance().select_image_button.remove();
     }
 

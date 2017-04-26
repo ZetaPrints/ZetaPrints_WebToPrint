@@ -4,17 +4,10 @@
 import $ from '../jQueryLoader';
 import LightboxConfiguration from "../model/LightboxConfiguration";
 
+// Remove the X-fancybox header
 $.fancybox.defaults.ajax.headers = {};
 
 export default class AbstractLightbox {
-    /**
-     * @return {LightboxConfiguration}
-     * @protected
-     */
-    _get_default_options() {
-        return new LightboxConfiguration();
-    }
-
     /**
      * @param {LightboxConfiguration|object} options
      * @return {*}
@@ -25,14 +18,13 @@ export default class AbstractLightbox {
             options = new LightboxConfiguration(options);
         }
 
-        const merged_options = $.extend(true, {}, this._get_default_options(), options);
         const fancybox = $['fancybox'];
         const fancybox_version = typeof fancybox.version === 'string' ? parseInt(fancybox.version, 10) : 1;
 
         if (fancybox_version === 2) {
-            return this._prepare_options_for_v2(merged_options);
+            return this._prepare_options_for_v2(options);
         } else if (fancybox_version === 1) {
-            return this._prepare_options_for_v1(merged_options);
+            return this._prepare_options_for_v1(options);
         }
 
         throw new Error('No matching fancyBox version found');
@@ -55,6 +47,7 @@ export default class AbstractLightbox {
         prepared_options['onComplete'] = options.didShow;
         prepared_options['onCleanup'] = options.willClose;
         prepared_options['onClosed'] = options.didClose;
+        prepared_options['showCloseButton'] = options.showCloseButton;
 
         return prepared_options;
     }
@@ -76,6 +69,7 @@ export default class AbstractLightbox {
             prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {overlay: null});
         }
 
+        prepared_options['closeBtn'] = options.showCloseButton;
         prepared_options['beforeLoad'] = options.willShow;
         prepared_options['afterShow'] = options.didShow;
         prepared_options['beforeClose'] = options.willClose;

@@ -6,6 +6,7 @@ import $ from './jQueryLoader';
 import Assert from "./helper/Assert";
 import Feature from "./Feature";
 import Page from "./model/Page";
+import DataHelper from "./helper/DataHelper";
 
 export default class ImageTabController {
     /**
@@ -41,7 +42,6 @@ export default class ImageTabController {
         // Remove shapes for current page
         if (data.has_shapes) {
             Feature.instance().call(Feature.feature.inPreviewEdit, personalization_form.in_preview_edit_controller.add_in_preview_edit_handlers);
-            // Delegate.delegate('remove_all_shapes', product_image_box);
         }
 
         $(element).addClass('selected');
@@ -75,7 +75,7 @@ export default class ImageTabController {
         //Remember number of selected page
         data.current_page = page_rel.split('-')[1] * 1;
 
-        product_form.modified = personalization_form.has_changed_fields_on_page(data.current_page);
+        product_form.modified = DataHelper.has_changed_fields_on_page(data.current_page);
 
         const has_shapes = data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit);
 
@@ -123,7 +123,7 @@ export default class ImageTabController {
         }
 
 
-        product_form.user_data_changed = personalization_form.is_user_data_changed(page_rel);
+        product_form.user_data_changed = DataHelper.is_user_data_changed(page_rel);
 
         if (personalization_form.can_show_next_page_button_for_page(data.current_page, data)) {
             ui_helper.next_page_button.show();

@@ -15,10 +15,9 @@ export default class UpdatePreviewButtonController {
     }
 
     /**
-     * @param {jQuery|function} $
-     * @param {DataInterface} zp
+     * @param {DataInterface} data
      */
-    static fancybox_add_update_preview_button($, zp) {
+    static fancybox_add_update_preview_button(data) {
         const ui_helper = UiHelper.instance();
 
         //Don't add the button if it exists
@@ -62,14 +61,13 @@ export default class UpdatePreviewButtonController {
 
             $outer.addClass('preview-updating zp-hide-shapes');
 
-            zp.update_preview({data: {zp: zp}});
+            data.update_preview({data: {zp: data}});
         })
     }
 
     /**
-     * @param {jQuery|function} $
      */
-    static fancybox_update_update_preview_button($) {
+    static fancybox_update_update_preview_button() {
         const $fancybox_resize = UiHelper.instance().fancybox_resize;
 
         if ($fancybox_resize.length) {

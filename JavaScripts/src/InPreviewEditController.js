@@ -1,4 +1,4 @@
-import jQuery from './jQueryLoader'
+import $ from './jQueryLoader'
 import ShapeRepository from "./model/ShapeRepository";
 import UiHelper from "./helper/UiHelper";
 
@@ -20,7 +20,7 @@ export default class InPreviewEditController {
      * @api
      */
     mark_shape_as_edited(shape) {
-        jQuery('div.zetaprints-field-shape[title="' + shape.name + '"]')
+        $('div.zetaprints-field-shape[title="' + shape.name + '"]')
             .addClass('edited');
 
         shape['has-value'] = true;
@@ -31,7 +31,7 @@ export default class InPreviewEditController {
      * @api
      */
     unmark_shape_as_edited(shape) {
-        jQuery('div.zetaprints-field-shape[title="' + shape.name + '"]').removeClass('edited');
+        $('div.zetaprints-field-shape[title="' + shape.name + '"]').removeClass('edited');
 
         shape['has-value'] = false;
     }
@@ -73,7 +73,7 @@ export default class InPreviewEditController {
         }
         const edited_class = shape['has-value'] ? ' edited' : '';
 
-        jQuery('<div class="zetaprints-field-shape bottom hide' + edited_class + '" ' +
+        $('<div class="zetaprints-field-shape bottom hide' + edited_class + '" ' +
             'title="' + shape.name + '">' +
             '<div class="zetaprints-field-shape top" />' +
             '</div>')
@@ -114,7 +114,7 @@ export default class InPreviewEditController {
      * @param {jQuery|HTMLElement} container
      */
     remove_all_shapes(container) {
-        jQuery('div.zetaprints-field-shape', container).remove();
+        $('div.zetaprints-field-shape', container).remove();
     }
 
     /**
@@ -147,7 +147,7 @@ export default class InPreviewEditController {
         for (let i = 0; i < names_collection.length; i++) {
             const name = names_collection[i];
 
-            let $field = jQuery('*[name="zetaprints-_' + name + '"], ' +
+            let $field = $('*[name="zetaprints-_' + name + '"], ' +
                 'div.zetaprints-images-selector[title="' + name + '"] div.head');
 
             const $parent = $field.parents('.zetaprints-text-field-wrapper');
@@ -164,7 +164,7 @@ export default class InPreviewEditController {
      * @param {string} name
      */
     dehighlight_field_by_name(name) {
-        jQuery('.zetaprints-page-input-fields .highlighted,' +
+        $('.zetaprints-page-input-fields .highlighted,' +
             '.zetaprints-page-stock-images .highlighted')
             .removeClass('highlighted');
     }
@@ -177,7 +177,7 @@ export default class InPreviewEditController {
      */
     popup_field_by_name(name, position = undefined, selected_shapes) {
         const zp = this.personalization_form_instance.data;
-        const $tabs = jQuery('<div class="fieldbox-tabs fieldbox-wrapper">' +
+        const $tabs = $('<div class="fieldbox-tabs fieldbox-wrapper">' +
             '<a class="fieldbox-button" href="#" />' +
             '<ul class="fieldbox-head"/>' +
             '</div>');
@@ -245,7 +245,7 @@ export default class InPreviewEditController {
         $shape.append('<input type="hidden" name="field" value="' + full_name + '" />');
 
         //Oh God, it's a sad story :-(
-        if (width === 'auto' && jQuery.browser && jQuery.browser.msie && jQuery.browser.version === '7.0') {
+        if (width === 'auto' && $.browser && $.browser.msie && $.browser.version === '7.0') {
             width = min_width;
         }
 
@@ -255,7 +255,7 @@ export default class InPreviewEditController {
         this._popup_field_by_name_apply_tabs_ie7_workaround(selected_buttons, $ul, $tabs);
         this._popup_field_by_name_register_box_click($box);
 
-        this._popup_field_by_name_prepare_draggable_box($box, jQuery.extend(true, {}, position), $shape);
+        this._popup_field_by_name_prepare_draggable_box($box, $.extend(true, {}, position), $shape);
 
         this._popup_field_by_name_prepare_tabs($tabs);
     }
@@ -263,12 +263,12 @@ export default class InPreviewEditController {
     /**
      * @param {string} name
      * @param {jQuery} $tabs
-     * @param {number} width
+     * @param {number|string} width
      * @param {number} min_width
      * @private
      */
     _popup_field_by_name_build_box(name, $tabs, width, min_width) {
-        return jQuery('<div class="fieldbox" title="' + name + '" />')
+        return $('<div class="fieldbox" title="' + name + '" />')
             .append($tabs)
             .css({
                 width: width,
@@ -308,7 +308,7 @@ export default class InPreviewEditController {
      * @private
      */
     _popup_field_by_name_create_li(shape_name, tab_number, tab_title) {
-        return jQuery('<li title="' + shape_name + '">' +
+        return $('<li title="' + shape_name + '">' +
             '<div class="fieldbox-tab-inner">' +
             '<a href="#fieldbox-tab-' + tab_number + '">' +
             '<div class="fieldbox-tab-icon" />' +
@@ -347,12 +347,12 @@ export default class InPreviewEditController {
             position.left += 10;
         }
 
-        const window_height = jQuery(window).height() + jQuery(window).scrollTop();
+        const window_height = $(window).height() + $(window).scrollTop();
         if ((position.top + height) > window_height) {
             position.top -= position.top + height - window_height;
         }
 
-        const window_width = jQuery(window).width();
+        const window_width = $(window).width();
         if ((position.left + width) > window_width) {
             position.left -= position.left + width - window_width;
         }
@@ -372,7 +372,7 @@ export default class InPreviewEditController {
         const personalization_form_instance = this.personalization_form_instance;
         $tabs.tabs({
             activate: function (event, ui) {
-                const $panel = jQuery(ui.newPanel);
+                const $panel = $(ui.newPanel);
 
                 //Generate click event on panel to hide opened colorpicker
                 //!!!TODO: rework it after upgrading to jQuery UI 1.9+
@@ -404,7 +404,7 @@ export default class InPreviewEditController {
      * @private
      */
     _popup_field_by_name_for_images(zp, shape_name, selected_buttons, name, $li) {
-        const $parent = jQuery('#stock-images-page-' + zp.current_page)
+        const $parent = $('#stock-images-page-' + zp.current_page)
             .find('*[title="' + shape_name + '"]')
             .removeClass('minimized');
 
@@ -437,7 +437,7 @@ export default class InPreviewEditController {
      * @private
      */
     _popup_field_by_name_for_text_field(zp, shape_name, name, page, $li) {
-        let $field = jQuery('#input-fields-page-' + zp.current_page)
+        let $field = $('#input-fields-page-' + zp.current_page)
             .find('*[name="zetaprints-_' + shape_name + '"]')
             .not('[type="hidden"]');
 
@@ -450,7 +450,7 @@ export default class InPreviewEditController {
 
         const full_name = 'zetaprints-_' + name;
 
-        if (jQuery.fn.text_field_editor
+        if ($.fn.text_field_editor
             && page.fields[shape_name]['colour-picker'] === 'RGB') {
             $_field.text_field_editor('move', $li.find('.fieldbox-tab-inner'));
         }
@@ -464,7 +464,7 @@ export default class InPreviewEditController {
         //It moves cursor to the end of input field after focus.
         //  if (field.createTextRange) {
         //    var range = field.createTextRange();
-        //    var position = jQuery(field).val().length;
+        //    var position = $(field).val().length;
 
         //    range.collapse(true);
         //    range.move('character', position);
@@ -482,34 +482,34 @@ export default class InPreviewEditController {
     popdown_field_by_name(full_name = '') {
         const personalization_form_instance = this.personalization_form_instance;
         const field = full_name
-            ? jQuery('*[value="' + full_name + '"]', UiHelper.instance().fancybox_content)
-            : jQuery(':input', UiHelper.instance().fancybox_content);
+            ? $('*[value="' + full_name + '"]', UiHelper.instance().fancybox_content)
+            : $(':input', UiHelper.instance().fancybox_content);
 
         if (!field.length) {
             return '';
         }
 
         if (!full_name) {
-            full_name = jQuery(field).val();
+            full_name = $(field).val();
         }
 
         const name = full_name.substring(12);
-        const $box = jQuery('.fieldbox[title="' + name + '"]');
+        const $box = $('.fieldbox[title="' + name + '"]');
 
         $box.find('.fieldbox-field').children().each(function () {
-            const $element = jQuery(this);
+            const $element = $(this);
             let $_element = $element;
 
             if ($element.hasClass('zetaprints-text-field-wrapper')) {
                 $_element = $element.find('.zetaprints-field');
             }
 
-            if (jQuery.fn.colorpicker && $element.hasClass('selector-content')) {
+            if ($.fn.colorpicker && $element.hasClass('selector-content')) {
                 $element
                     .find('> .tabs-wrapper > .tab')
                     .filter('.colour-picker, .color-picker')
                     .each(function () {
-                        personalization_form_instance.hide_colorpicker(jQuery(this));
+                        personalization_form_instance.hide_colorpicker($(this));
                     });
             }
 
@@ -533,13 +533,13 @@ export default class InPreviewEditController {
             //!!! Stupid work around for stupid IE7
             $input.change().prop('checked', true);
 
-            if (jQuery.fn.text_field_editor) {
+            if ($.fn.text_field_editor) {
                 $_element.text_field_editor('move',
                     data.parent.parents('dl').children('dt'));
             }
 
             if (data.parent.hasClass('zetaprints-images-selector')) {
-                personalization_form_instance.scroll_strip(jQuery($element
+                personalization_form_instance.scroll_strip($($element
                     .find('ul.tab-buttons li.ui-tabs-selected a')
                     .attr('href')));
             }
@@ -547,9 +547,9 @@ export default class InPreviewEditController {
 
         $box.remove();
 
-        jQuery(field).remove();
+        $(field).remove();
 
-        jQuery('#current-shape').attr('id', '');
+        $('#current-shape').attr('id', '');
 
         return name;
     }
@@ -564,7 +564,7 @@ export default class InPreviewEditController {
             return container;
         }
 
-        return jQuery('div.product-img-box');
+        return $('div.product-img-box');
     }
 
     /**
@@ -618,10 +618,10 @@ export default class InPreviewEditController {
      */
     shape_handler(event) {
         event.preventDefault();
-        const zp = this.personalization_form_instance.data;
-        const shape = jQuery(event.target).parent();
+        const data = this.personalization_form_instance.data;
+        const shape = $(event.target).parent();
 
-        if (jQuery.fn.draggable && jQuery.fn.tabs && event.type === 'click') {
+        if ($.fn.draggable && $.fn.tabs && event.type === 'click') {
             let shapes;
             if (event.pageX && event.pageY) {
                 const c = this._glob_to_rel_coords(event.pageX, event.pageY, event.data.container);
@@ -640,21 +640,20 @@ export default class InPreviewEditController {
                     .addClass('zetaprints-shape-selected');
             }
 
-            jQuery('#current-shape').attr('id', '');
-            jQuery(shape).attr('id', 'current-shape');
+            $('#current-shape').attr('id', '');
+            $(shape).attr('id', 'current-shape');
 
-            this.personalization_form_instance.preview_controller.get_preview_for_page_number(zp.current_page).preview_click();
-            // jQuery('#preview-image-page-' + zp.current_page).click();
+            this.personalization_form_instance.preview_controller.get_preview_for_page_number(data.current_page).open_lightbox();
+            // $('#preview-image-page-' + zp.current_page).click();
         } else if (event.type === 'mouseover') {
-            jQuery('#zetaprints-preview-image-container > div.zetaprints-field-shape.bottom')
-                .removeClass('highlighted');
-            jQuery(shape).addClass('highlighted');
+            $('#zetaprints-preview-image-container > div.zetaprints-field-shape.bottom').removeClass('highlighted');
+            $(shape).addClass('highlighted');
 
-            this.highlight_field_by_name(jQuery(shape).attr('title'));
+            this.highlight_field_by_name($(shape).attr('title'));
         } else {
-            jQuery(shape).removeClass('highlighted');
+            $(shape).removeClass('highlighted');
 
-            this.dehighlight_field_by_name(jQuery(shape).attr('title'));
+            this.dehighlight_field_by_name($(shape).attr('title'));
         }
     }
 
@@ -664,10 +663,10 @@ export default class InPreviewEditController {
      */
     fancy_shape_handler(event) {
         const data = this.personalization_form_instance.data;
-        const shape = jQuery(event.target).parent();
+        const shape = $(event.target).parent();
 
-        if (jQuery.fn.draggable && jQuery.fn.tabs && event.type === 'click') {
-            if (jQuery(shape).children().length > 1) {
+        if ($.fn.draggable && $.fn.tabs && event.type === 'click') {
+            if ($(shape).children().length > 1) {
                 return false;
             }
 
@@ -705,13 +704,13 @@ export default class InPreviewEditController {
 
         if (event.type === 'mouseover') {
             const highlighted = UiHelper.instance().fancybox_content.children('div.zetaprints-field-shape.highlighted');
-            if (jQuery(highlighted).children().length <= 1) {
-                jQuery(highlighted).removeClass('highlighted');
+            if ($(highlighted).children().length <= 1) {
+                $(highlighted).removeClass('highlighted');
             }
 
-            jQuery(shape).addClass('highlighted');
-        } else if (jQuery(shape).children().length <= 1) {
-            jQuery(shape).removeClass('highlighted');
+            $(shape).addClass('highlighted');
+        } else if ($(shape).children().length <= 1) {
+            $(shape).removeClass('highlighted');
         }
     }
 
@@ -726,20 +725,30 @@ export default class InPreviewEditController {
         this._register_image_selector_handler(zp, _this);
 
         $(document).on('click', UiHelper.instance().fancybox_image_selector, () => {
-            jQuery('div.zetaprints-field-shape.bottom', UiHelper.instance().fancybox_content).removeClass('highlighted');
+            $('div.zetaprints-field-shape.bottom', UiHelper.instance().fancybox_content).removeClass('highlighted');
             this.popdown_field_by_name();
         });
 
 
-        const fancybox_center_function = jQuery.fancybox.center;
-        jQuery.fancybox.center = function () {
-            const wrap = UiHelper.instance().fancybox_wrap;
-            const orig_position = wrap.position();
-            fancybox_center_function();
-            const new_position = wrap.position();
+        // Patch the fancyBox center/update method
+        // TODO: $.fancybox.center is not available in fancyBox 2
+        let fancybox_function_name = '';
+        if (typeof $.fancybox['center'] !== 'undefined') {
+            fancybox_function_name = 'center';
+        } else if (typeof $.fancybox['update'] !== 'undefined') {
+            fancybox_function_name = 'update';
+        }
+        if (fancybox_function_name) {
+            const fancybox_function = $.fancybox[fancybox_function_name];
+            $.fancybox[fancybox_function_name] = function () {
+                const wrap = UiHelper.instance().fancybox_wrap;
+                const orig_position = wrap.position();
+                fancybox_function();
+                const new_position = wrap.position();
 
-            if (orig_position.top !== new_position.top || orig_position.left !== new_position.left) {
-                _this.popup_field_by_name(_this.popdown_field_by_name());
+                if (orig_position.top !== new_position.top || orig_position.left !== new_position.left) {
+                    _this.popup_field_by_name(_this.popdown_field_by_name());
+                }
             }
         }
     }
@@ -749,20 +758,19 @@ export default class InPreviewEditController {
      */
     _register_image_selector_handler() {
         const _this = this;
-        const zp = this.personalization_form_instance.data;
 
-        jQuery('div.zetaprints-images-selector')
+        $('div.zetaprints-images-selector')
             .mouseover(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
-                const name = jQuery(this).attr('title');
+                const name = $(this).attr('title');
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.highlight_shape(shape, _this._get_current_shapes_container());
             })
             .mouseout(function () {
-                if (!jQuery(this).children('div.fieldbox').length) {
+                if (!$(this).children('div.fieldbox').length) {
                     const shapes = _this.shape_repository.get_shapes_of_current_page();
-                    const name = jQuery(this).attr('title');
+                    const name = $(this).attr('title');
                     const shape = _this.get_shape_by_name(name, shapes);
 
                     _this.dehighlight_shape(shape, _this._get_current_shapes_container());
@@ -775,21 +783,20 @@ export default class InPreviewEditController {
      */
     _register_text_field_handler() {
         const _this = this;
-        const zp = this.personalization_form_instance.data;
 
-        jQuery('div.zetaprints-page-input-fields')
+        $('div.zetaprints-page-input-fields')
             .find('dd')
             .find('input, textarea, select')
             .mouseover(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
-                const name = jQuery(this).attr('name').substring(12);
+                const name = $(this).attr('name').substring(12);
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.highlight_shape(shape, _this._get_current_shapes_container());
             })
             .mouseout(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
-                const name = jQuery(this).attr('name').substring(12);
+                const name = $(this).attr('name').substring(12);
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.dehighlight_shape(shape, _this._get_current_shapes_container());

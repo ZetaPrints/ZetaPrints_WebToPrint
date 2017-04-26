@@ -9,6 +9,15 @@ import Assert from "./helper/Assert";
 import Preview from "./view/Preview";
 import TemplateDetail from "./model/TemplateDetail";
 import Page from "./model/Page";
+import Feature from "./Feature";
+import SaveImageButton from "./fancybox/SaveImageButton";
+import SelectImage from "./fancybox/SelectImage";
+import UpdatePreviewButtonController from "./UpdatePreviewButtonController";
+import Resizing from "./fancybox/Resizing";
+import DataHelper from "./helper/DataHelper";
+import LightboxConfiguration from "./model/LightboxConfiguration";
+import Lightbox from "./view/Lightbox";
+import LightboxCallbackConfiguration from "./model/LightboxCallbackConfiguration";
 
 export default class PreviewController {
     /**
@@ -76,7 +85,12 @@ export default class PreviewController {
         const pages = data.template_details.pages;
         for (let page_number in pages) {
             if (pages.hasOwnProperty(page_number)) {
-                const preview = new Preview(data, parseInt(page_number, 10), this);
+                const preview = new Preview(
+                    data,
+                    parseInt(page_number, 10),
+                    this,
+                    this._get_lightbox_callbacks()
+                );
                 this._preview_elements['' + page_number] = preview;
 
                 preview.show();
@@ -91,7 +105,6 @@ export default class PreviewController {
      * @param {Preview} preview
      */
     image_on_load_callback(data, page_number, image_element, preview) {
-        Logger.log('image_on_load_callback');
         const ui_helper = UiHelper.instance();
 
         const form_instance = this.form_instance;
@@ -147,7 +160,7 @@ export default class PreviewController {
 
         page.is_updating = false;
 
-        if (!form_instance.page_has_updating(pages)) {
+        if (!DataHelper.page_has_updating(pages)) {
             //Enable Update preview action
             $update_preview_button.unbind('click');
             $update_preview_button.click(() => {
@@ -223,6 +236,91 @@ export default class PreviewController {
     }
 
     /**
+     * @return {LightboxCallbackConfiguration}
+     * @private
+     */
+    _get_lightbox_callbacks() {
+        const personalization_form_instance = this.form_instance;
+        const data = this.form_instance.data;
+        const in_preview_edit_controller = personalization_form_instance.in_preview_edit_controller;
+        const shape_repository = personalization_form_instance.shape_repository;
+        const lightbox_configuration = new LightboxCallbackConfiguration();
+        lightbox_configuration.willShow = function () {
+            if (UiHelper.instance().select_image_button.length) {
+                Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_remove_use_image_button);
+            }
+            if (SaveImageButton.instance().button) {
+                Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_remove_save_image_button);
+            }
+
+            if (!data.template_details.pages[data.current_page].static) {
+                Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreviewButtonController.fancybox_add_update_preview_button, data);
+            }
+        };
+        lightbox_configuration.didShow = function () {
+            const ui_helper = UiHelper.instance();
+            const feature_instance = Feature.instance();
+
+            ui_helper.fancybox_image.attr('title', click_to_close_text);
+
+            //!!! Needs to be implemented via zp object.
+            //!!! Page state should be saved in page object.
+            if (DataHelper.has_changed_fields_on_page(data.current_page)) {
+                ui_helper.fancybox_outer.addClass('modified');
+            } else {
+                ui_helper.fancybox_outer.removeClass('modified');
+            }
+
+            feature_instance.call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_add, this);
+            feature_instance.call(Feature.feature.fancybox.updatePreview, UpdatePreviewButtonController.fancybox_update_update_preview_button);
+
+            if (false === (data.has_shapes && feature_instance.is_activated(Feature.feature.inPreviewEdit))) {
+                return;
+
+                // window.place_all_shapes_for_page => InPreviewEditController.place_all_shapes_for_page
+                // && window.highlight_shape => InPreviewEditController.highlight_shape
+                // && window.popup_field_by_name => InPreviewEditController.popup_field_by_name
+                // && window.fancy_shape_handler => InPreviewEditController.fancy_shape_handler
+            }
+
+            const $fancy_inner = ui_helper.fancybox_content;
+
+            in_preview_edit_controller.place_all_shapes_for_page(
+                shape_repository.get_shapes_of_current_page(),
+                $fancy_inner,
+                (event) => {
+                    in_preview_edit_controller.fancy_shape_handler(event);
+                }
+            );
+
+            if (data._shape_to_show) {
+                const shape = shape_repository.get_shape(data.current_page, data._shape_to_show);
+                data._shape_to_show = undefined;
+
+                in_preview_edit_controller.highlight_shape(shape, $fancy_inner);
+
+                in_preview_edit_controller.popup_field_by_name(
+                    shape.name,
+                    undefined,
+                    shape._fields ? shape._fields : shape.name
+                );
+            }
+        };
+        lightbox_configuration.didClose = function () {
+            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreviewButtonController.fancybox_remove_update_preview_button, $);
+            Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_hide);
+        };
+        lightbox_configuration.willClose = function () {
+            if (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
+                $('div.zetaprints-field-shape', UiHelper.instance().fancybox_content).removeClass('highlighted');
+                in_preview_edit_controller.popdown_field_by_name();
+            }
+        };
+
+        return lightbox_configuration;
+    }
+
+    /**
      * @param {Page} page
      */
     _update_preview_error(page) {
@@ -288,7 +386,6 @@ export default class PreviewController {
             $(fancy_img).attr('src', pages_server_data[current_page]['updated-preview-url']);
         }
 
-
         for (let page_number in pages_server_data) {
             if (pages_server_data.hasOwnProperty(page_number)) {
                 const page_server_data = pages_server_data[page_number];
@@ -353,33 +450,36 @@ export default class PreviewController {
      * @private
      */
     _store_user_data(local_data, page) {
-        const form_instance = this.form_instance;
         UiHelper.instance().product_form.user_data_changed = false;
 
         if (
-            form_instance.is_all_pages_updated(local_data.template_details)
+            DataHelper.is_all_pages_updated(local_data.template_details)
             || local_data.template_details.missed_pages === 'include'
             || local_data.template_details.missed_pages === ''
         ) {
 
-            $('input[name="zetaprints-previews"]').val(form_instance.export_previews_to_string(local_data.template_details));
+            $('input[name="zetaprints-previews"]').val(DataHelper.export_previews_to_string(local_data.template_details));
 
-            $('div.zetaprints-notice.to-update-preview').addClass('zp-hidden');
+            UiHelper.instance().hide($('div.zetaprints-notice.to-update-preview'));
             this.fake_add_to_cart_button.remove();
             $('div.save-order span').css('display', 'none');
 
             const pages = local_data.template_details.pages;
-            let n;
-            for (n in pages) {
+            for (let n in pages) {
                 if (pages.hasOwnProperty(n)) {
-                    form_instance.store_user_data(pages[n]);
+                    DataHelper.store_user_data(pages[n]);
                 }
             }
         } else {
-            form_instance.store_user_data(page);
+            DataHelper.store_user_data(page);
         }
     }
 
+    /**
+     * @param {Page} page_server_data
+     * @param {Page} page_current_data
+     * @private
+     */
     _update_current_data(page_server_data, page_current_data) {
         if (page_server_data['updated-preview-image']) {
             page_current_data['updated-preview-image'] = page_server_data['updated-preview-image'];
@@ -419,13 +519,10 @@ export default class PreviewController {
         }
     }
 
-
     /**
      * @private
      */
     _remove_preview_placeholder() {
-        Logger.log('_remove_preview_placeholder', this.$_preview_placeholder);
-
         if (this.$_preview_placeholder) {
             this.$_preview_placeholder.remove();
         }
@@ -437,7 +534,6 @@ export default class PreviewController {
      * @api
      */
     add_preview_placeholder() {
-        Logger.log('add_preview placeholder');
         this.$_preview_placeholder = $('<div id="zp-preview-placeholder" />').appendTo(UiHelper.instance().product_image_gallery);
     }
 }

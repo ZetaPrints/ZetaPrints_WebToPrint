@@ -162,7 +162,11 @@ export default class Resizing {
         $container.height($container.height() + diff_y);
 
         // center it to page
-        jQuery.fancybox.center(true);
+        if (typeof jQuery.fancybox['center'] === 'function') {
+            jQuery.fancybox.center(true);
+        }else if (typeof jQuery.fancybox['update'] === 'function') {
+            jQuery.fancybox.update();
+        }
     }
 
     /**

@@ -1,6 +1,9 @@
 /* globals require */
 
 
+require('./polyfills');
+
+
 require('jquery');
 require('jquery.browser');
 require('jquery-ui');
@@ -32,7 +35,12 @@ require('jquery-ui-touch-punch-c');
 require('./ajaxupload.js');
 // require('./image-edit.js');
 
-export {default as PersonalizationForm} from "./PersonalizationForm";
+import PersonalizationForm from './PersonalizationForm';
+import $ from './jQueryLoader';
 
+export {
+    PersonalizationForm,
+    $
+}
 
 

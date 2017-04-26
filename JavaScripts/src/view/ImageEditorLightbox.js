@@ -31,18 +31,11 @@ export default class ImageEditorLightbox extends AbstractLightbox {
 
         const configuration = new LightboxConfiguration({
             'padding': 0,
-            'titleShow': false,
+            'showTitle': false,
             'type': 'ajax',
             'href': this.href,
-            closeBtn: true,
-            'willShow': () => {
-                // Logger.debug('[ImageEditorLightbox] Custom Fancybox start');
-                // this.image_editor_controller.on_fancybox_start(image_name, image_guid);
-            },
+            'showCloseButton': true,
             'didShow': () => {
-                Logger.debug('[ImageEditorLightbox] Custom Fancybox start');
-                this.image_editor_controller.on_fancybox_start(image_name, image_guid);
-
                 Logger.debug('[ImageEditorLightbox] Fancybox complete');
                 this.image_editor_controller.on_fancybox_complete(image_name, image_guid, $thumb);
             },
@@ -52,9 +45,7 @@ export default class ImageEditorLightbox extends AbstractLightbox {
             },
             'didClose': () => {
                 Logger.debug('[ImageEditorLightbox] Fancybox closed');
-
                 Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_remove_save_image_button);
-                // Delegate.delegate('fancybox_remove_save_image_button', $);
             },
         });
 

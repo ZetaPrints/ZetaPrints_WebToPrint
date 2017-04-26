@@ -1,33 +1,60 @@
 /**
  * Created by cod on 20.4.17.
  */
-import DataObject from "./DataObject";
-export default class LightboxConfiguration extends DataObject {
-    constructor(data) {
+import LightboxCallbackConfiguration from "./LightboxCallbackConfiguration";
+export default class LightboxConfiguration extends LightboxCallbackConfiguration {
+    constructor(data = {}) {
         super();
-        const ef = () => {
-        };
 
+        /**
+         * @type {number}
+         */
         this.padding = 0;
+
         /**
          * @type {string}
          */
         this.type = null;
+
         /**
          * @type {string}
          */
         this.href = null;
-        this.autoCenter = false;
-        this.arrows = false;
-        this.closeClick = false;
-        this.showOverlay = true;
-        this.closeOnOverlayClick = false;
-        this.showTitle = false;
 
-        this.willShow = ef;
-        this.didShow = ef;
-        this.willClose = ef;
-        this.didClose = ef;
+        /**
+         * @type {boolean}
+         */
+        this.autoCenter = false;
+
+        /**
+         * @type {boolean}
+         */
+        this.arrows = false;
+
+        /**
+         * @type {boolean}
+         */
+        this.closeClick = false;
+
+        /**
+         * @type {boolean}
+         */
+        this.showOverlay = true;
+
+        /**
+         * @type {boolean}
+         */
+        this.closeOnOverlayClick = true;
+
+        /**
+         * @type {boolean}
+         */
+        this.showCloseButton = true;
+
+        /**
+         * @type {boolean}
+         */
+        this.showTitle = false;
 
         this._assign_properties(data);
     }
