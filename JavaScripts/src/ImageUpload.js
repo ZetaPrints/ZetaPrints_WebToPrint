@@ -1,8 +1,11 @@
 /**
  * Created by cod on 7.4.17.
  */
-import $ from './jQueryLoader';
 
+import $ from './jQueryLoader';
+import NotificationHelper from "./NotificationCenter";
+
+/* jshint unused:false */
 class UploadResult {
     constructor() {
         this.guid = '';
@@ -98,12 +101,9 @@ export default class ImageUpload {
         }
 
         const upload_div = $(uploader._button).parents('.upload');
-        jQuery(document).trigger(AjaxUpload.Events.UPLOAD_COMPLETE, {
-            instance: self,
-            file: file,
-            response: response,
-            uploadDiv: upload_div
-        });
+        const notification_data = {instance: this, file: file, response: response, uploadDiv: upload_div};
+        NotificationHelper.instance().notify(AjaxUpload.Events.UPLOAD_COMPLETE, notification_data);
+        NotificationHelper.instance().notify(ImageUpload.Events.UPLOAD_COMPLETE, notification_data);
 
         const $selector = upload_div.parents('.selector-content');
         const upload_field_id = $selector.attr('id');
@@ -170,3 +170,7 @@ export default class ImageUpload {
         }
     }
 }
+
+ImageUpload.Events = {
+    UPLOAD_COMPLETE: 'ImageUpload.Events.UPLOAD_COMPLETE',
+};

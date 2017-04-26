@@ -3,6 +3,7 @@ import Logger from '../Logger';
 import UiHelper from "../helper/UiHelper";
 import Assert from "../helper/Assert";
 import PreviewController from "../PreviewController";
+import NotificationHelper from "../NotificationCenter";
 
 export default class SaveImageButton {
     /**
@@ -30,6 +31,8 @@ export default class SaveImageButton {
          * @private
          */
         this._state = null;
+
+        this._on_click = this._on_click.bind(this);
     }
 
     /**
@@ -117,14 +120,14 @@ export default class SaveImageButton {
 
     /**
      * @param {PreviewController} preview_controller
-     * @param {DataInterface} zp
+     * @param {DataInterface} data
      * @param {boolean} in_preview
      * @param {string} name
      * @param {string} guid
      * @return {*|jQuery}
      * @private
      */
-    _create_button(preview_controller, zp, in_preview, name, guid) {
+    _create_button(preview_controller, data, in_preview, name, guid) {
         Assert.assertInstanceOf(preview_controller, PreviewController);
 
         const $outer = this._get_outer();
@@ -147,9 +150,10 @@ export default class SaveImageButton {
                 .clone()
                 .css('display', 'inline')
                 .click(function () {
-                    zp._shape_to_show = name;
+                    data._shape_to_show = name;
 
-                    preview_controller.get_preview_for_page_number(zp.current_page).open_lightbox();
+                    Logger.log('[SaveImageButton] Close');
+                    preview_controller.get_preview_for_page_number(data.current_page).open_lightbox();
                     // $('#preview-image-page-' + zp.current_page).click();
 
                     $(this).remove();
@@ -162,20 +166,8 @@ export default class SaveImageButton {
 
         $button.addClass('no-middle');
 
-        $button.click(function () {
-            if ($button.hasClass('disabled')) {
-                return;
-            }
-
-            /**
-             * @type {ImageEditingContext}
-             */
-            const image_editing_context = zp.image_edit;
-            image_editing_context.save();
-            image_editing_context.$input.prop('checked', true).change();
-
-            $outer.addClass('saved');
-            $button.addClass('disabled');
+        $button.click(() => {
+            this._on_click(data);
         });
 
         return $button;
@@ -188,6 +180,32 @@ export default class SaveImageButton {
     _get_outer() {
         return UiHelper.instance().fancybox_outer;
     }
+
+    /**
+     * @param {DataInterface} data
+     * @private
+     */
+    _on_click(data) {
+        Logger.debug('[SaveImageButton] Click');
+
+        const $button = this._button;
+        if ($button.hasClass('disabled')) {
+            return;
+        }
+
+        /**
+         * @type {ImageEditingContext}
+         */
+        const image_editing_context = data.image_edit;
+        image_editing_context.save();
+        image_editing_context.$input.prop('checked', true).change();
+
+        this._get_outer().addClass('saved');
+        $button.addClass('disabled');
+
+
+        NotificationHelper.instance().notify(SaveImageButton.Events.CLICKED, {instance: this});
+    }
 }
 
 /**
@@ -199,3 +217,7 @@ SaveImageButton._instance = null;
 SaveImageButton.STATE_CLEAN = 1;
 SaveImageButton.STATE_DIRTY = 2;
 SaveImageButton.STATE_UNDEFINED = 3;
+
+SaveImageButton.Events = {
+    CLICKED: 'SaveImageButton.Events.CLICKED'
+};

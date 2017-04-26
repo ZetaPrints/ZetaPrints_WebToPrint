@@ -6,6 +6,8 @@ import SaveImageButton from "./fancybox/SaveImageButton";
 import Feature from "./Feature";
 import MetaData from "./model/MetaData";
 import UiHelper from "./helper/UiHelper";
+import NotificationHelper from "./NotificationCenter";
+import MetaDataHelper from "./MetaDataHelper";
 
 const fancybox_show_activity = () => {
     const fancybox = $.fancybox;
@@ -171,6 +173,7 @@ export default class ImageEditor {
                 fancybox_change_zindex(1100);
             },
             success: (data, textStatus) => {
+                NotificationHelper.instance().notify(ImageEditor.Events.IMAGE_LOADED, {instance: this, data: data});
                 context.image_id = id;
 
                 this._process_image_details(data);
@@ -182,6 +185,8 @@ export default class ImageEditor {
      * Close the editor
      */
     close() {
+        NotificationHelper.instance().notify(ImageEditor.Events.CLOSE, {instance: this});
+
         if (ImageEditor._image_editor) {
             ImageEditor._image_editor.close();
         }
@@ -192,19 +197,23 @@ export default class ImageEditor {
      */
     save() {
         const container = this.container;
-        /**
-         * @type {*}
-         */
+        /** @type {*} Silence power_crop warning */
         const user_image = this.$user_image;
+        const notification_helper = NotificationHelper.instance();
+
         if (container.hasClass('crop-mode')) {
             fancybox_show_activity();
             this._server_side_cropping(user_image.power_crop('state'));
+
+            notification_helper.notify(ImageEditor.Events.SAVE, {instance: this});
 
             return;
         }
 
         if (container.hasClass('fit-to-field-mode')) {
             this._save_metadata(user_image.power_crop('state'));
+
+            notification_helper.notify(ImageEditor.Events.SAVE, {instance: this});
 
             return;
         }
@@ -498,7 +507,7 @@ export default class ImageEditor {
 
         context.$input.data('metadata', metadata);
 
-        this.personalization_form_instance.save_image_handler(metadata);
+        this._forward_save_metadata(metadata);
 
         this._hide_cropped_area_on_thumb();
         this._show_cropped_area_on_thumb(metadata);
@@ -510,13 +519,33 @@ export default class ImageEditor {
     _clear_metadata() {
         const context = this.context;
         context.$input.removeData('metadata');
-        this.personalization_form_instance.save_image_handler(undefined);
+        this._forward_save_metadata();
 
         this._hide_cropped_area_on_thumb();
 
         this._set_info_bar_value('current', 'width', context.image.width);
         this._set_info_bar_value('current', 'height', context.image.height);
         this._set_info_bar_value('current', 'dpi', context.image.dpi);
+    }
+
+    /**
+     * @param {MetaData} metadata
+     */
+    _forward_save_metadata(metadata = undefined) {
+        /** @type {ImageEditingContext} */
+        const context = this.context;
+        const $input = context.$input;
+
+        if (!$input.length) {
+            return;
+        }
+
+        if (metadata) {
+            metadata['img-id'] = $input.val();
+            MetaDataHelper.zp_set_metadata(context.placeholder, metadata);
+        } else {
+            MetaDataHelper.zp_clear_metadata(context.placeholder);
+        }
     }
 
     /**
@@ -595,7 +624,6 @@ export default class ImageEditor {
 
     /**
      * @param xml
-     * @return {boolean}
      * @private
      */
     _process_image_details(xml) {
@@ -629,7 +657,7 @@ export default class ImageEditor {
         if (!(preview_width && preview_height && width && height)) {
             alert(unknown_error_occured_text);
 
-            return false;
+            return;
         }
 
         context.image = {
@@ -658,7 +686,8 @@ export default class ImageEditor {
             tmp1 = $('#img' + context.image_id);
         }
         if (tmp1.length === 0) {
-            tmp1 = $('input[value="' + context.image_id + '"]').parent().find('img');
+            // tmp1 = $('input[value="' + context.image_id + '"]').parent().find('img');
+            return;
         }
         if (source.match(/\.jpg/m)) {
             tmp1.attr('src', source.replace(/\.(jpg|gif|png|jpeg|bmp)/i, "_0x100.jpg"));
@@ -1377,3 +1406,9 @@ ImageEditor._image_editor = null;
  * @private
  */
 ImageEditor._image_editor_wrapper = null;
+
+ImageEditor.Events = {
+    SAVE: 'ImageEditor.Events.SAVE',
+    CLOSE: 'ImageEditor.Events.CLOSE',
+    IMAGE_LOADED: 'ImageEditor.Events.IMAGE_LOADED',
+};

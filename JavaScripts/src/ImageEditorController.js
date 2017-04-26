@@ -90,10 +90,8 @@ export default class ImageEditorController {
                 : true;
         }
 
-        //Disable fit in field functionality if current page doesn't have shapes
+        // Disable fit in field functionality if current page doesn't have shapes
         data.image_edit.has_fit_in_field = data.image_edit.has_fit_in_field && data.image_edit.shape !== undefined;
-
-        // zetaprint_image_editor.apply(zp.image_edit, [ $, { save: save_image_handler } ] );
 
         this.image_editor.load(data.image_edit);
     }

@@ -15,7 +15,6 @@ import ImageTabController from "./ImageTabController";
 import Feature from "./Feature";
 import Resizing from "./fancybox/Resizing";
 import UpdatePreview from "./UpdatePreviewButtonController";
-import SaveImageButton from "./fancybox/SaveImageButton";
 import SelectImage from "./fancybox/SelectImage";
 import Dataset from "./dataset/Dataset";
 import InPreviewEditController from "./InPreviewEditController";
@@ -112,17 +111,14 @@ export default class PersonalizationForm {
         }
 
         ui_helper.show('#page-size-page-1');
-        // $('#page-size-page-1').removeClass('zp-hidden');
 
         zp.is_fields_hidden = true;
 
         if (!this.has_shapes || !window.place_all_shapes_for_page) {
             ui_helper.show('#stock-images-page-1, #input-fields-page-1');
-            // $('#stock-images-page-1, #input-fields-page-1').removeClass('zp-hidden');
         }
         if (!this.has_shapes || !Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
             ui_helper.show('#stock-images-page-1, #input-fields-page-1');
-            // $('#stock-images-page-1, #input-fields-page-1').removeClass('zp-hidden');
 
             zp.is_fields_hidden = false;
 
@@ -164,13 +160,12 @@ export default class PersonalizationForm {
             && template_details.missed_pages === '')
             || template_details.missed_pages === 'include') {
             ui_helper.hide('div.zetaprints-notice.to-update-preview');
-            // $('div.zetaprints-notice.to-update-preview').addClass('zp-hidden');
         } else {
             fake_add_to_cart_button.add(typeof template_details.pages['2'] !== 'undefined');
         }
         //Add resizer for text inputs and text areas for the first page
         if ($.fn.text_field_resizer) {
-            $('#input-fields-page-1 .zetaprints-text-field-wrapper').text_field_resizer();
+            $('#input-fields-page-1').find('.zetaprints-text-field-wrapper').text_field_resizer();
         }
 
         //Set preview images sharing link for the first page
@@ -186,7 +181,6 @@ export default class PersonalizationForm {
         Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_initialise, zp);
 
         this._patchProductAddToCart();
-
 
         this._add_dynamic_methods_to_data();
         this._init_image_upload_buttons();
@@ -327,14 +321,6 @@ export default class PersonalizationForm {
      */
     get image_edit() {
         return this.data.image_edit;
-    }
-
-    /**
-     * @return {ProductForm}
-     * @private
-     */
-    get _product_form() {
-        return UiHelper.instance().product_form;
     }
 
     /**
@@ -549,25 +535,6 @@ export default class PersonalizationForm {
         };
 
         $.ajax(zp.url.upload_by_url, options);
-    }
-
-    /**
-     * @param {MetaData} metadata
-     */
-    save_image_handler(metadata) {
-        const zp = this.data;
-        let $input = zp.image_edit.$input;
-
-        if (!$input.length) {
-            return;
-        }
-
-        if (metadata) {
-            metadata['img-id'] = $input.val();
-            MetaDataHelper.zp_set_metadata(zp.image_edit.placeholder, metadata);
-        } else {
-            MetaDataHelper.zp_clear_metadata(zp.image_edit.placeholder);
-        }
     }
 
     /**
@@ -1302,7 +1269,7 @@ export default class PersonalizationForm {
         const zp = this.data;
         const page = zp.template_details.pages[zp.current_page];
         const field = page.fields[name];
-        const product_form = this._product_form;
+        const product_form = UiHelper.instance().product_form;
 
         if (field) {
             field.value = value;
@@ -1361,7 +1328,3 @@ export default class PersonalizationForm {
         }
     }
 }
-
-PersonalizationForm.Events = {
-    UPLOAD_COMPLETE: 'personalization_form:upload_complete'
-};
