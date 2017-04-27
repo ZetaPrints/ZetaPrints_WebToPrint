@@ -106,10 +106,10 @@ function zetaprints_get_list_of_catalogs($url, $key)
     }
 
 
-    $catalogs = array();
+    $catalogs = [];
 
     foreach ($xml->channel[0]->item as $item) {
-        $catalogs[] = array(
+        $catalogs[] = [
             'title'     => (string)$item->title,
             'link'      => (string)$item->link,
             'guid'      => (string)$item->id,
@@ -120,10 +120,10 @@ function zetaprints_get_list_of_catalogs($url, $key)
             'created'   => strtotime($item->created),
             'public'    => (string)$item->access == 'public' ? true : false,
             'keywords'  => (string)$item->keywords,
-        );
+        ];
     }
 
-    _zetaprints_debug(array('catalogs' => $catalogs));
+    _zetaprints_debug(['catalogs' => $catalogs]);
 
     return $catalogs;
 }
@@ -148,10 +148,10 @@ function zetaprints_get_templates_from_catalog($url, $key, $catalog_guid)
         return null;
     }
 
-    $templates = array();
+    $templates = [];
 
     foreach ($xml->channel[0]->item as $item) {
-        $templates[] = array(
+        $templates[] = [
             'title'        => (string)$item->title,
             'link'         => (string)$item->link,
             'guid'         => (string)$item->id,
@@ -161,29 +161,34 @@ function zetaprints_get_templates_from_catalog($url, $key, $catalog_guid)
                            => _zetaprints_string_to_date($item->lastModified),
             'thumbnail'    => (string)$item->thumbnail,
             'image'        => (string)$item->image,
-        );
+        ];
     }
 
-    _zetaprints_debug(array('templates' => $templates));
+    _zetaprints_debug(['templates' => $templates]);
 
     return $templates;
 }
 
-function zetaprints_parse_template_details($xml)
+/**
+ * @param SimpleXMLElement $xml
+ * @param Exception        $error Reference to be filled with an error describing why NULL is returned
+ * @return array|null
+ */
+function zetaprints_parse_template_details($xml, &$error = null)
 {
     if ($xml->getName() !== 'TemplateDetails') {
+        $error = new Exception('XML is no TemplateDetails structure');
+
         return null;
     }
 
     $download = false;
 
-    if (isset($xml['Download']) && ((string)$xml['Download'] == 'allow'
-            || (string)$xml['Download'] == 'only')
-    ) {
+    if (isset($xml['Download']) && ((string)$xml['Download'] == 'allow' || (string)$xml['Download'] == 'only')) {
         $download = true;
     }
 
-    $template = array(
+    $template = [
         'guid'              => (string)$xml['TemplateID'],
         'corporate-guid'    => (string)$xml['CorporateID'],
         'created'           => _zetaprints_string_to_date($xml['Created']),
@@ -201,22 +206,23 @@ function zetaprints_parse_template_details($xml)
         'dataset-integrity-enforce'
                             => isset($xml['DatasetIntegrityEnforce'])
             ? (bool)$xml['DatasetIntegrityEnforce'] : false,
-    );
+    ];
 
     if (!$xml->Pages->Page) {
-        _zetaprints_debug("No pages in tempalate [{$template['guid']}]");
+        _zetaprints_debug("No pages in template [{$template['guid']}]");
+        $error = new Exception("No pages in template [{$template['guid']}]");
 
         return $template;
     }
 
-    $template['pages'] = array();
+    $template['pages'] = [];
 
     $page_number = 1;
 
-    $field_to_shape_mapping = array();
+    $field_to_shape_mapping = [];
 
     foreach ($xml->Pages->Page as $page) {
-        $template['pages'][$page_number] = array(
+        $template['pages'][$page_number] = [
             'name'          => (string)$page['Name'],
             'preview-image' => (string)$page['PreviewImage'],
             'thumb-image'   => (string)$page['ThumbImage'],
@@ -225,7 +231,7 @@ function zetaprints_parse_template_details($xml)
             'height-in'     => (float)$page['HeightIn'],
             'width-cm'      => (float)$page['WidthCm'],
             'height-cm'     => (float)$page['HeightCm'],
-        );
+        ];
 
         if (isset($page['PreviewUrl'])) {
             $template
@@ -283,13 +289,13 @@ function zetaprints_parse_template_details($xml)
 
         //Ignore shapes with old coordinates system
         if (!$is_page_2_box_empty && $page->Shapes) {
-            $template['pages'][$page_number]['shapes'] = array();
+            $template['pages'][$page_number]['shapes'] = [];
 
-            $field_to_shape_mapping[$page_number] = array();
+            $field_to_shape_mapping[$page_number] = [];
 
             foreach ($page->Shapes->Shape as $shape) {
                 $name = (string)$shape['Name'];
-                $template['pages'][$page_number]['shapes'][$name] = array(
+                $template['pages'][$page_number]['shapes'][$name] = [
                     'name'      => $name,
                     'x1'        => (float)$shape['X1'],
                     'y1'        => (float)$shape['Y1'],
@@ -299,7 +305,7 @@ function zetaprints_parse_template_details($xml)
                     'anchor-y'  => (float)$shape['AnchorY'],
                     'hidden'    => $page_number > 1,
                     'has-value' => false,
-                );
+                ];
 
                 foreach (explode('; ', $name) as $_name) {
                     $field_to_shape_mapping[$page_number][$_name] = $name;
@@ -314,7 +320,7 @@ function zetaprints_parse_template_details($xml)
     }
 
     foreach ($xml->Images->Image as $image) {
-        $image_array = array(
+        $image_array = [
             'name'         => (string)$image['Name'],
             'width'        => (int)$image['Width'],
             'height'       => (int)$image['Height'],
@@ -331,28 +337,28 @@ function zetaprints_parse_template_details($xml)
             //Convert to uppercase while the issue will be fixed in ZP side
             'value'        => isset($image['Value'])
                 ? strtoupper((string)$image['Value']) : null,
-        );
+        ];
 
         if ($image_array['palette']) {
             $paletteToNameMap[$image_array['palette']][] = $image_array['name'];
         }
 
         if ($image->StockImage) {
-            $image_array['stock-images'] = array();
+            $image_array['stock-images'] = [];
 
             foreach ($image->StockImage as $stock_image) {
-                $image_array['stock-images'][] = array(
+                $image_array['stock-images'][] = [
                     'guid'  => (string)$stock_image['FileID'],
                     'mime'  => (string)$stock_image['MIME'],
                     'thumb' => (string)$stock_image['Thumb'],
-                );
+                ];
             }
         }
 
         $page_number = (int)$image['Page'];
 
         if (!isset($template['pages'][$page_number]['images'])) {
-            $template['pages'][$page_number]['images'] = array();
+            $template['pages'][$page_number]['images'] = [];
         }
 
         $template['pages'][$page_number]['images'][(string)$image['Name']]
@@ -377,7 +383,7 @@ function zetaprints_parse_template_details($xml)
     }
 
     foreach ($xml->Fields->Field as $field) {
-        $field_array = array(
+        $field_array = [
             'name'             => (string)$field['FieldName'],
             'hint'             => (string)$field['Hint'],
             'min-length'       => isset($field['MinLen']) ? (int)$field['MinLen'] : null,
@@ -395,14 +401,14 @@ function zetaprints_parse_template_details($xml)
             'palette'          => isset($image['Palette']) ? (string)$image['Palette'] : null,
             'value'            => isset($field['Value'])
                 ? (string)$field['Value'] : null,
-        );
+        ];
 
         if ($field_array['palette']) {
             $paletteToNameMap[$field_array['palette']][] = $field_array['name'];
         }
 
         if ($field->Value) {
-            $field_array['values'] = array();
+            $field_array['values'] = [];
 
             foreach ($field->Value as $value) {
                 $field_array['values'][] = (string)$value;
@@ -410,12 +416,12 @@ function zetaprints_parse_template_details($xml)
         }
 
         if ($field->DataSet) {
-            $field_array['dataset'] = array();
+            $field_array['dataset'] = [];
 
             $cell_number = 0;
 
             foreach ($field->DataSet->Cell as $cell) {
-                $field_array['dataset'][$cell_number] = array('lines' => array());
+                $field_array['dataset'][$cell_number] = ['lines' => []];
 
                 foreach ($cell->Para as $para) {
                     $field_array['dataset'][$cell_number]['lines'][] = (string)$para;
@@ -429,7 +435,7 @@ function zetaprints_parse_template_details($xml)
         }
 
         if (isset($field['Meta'])) {
-            $field_array['metadata'] = array();
+            $field_array['metadata'] = [];
 
             foreach (explode(';', (string)$field['Meta']) as $token) {
                 if ($token) {
@@ -442,7 +448,7 @@ function zetaprints_parse_template_details($xml)
         $page_number = (int)$field['Page'];
 
         if (!isset($template['pages'][$page_number]['fields'])) {
-            $template['pages'][$page_number]['fields'] = array();
+            $template['pages'][$page_number]['fields'] = [];
         }
 
         $template['pages'][$page_number]['fields'][(string)$field['FieldName']]
@@ -467,7 +473,7 @@ function zetaprints_parse_template_details($xml)
     }
 
     if ($xml->Tags) {
-        $tags = array();
+        $tags = [];
 
         foreach ($xml->Tags->Tag as $tag) {
             $tags[] = (string)$tag;
@@ -480,10 +486,10 @@ function zetaprints_parse_template_details($xml)
 
     if ($xml->Quantities) {
         foreach ($xml->Quantities->Quantity as $quantity) {
-            $template['quantities'][] = array(
+            $template['quantities'][] = [
                 'price' => (float)$quantity['Price'],
                 'title' => (string)$quantity['Title'],
-            );
+            ];
         }
     }
 
@@ -491,7 +497,7 @@ function zetaprints_parse_template_details($xml)
         foreach ($xml->Palettes->Palette as $palette) {
             $paletteId = (string)$palette['ID'];
 
-            $_palette = array(
+            $_palette = [
                 'names'      => (string)$palette['Names'],
                 'title'      => isset($paletteToNameMap[$paletteId])
                     ? implode(', ', $paletteToNameMap[$paletteId])
@@ -499,20 +505,20 @@ function zetaprints_parse_template_details($xml)
                 'any_colour' => isset($palette['AnyColor'])
                     ? (bool)$palette['AnyColor']
                     : false,
-            );
+            ];
 
             foreach ($palette->Color as $colour) {
-                $_palette['colours'][(string)$colour['ID']] = array(
+                $_palette['colours'][(string)$colour['ID']] = [
                     'fill_rgb'    => (string)$colour['FillRGB'],
                     'outline_rgb' => (string)$colour['OutlineRGB'],
-                );
+                ];
             }
 
             $template['palettes'][$paletteId] = $_palette;
         }
     }
 
-    _zetaprints_debug(array('template' => $template));
+    _zetaprints_debug(['template' => $template]);
 
     return $template;
 }
@@ -562,7 +568,7 @@ function zetaprints_get_template_details_as_xml(
 
 function zetaprints_parse_order_details($xml)
 {
-    $order = array(
+    $order = [
         'guid'                  => (string)$xml['OrderID'],
         'created-by'            => (string)$xml['CreatedBy'],
         'created'               => _zetaprints_string_to_date($xml['Created']),
@@ -591,12 +597,12 @@ function zetaprints_parse_order_details($xml)
         'delivery-state'        => (string)$xml['DeliveryState'],
         'delivery-zip'          => (string)$xml['DeliveryZip'],
         'delivery-country'      => (string)$xml['DeliveryCountry'],
-    );
+    ];
 
     $order['template-details'] =
         zetaprints_parse_template_details($xml->TemplateDetails);
 
-    _zetaprints_debug(array('order' => $order));
+    _zetaprints_debug(['order' => $order]);
 
     return $order;
 }
@@ -628,10 +634,10 @@ function zetaprints_change_order_status($url, $key, $order_id, $old_status, $new
 
     $response = zetaprints_get_content_from_url(
         "$url/API.aspx?page=api-order-status;ApiKey=$key;OrderID=$order_id",
-        array(
+        [
             'Status'    => $new_status,
             'StatusOld' => $old_status,
-        )
+        ]
     );
 
     if (zetaprints_has_error($response)) {
@@ -703,11 +709,11 @@ function zetaprints_get_user_images($url, $key, $data)
         return null;
     }
 
-    $images = array();
+    $images = [];
 
     foreach ($xml->Image as $image) {
         $images[(string)$image['ImageID']]
-            = array(
+            = [
             'folder'           => (string)$image['Folder'],
             'guid'             => (string)$image['ImageID'],
             'created'          => _zetaprints_string_to_date($image['Created']),
@@ -722,10 +728,10 @@ function zetaprints_get_user_images($url, $key, $data)
             'height'           => (int)$image['ImageHeight'],
             'description'      => (string)$image['Description'],
             'length'           => (int)$image['Length'],
-        );
+        ];
     }
 
-    _zetaprints_debug(array('images' => $images));
+    _zetaprints_debug(['images' => $images]);
 
     return $images;
 }
@@ -754,10 +760,10 @@ function zetaprints_download_customer_image($url, $key, $data)
         return null;
     }
 
-    $images = array();
+    $images = [];
 
     foreach ($xml->Image as $image) {
-        $images[] = array(
+        $images[] = [
             'folder'           => (string)$image['Folder'],
             'guid'             => (string)$image['ImageID'],
             'created'          =>
@@ -774,10 +780,10 @@ function zetaprints_download_customer_image($url, $key, $data)
             'height'           => (int)$image['ImageHeight'],
             'description'      => (string)$image['Description'],
             'length'           => (int)$image['Length'],
-        );
+        ];
     }
 
-    _zetaprints_debug(array('images' => $images));
+    _zetaprints_debug(['images' => $images]);
 
     return $images;
 }
@@ -875,7 +881,7 @@ function zetaprints_register_user($url, $key, $user_id, $password, $corporate_id
 
     $request_url = "$url/api.aspx?page=api-user-new;ApiKey=$key;UserID=$user_id;Password=$password";
 
-    if ($corporate_id && is_string($corporate_id) && count($corporate_id)) {
+    if ($corporate_id && is_string($corporate_id)) {
         $request_url .= ";CorporateID=$corporate_id";
     }
 
@@ -892,7 +898,7 @@ function _zetaprints_parse_http_headers($headers_string)
 {
     $lines = explode("\r\n", $headers_string);
 
-    $headers = array();
+    $headers = [];
 
     foreach ($lines as $line) {
         $key_value = explode(': ', $line);
@@ -909,7 +915,7 @@ function _zetaprints_parse_http_headers($headers_string)
 
 function _zp_http_request_body_encode($post)
 {
-    $_post = array();
+    $_post = [];
 
     while (list($key, $value) = each($post)) {
         $_post[] = urlencode($key) . '=' . urlencode($value);
@@ -920,7 +926,7 @@ function _zp_http_request_body_encode($post)
 
 function _zetaprints_return($content, $error = false)
 {
-    return array('error' => $error, 'content' => $content);
+    return ['error' => $error, 'content' => $content];
 }
 
 function _zetaprints_ok($content)
@@ -943,7 +949,7 @@ function zp_register_error_handler($code, $handler)
     global $_zp_error_handlers;
 
     if (!$_zp_error_handlers) {
-        $_zp_error_handlers = array();
+        $_zp_error_handlers = [];
     }
 
     $_zp_error_handlers[$code] = $handler;
@@ -953,13 +959,13 @@ function _zp_curl_retrieve_data($url, $data = null)
 {
     _zetaprints_debug();
 
-    $options = array(
+    $options = [
         CURLOPT_URL            => $url,
         CURLOPT_HEADER         => true,
         CURLOPT_CRLF           => true,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER     => array('Expect:'),
-    );
+        CURLOPT_HTTPHEADER     => ['Expect:'],
+    ];
 
     if ($data && is_array($data)) {
         $options[CURLOPT_POSTFIELDS] = function_exists('http_request_body_encode')
@@ -999,12 +1005,12 @@ function _zp_curl_retrieve_data($url, $data = null)
 
 function _zp_invoke_error_handler($message, $error)
 {
-    $error = array(
+    $error = [
         'code'            => ZP_ERR_UKNOWN,
         'message'         => $message,
         'repeate_request' => false,
         'previous'        => $error,
-    );
+    ];
 
     if (strpos($message, 'Wrong ID/Hash combo.') === 0) {
         $error['code'] = ZP_ERR_WRONG_ID_HASH_COMBO;
@@ -1042,11 +1048,11 @@ function _zp_process_error($info, $headers, $previous)
     }
 
     if (!isset($headers['X-ZP-API-Error-Msg'])) {
-        return array(
+        return [
             'code'     => null,
             'message'  => 'Unknown error',
             'previous' => $previous,
-        );
+        ];
     }
 
     return _zp_invoke_error_handler($headers['X-ZP-API-Error-Msg'], $previous);
