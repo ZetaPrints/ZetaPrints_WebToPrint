@@ -241,31 +241,9 @@ export default class PreviewController {
         const data = form_controller.data;
         const in_preview_edit_controller = form_controller.in_preview_edit_controller;
         const shape_repository = form_controller.shape_repository;
-        const lightbox_configuration = new LightboxCallbackConfiguration();
         const image_editor_controller = form_controller.image_editor;
 
-        lightbox_configuration.willShow = function () {
-            if (UiHelper.instance().select_image_button.length) {
-                Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
-                    form_controller.select_image.remove();
-                });
-            }
-            if (image_editor_controller.save_image_button.button) {
-                Feature.instance().call(
-                    Feature.feature.fancybox.saveImageButton,
-                    () => {
-                        image_editor_controller.save_image_button.remove()
-                    }
-                );
-            }
-
-            if (!data.template_details.pages[data.current_page].static) {
-                Feature.instance().call(Feature.feature.fancybox.updatePreview, () => {
-                    this._update_preview_button.add(data);
-                });
-            }
-        };
-        lightbox_configuration.didShow = function () {
+        const did_show_callback = (lightbox_options) => {
             const ui_helper = UiHelper.instance();
             const feature_instance = Feature.instance();
 
@@ -279,10 +257,13 @@ export default class PreviewController {
                 ui_helper.fancybox_outer.removeClass('modified');
             }
 
-            feature_instance.call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_add, this);
-            feature_instance.call(Feature.feature.fancybox.updatePreview, () => {
-                this._update_preview_button.update();
-            });
+            feature_instance.call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_add, lightbox_options);
+            feature_instance.call(
+                Feature.feature.fancybox.updatePreview,
+                () => {
+                    this._update_preview_button.update();
+                }
+            );
 
             if (false === (data.has_shapes && feature_instance.is_activated(Feature.feature.inPreviewEdit))) {
                 return;
@@ -316,18 +297,60 @@ export default class PreviewController {
                 );
             }
         };
-        lightbox_configuration.didClose = function () {
-            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreviewButton.fancybox_remove_update_preview_button, $);
-            Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_hide);
+
+        const willShow = () => {
+            if (UiHelper.instance().select_image_button.length) {
+                Feature.instance().call(
+                    Feature.feature.fancybox.selectImage,
+                    () => {
+                        form_controller.select_image.remove();
+                    }
+                );
+            }
+            if (image_editor_controller.save_image_button.button) {
+                Feature.instance().call(
+                    Feature.feature.fancybox.saveImageButton,
+                    () => {
+                        image_editor_controller.save_image_button.remove()
+                    }
+                );
+            }
+
+            if (!data.template_details.pages[data.current_page].static) {
+                Feature.instance().call(Feature.feature.fancybox.updatePreview, () => {
+                    this._update_preview_button.add(data);
+                });
+            }
         };
-        lightbox_configuration.willClose = function () {
+
+        const didClose = () => {
+            Feature.instance().call(
+                Feature.feature.fancybox.updatePreview,
+                () => {
+                    this._update_preview_button.remove();
+                }
+            );
+            Feature.instance().call(
+                Feature.feature.fancybox.resizing,
+                Resizing.fancybox_resizing_hide
+            );
+        };
+        const willClose = () => {
             if (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
                 $('div.zetaprints-field-shape', UiHelper.instance().fancybox_content).removeClass('highlighted');
                 in_preview_edit_controller.popdown_field_by_name();
             }
         };
 
-        return lightbox_configuration;
+        return new LightboxCallbackConfiguration({
+            willShow,
+            willClose,
+            didClose,
+            didShow: function () {
+                // The method needs access to the fancyBox instance
+                did_show_callback(this);
+            },
+        });
     }
 
     /**
