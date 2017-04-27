@@ -79,9 +79,8 @@ export default class UpdatePreviewButtonController {
 
 
     /**
-     * @param {jQuery|function} $
      */
-    static fancybox_remove_update_preview_button($) {
+    static fancybox_remove_update_preview_button() {
         UiHelper.instance().update_preview_button.remove();
         UiHelper.instance().fancybox_resize.removeClass('middle-position');
         UiHelper.instance().fancybox_outer.removeClass('preview-updating zp-hide-shapes');

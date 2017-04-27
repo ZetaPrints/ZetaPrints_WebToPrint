@@ -8,6 +8,9 @@ import MetaData from "./model/MetaData";
 import UiHelper from "./helper/UiHelper";
 import NotificationHelper from "./NotificationCenter";
 import MetaDataHelper from "./MetaDataHelper";
+import Assert from "./helper/Assert";
+import PersonalizationForm from "./PersonalizationForm";
+import ImageEditorController from "./ImageEditorController";
 
 const fancybox_show_activity = () => {
     const fancybox = $.fancybox;
@@ -46,20 +49,29 @@ const get_value_by_regexp = (subject, exp) => {
 
 export default class ImageEditor {
     /**
-     * @param {PersonalizationForm} personalization_form_instance
+     * @param {ImageEditorController} controller
      */
-    constructor(personalization_form_instance) {
-        this._cropping_callback = this._cropping_callback.bind(this);
-        this.personalization_form_instance = personalization_form_instance;
-        this.settings = {};
+    constructor(controller) {
+        Assert.assertInstanceOf(controller, ImageEditorController, 'controller');
+        /**
+         * @type {ImageEditorController}
+         * @private
+         */
+        this._controller = controller;
+
         /**
          * @type {ImageEditingContext}
+         * @private
          */
-        this.context = null;
+        this._context = null;
+
         /**
          * @type {jQuery|HTMLElement|$}
+         * @private
          */
-        this.$user_image = null;
+        this._user_image = null;
+
+        this._cropping_callback = this._cropping_callback.bind(this);
     }
 
 
@@ -69,9 +81,9 @@ export default class ImageEditor {
      * @param {ImageEditingContext} context
      */
     load(context) {
-        this.context = context;
+        this._context = context;
 
-        const container = this.container = $('.zetaprints-image-edit');
+        const container = this._container = $('.zetaprints-image-edit');
 
         this._load_image();
         this._initialize_info_bar(context);
@@ -87,9 +99,9 @@ export default class ImageEditor {
         }
 
         const $user_image_container = $('#zetaprints-image-edit-container');
+        this._user_image = $('#zetaprints-image-edit-user-image');
 
-        this.$user_image = $('#zetaprints-image-edit-user-image');
-        this.$user_image.load(() => {
+        this._user_image.load(() => {
             if (container.hasClass('crop-mode') || !context.has_fit_in_field) {
                 this._crop_button_click_handler();
             } else if (container.hasClass('fit-to-field-mode')) {
@@ -146,11 +158,11 @@ export default class ImageEditor {
         });
 
         context.save = () => {
-            Logger.debug('Invoked save on context');
+            Logger.debug('Invoked save on _context');
             this.save();
         };
         context.reload_image = (id) => {
-            Logger.debug('Invoked reload_image on context');
+            Logger.debug('Invoked reload_image on _context');
             this.reload_image(id);
         };
     }
@@ -159,7 +171,7 @@ export default class ImageEditor {
      * @param {string} id
      */
     reload_image(id) {
-        const context = this.context;
+        const context = this._context;
         $.ajax({
             url: context.url.image,
             type: 'POST',
@@ -196,9 +208,9 @@ export default class ImageEditor {
      * Save the data
      */
     save() {
-        const container = this.container;
+        const container = this._container;
         /** @type {*} Silence power_crop warning */
-        const user_image = this.$user_image;
+        const user_image = this._user_image;
         const notification_helper = NotificationHelper.instance();
 
         if (container.hasClass('crop-mode')) {
@@ -228,7 +240,7 @@ export default class ImageEditor {
      * @private
      */
     _initialize_info_bar(context) {
-        this.info_bar = this.container.find('div.info-bar');
+        this.info_bar = this._container.find('div.info-bar');
 
         this.info_bar_elements = {
             'current': {
@@ -280,13 +292,13 @@ export default class ImageEditor {
                     throw new TypeError('The get_crop_data_callback must return a value')
                 }
 
-                this.container.addClass('changed');
+                this._set_container_changed(true);
                 this._show_crop(data);
             });
         };
 
         register_fit_into_event_listener('#zp-image-edit-action-fit-image', () => {
-            const context = this.context;
+            const context = this._context;
             const image = this._fit_image_into_placeholder(context.image, context.placeholder);
             image.ratio = context.image.ratio;
 
@@ -294,7 +306,7 @@ export default class ImageEditor {
         });
 
         register_fit_into_event_listener('#zp-image-edit-action-fill-field', () => {
-            const context = this.context;
+            const context = this._context;
             const placeholder = this._fill_placeholder_with_image(context.image, context.placeholder);
             placeholder.ratio = context.placeholder.ratio;
 
@@ -302,7 +314,7 @@ export default class ImageEditor {
         });
 
         register_fit_into_event_listener('#zp-image-edit-action-fit-width', () => {
-            const context = this.context;
+            const context = this._context;
             const image = this._fit_image_into_placeholder_by_width(context.image, context.placeholder);
             image.ratio = context.image.ratio;
 
@@ -310,7 +322,7 @@ export default class ImageEditor {
         });
 
         register_fit_into_event_listener('#zp-image-edit-action-fit-height', () => {
-            const context = this.context;
+            const context = this._context;
             const image = this._fit_image_into_placeholder_by_height(context.image, context.placeholder);
             image.ratio = context.image.ratio;
 
@@ -333,7 +345,7 @@ export default class ImageEditor {
      * @private
      */
     _cropping_callback(data) {
-        const context = this.context;
+        const context = this._context;
         const width_factor = data.selection.width / data.image.width;
         const height_factor = data.selection.height / data.image.height;
 
@@ -342,17 +354,26 @@ export default class ImageEditor {
 
         if (width_factor !== 1 || height_factor !== 1) {
             this._set_info_bar_state('cropped', true);
-
-            this.container.addClass('changed');
-
-            Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, true);
+            this._set_container_changed(true)
+            this._update_save_image_button(true)
         } else {
             this._set_info_bar_state();
-
-            this.container.removeClass('changed');
-
-            Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button);
+            this._set_container_changed(false);
+            this._update_save_image_button();
         }
+    }
+
+    /**
+     * @param {boolean|undefined} changed
+     * @private
+     */
+    _update_save_image_button(changed = undefined) {
+        Feature.instance().call(
+            Feature.feature.fancybox.saveImageButton,
+            () => {
+                this._controller._save_image_button.update(changed);
+            }
+        );
     }
 
     /**
@@ -360,10 +381,8 @@ export default class ImageEditor {
      * @private
      */
     _fit_in_field_callback(data) {
-        Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, true);
-
-        this.container.addClass('changed');
-
+        this._update_save_image_button(true);
+        this._set_container_changed(true);
         this._update_info_bar_values(data);
     }
 
@@ -372,7 +391,7 @@ export default class ImageEditor {
      * @private
      */
     _update_info_bar_values(data) {
-        const context = this.context;
+        const context = this._context;
         const factor = data.selection.width / data.image.width;
 
         const dpi = factor * context.image.dpi / context.placeholder_to_image_factor;
@@ -427,9 +446,7 @@ export default class ImageEditor {
      * @private
      */
     _update_editor_state(data) {
-        Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, true);
-
-
+        this._update_save_image_button(true);
         this._update_info_bar_values(data);
     }
 
@@ -438,7 +455,7 @@ export default class ImageEditor {
      * @private
      */
     _save_metadata(data) {
-        const context = this.context;
+        const context = this._context;
         const image = data.image.position;
         image.width = data.image.width;
         image.height = data.image.height;
@@ -517,7 +534,7 @@ export default class ImageEditor {
      * @private
      */
     _clear_metadata() {
-        const context = this.context;
+        const context = this._context;
         context.$input.removeData('metadata');
         this._forward_save_metadata();
 
@@ -533,7 +550,7 @@ export default class ImageEditor {
      */
     _forward_save_metadata(metadata = undefined) {
         /** @type {ImageEditingContext} */
-        const context = this.context;
+        const context = this._context;
         const $input = context.$input;
 
         if (!$input.length) {
@@ -553,11 +570,11 @@ export default class ImageEditor {
      * @private
      */
     _server_side_cropping(data) {
-        const context = this.context;
+        const context = this._context;
         fancybox_change_zindex();
 
         $.ajax({
-            url: this.context.url.image,
+            url: this._context.url.image,
             type: 'POST',
             data: {
                 'zetaprints-CropX1': data.selection.position.left / context.container.factor,
@@ -584,7 +601,7 @@ export default class ImageEditor {
      * @private
      */
     _load_image() {
-        const context = this.context;
+        const context = this._context;
         fancybox_change_zindex();
         fancybox_show_activity();
 
@@ -596,7 +613,7 @@ export default class ImageEditor {
      * @private
      */
     _server_side_rotation(direction) {
-        const context = this.context;
+        const context = this._context;
         const _this = this;
         fancybox_change_zindex();
 
@@ -627,7 +644,7 @@ export default class ImageEditor {
      * @private
      */
     _process_image_details(xml) {
-        const context = this.context;
+        const context = this._context;
         const source = context
             .url
             .user_image_template
@@ -677,7 +694,7 @@ export default class ImageEditor {
         this._set_info_bar_value('current', 'height', context.image.height);
         this._set_info_bar_value('current', 'dpi', context.image.dpi);
 
-        this.$user_image
+        this._user_image
             .addClass('zetaprints-hidden')
             .attr('src', source);
 
@@ -686,7 +703,7 @@ export default class ImageEditor {
             tmp1 = $('#img' + context.image_id);
         }
         if (tmp1.length === 0) {
-            // tmp1 = $('input[value="' + context.image_id + '"]').parent().find('img');
+            // tmp1 = $('input[value="' + _context.image_id + '"]').parent().find('img');
             return;
         }
         if (source.match(/\.jpg/m)) {
@@ -701,7 +718,7 @@ export default class ImageEditor {
      */
     _delete_image() {
         const _this = this;
-        const context = this.context;
+        const context = this._context;
         if (confirm(delete_this_image_text)) {
             $.ajax({
                 url: context.url.image,
@@ -901,31 +918,31 @@ export default class ImageEditor {
      * @private
      */
     _clear_editor() {
-        if (this.container.hasClass('crop-mode')
-            || this.container.hasClass('fit-to-field-mode')) {
-            this.$user_image.power_crop('destroy');
+        if (this._container.hasClass('crop-mode')
+            || this._container.hasClass('fit-to-field-mode')) {
+            this._user_image.power_crop('destroy');
         }
 
-        if (this.container.hasClass('editor-mode') && ImageEditor._image_editor) {
+        if (this._container.hasClass('editor-mode') && ImageEditor._image_editor) {
             ImageEditor._image_editor.close();
         }
 
-        this.container.removeClass('changed');
+        this._set_container_changed(false);
 
         this._set_info_bar_warning();
         this._set_info_bar_state();
 
-        Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button);
+        this._update_save_image_button();
     }
 
     /**
      * @private
      */
     _crop_button_click_handler() {
-        const context = this.context;
+        const context = this._context;
         this._clear_editor();
 
-        this.container
+        this._container
             .removeClass('fit-to-field-mode editor-mode')
             .addClass('crop-mode');
 
@@ -942,10 +959,10 @@ export default class ImageEditor {
      * @private
      */
     _fit_to_field_button_click_handler(ignore_metadata) {
-        const context = this.context;
+        const context = this._context;
         this._clear_editor();
 
-        this.container
+        this._container
             .removeClass('crop-mode editor-mode')
             .addClass('fit-to-field-mode');
 
@@ -967,26 +984,26 @@ export default class ImageEditor {
                 metadata
             );
 
-            this.container.addClass('changed');
+            this._set_container_changed(true)
         }
 
         this._show_crop(data);
 
-        Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, !metadata || ignore_metadata);
+        this._update_save_image_button(!metadata || ignore_metadata);
     }
 
     /**
      * @private
      */
     _image_editor_button_handler() {
-        if (this.container.hasClass('editor-mode')) {
+        if (this._container.hasClass('editor-mode')) {
             return;
         }
 
         this._clear_editor();
         this._clear_metadata();
 
-        this.container
+        this._container
             .removeClass('crop-mode fit-to-field-mode')
             .addClass('editor-mode');
 
@@ -998,7 +1015,7 @@ export default class ImageEditor {
      */
     _show_image_editor() {
         Logger.warn('_show_image_editor', arguments);
-        const context = this.context;
+        const context = this._context;
         const image_editor = this;
         const $edit_container = $('#zetaprints-image-edit-container');
         const fancybox_center_function = $.fancybox.center;
@@ -1034,28 +1051,28 @@ export default class ImageEditor {
                 apiVersion: 2,
                 appendTo: 'zp-image-edit-editor-wrapper',
                 language: $('html').attr('lang'),
-                url: this.$user_image.attr('src'),
+                url: this._user_image.attr('src'),
                 minimumStyling: true,
                 noCloseButton: true,
                 jpgQuality: 100,
                 maxSize: 600,
-                onSave: function (image_id, url) {
+                onSave: (image_id, url) => {
                     context.upload_image_by_url(url);
 
                     return false;
                 },
-                onLoad: function () {
+                onLoad: () => {
                     ImageEditor._image_editor.launch();
 
                     fancybox_hide_activity();
                     fancybox_change_zindex(1100);
                 },
-                onReady: function () {
-                    image_editor.container.addClass('changed');
+                onReady: () => {
+                    this._set_container_changed(true)
 
-                    Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_update_save_image_button, true);
+                    this._update_save_image_button(true)
                 },
-                onClose: function () {
+                onClose: () => {
                     ImageEditor._image_editor_wrapper.css('display', 'none');
                 }
             });
@@ -1071,8 +1088,20 @@ export default class ImageEditor {
 
             ImageEditor._image_editor.launch({
                 image: 'zetaprints-image-edit-user-image',
-                url: this.$user_image.attr('src')
+                url: this._user_image.attr('src')
             });
+        }
+    }
+
+    /**
+     * @param {boolean} changed
+     * @private
+     */
+    _set_container_changed(changed) {
+        if (changed) {
+            this._container.addClass('changed');
+        } else {
+            this._container.removeClass('changed');
         }
     }
 
@@ -1081,7 +1110,7 @@ export default class ImageEditor {
      * @private
      */
     _show_cropped_area_on_thumb(data) {
-        const context = this.context;
+        const context = this._context;
         const left = data['cr-x1'] * 100;
         const top = data['cr-y1'] * 100;
         const width = (data['cr-x2'] - data['cr-x1']) * 100;
@@ -1117,7 +1146,7 @@ export default class ImageEditor {
      * @private
      */
     _hide_cropped_area_on_thumb() {
-        const context = this.context;
+        const context = this._context;
         context
             .$selected_thumbnail
             .parent()
@@ -1130,7 +1159,7 @@ export default class ImageEditor {
      * Perform image restore
      */
     _restore_image() {
-        const context = this.context;
+        const context = this._context;
         fancybox_change_zindex();
         fancybox_show_activity();
 
@@ -1380,7 +1409,7 @@ export default class ImageEditor {
         /**
          * @type {object}
          */
-        const user_image = this.$user_image;
+        const user_image = this._user_image;
 
         user_image.power_crop({
             simple: !!simple_crop,

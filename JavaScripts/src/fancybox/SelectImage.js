@@ -1,26 +1,53 @@
 import $ from  '../jQueryLoader'
 import UiHelper from "../helper/UiHelper";
-import Assert from "../helper/Assert";
-import PreviewController from "../PreviewController";
+import AbstractFancyboxButton from "./AbstractFancyboxButton";
 
-export default class SelectImage {
+export default class SelectImage extends AbstractFancyboxButton {
     /**
-     * @param {PreviewController} preview_controller
-     * @param {jQuery|function} $
-     * @param {DataInterface} zp
-     * @param {boolean} in_preview
+     * @inheritDoc
      */
-    static fancybox_add_use_image_button(preview_controller, $, zp, in_preview) {
-        Assert.assertInstanceOf(preview_controller, PreviewController);
+    _on_click(data) {
+        const $outer = this._get_outer();
 
-        //Don't add the button if it exists
-        if (UiHelper.instance().select_image_button.length) {
+        if ($outer.hasClass('selected')) {
             return;
         }
 
-        const $outer = UiHelper.instance().fancybox_outer;
+        const $input = this._get_image_inputs()
+            .prop('checked', true)
+            .change();
 
-        const $button = $('<a id="zp-select-image-button">' +
+        $outer.addClass('selected');
+
+        if (this._in_preview) {
+            const shape_name = $input.attr('name').substring(12);
+
+            $('#zetaprints-preview-image-container')
+                .find(' > .zetaprints-field-shape[title="' + shape_name + '"] > .top')
+                .click();
+
+            this._restore_original_close_button();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    _build_get_shape_name_callback(data, in_preview, name, guid) {
+        return () => {
+            return this._detect_share_name();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    _create_button(data, in_preview, name, guid) {
+        if (UiHelper.instance().select_image_button.length) {
+            throw new Error('this must not happen')
+        }
+
+        return $('<a id="zp-select-image-button" class="no-middle">' +
             '<span class="icon left-part">' +
             '<span class="icon tick" />' +
             '</span>' +
@@ -32,105 +59,45 @@ export default class SelectImage {
             selected_image_button_text +
             '</span>' +
             '</span>' +
-            '</a>').appendTo($outer);
-
-        const $close = UiHelper.instance().fancybox_close_button.addClass('resizer-tweaks');
-
-        if (in_preview) {
-            $close
-                .clone()
-                .css('display', 'inline')
-                .click(function () {
-                    zp._shape_to_show = this._detect_share_name();
-
-                    preview_controller.get_preview_for_page_number(zp.current_page).open_lightbox();
-                    // $('#preview-image-page-' + zp.current_page).click();
-
-                    $(this).remove();
-                    $close.attr('id', 'fancybox-close');
-                })
-                .appendTo($outer);
-
-            $close.attr('id', 'fancybox-close-orig');
-        }
-
-        $button.addClass('no-middle');
-
-        $button.click(function () {
-            if ($outer.hasClass('selected')) {
-                return;
-            }
-
-            const $input = SelectImage._get_image_selector()
-                .not('.minimized')
-                .find(' > .selector-content > .tabs-wrapper > .images-scroller')
-                .find('a[href="' + UiHelper.instance().fancybox_image.attr('src') + '"]')
-                .parent()
-                .children('input')
-                .prop('checked', true)
-                .change();
-
-            $outer.addClass('selected');
-
-            if (in_preview) {
-                const shape_name = $input.attr('name').substring(12);
-
-                $('#zetaprints-preview-image-container')
-                    .find(' > .zetaprints-field-shape[title="' + shape_name + '"] > .top')
-                    .click();
-
-                UiHelper.instance().fancybox_close_button.remove();
-                $close.attr('id', 'fancybox-close');
-            }
-        })
+            '</a>').appendTo(this._get_outer());
     }
 
     /**
-     * @param {jQuery|function} $
+     * @inheritDoc
      */
-    static fancybox_update_preview_button($) {
+    update() {
+        // TODO: Is this needed?
         UiHelper.instance().fancybox_close_button.addClass('resizer-tweaks');
 
-        const is_checked = SelectImage._get_image_selector()
+        const is_checked = this._get_image_inputs()
+            .prop('checked');
+
+        if (is_checked) {
+            this._get_outer().addClass('selected');
+        } else {
+            this._get_outer().removeClass('selected');
+        }
+    }
+
+    /**
+     * @return {jQuery}
+     * @private
+     */
+    _get_image_inputs() {
+        return UiHelper.instance().select_image_elements
             .not('.minimized')
             .find(' > .selector-content > .tabs-wrapper > .images-scroller')
             .find('a[href="' + UiHelper.instance().fancybox_image.attr('src') + '"]')
             .parent()
-            .children('input')
-            .prop('checked');
-
-        if (is_checked) {
-            UiHelper.instance().fancybox_outer.addClass('selected');
-        } else {
-            UiHelper.instance().fancybox_outer.removeClass('selected');
-        }
-    }
-
-    /**
-     */
-    static fancybox_remove_use_image_button() {
-        UiHelper.instance().select_image_button.remove();
-    }
-
-    /**
-     * @return {jQuery|HTMLElement}
-     * @private
-     */
-    static _get_image_selector() {
-        return UiHelper.instance().select_image_elements;
+            .children('input');
     }
 
     /**
      * @return {string}
      * @private
      */
-    static _detect_share_name() {
-        return SelectImage._get_image_selector()
-            .not('.minimized')
-            .find(' > .selector-content > .tabs-wrapper > .images-scroller')
-            .find('a[href="' + UiHelper.instance().fancybox_image.attr('src') + '"]')
-            .parent()
-            .children('input')
+    _detect_share_name() {
+        return this._get_image_inputs()
             .attr('name')
             .substring(12);
     }

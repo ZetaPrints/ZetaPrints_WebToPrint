@@ -8,6 +8,7 @@ import Resizing from "./fancybox/Resizing";
 import UpdatePreview from "./UpdatePreviewButtonController";
 import ImageEditorLightbox from "./view/ImageEditorLightbox";
 import UiHelper from "./helper/UiHelper";
+import PreviewController from "./PreviewController";
 
 
 export default class ImageEditorController {
@@ -21,7 +22,16 @@ export default class ImageEditorController {
         this.personalization_form_instance = personalization_form_instance;
         this.show = this.show.bind(this);
         this.$ = $;
-        this.image_editor = new ImageEditor(personalization_form_instance);
+        this.image_editor = new ImageEditor(this);
+
+        this._save_image_button = new SaveImageButton(personalization_form_instance.preview_controller);
+    }
+
+    /**
+     * @return {SaveImageButton}
+     */
+    get save_image_button() {
+        return this._save_image_button;
     }
 
     /**
@@ -118,7 +128,9 @@ export default class ImageEditorController {
 
         Feature.instance().call(
             Feature.feature.fancybox.saveImageButton,
-            SaveImageButton.fancybox_add_save_image_button,
+            () => {
+                this._save_image_button.add(data, is_in_preview, image_name, image_guid);
+            },
             this.personalization_form_instance.preview_controller,
             data,
             is_in_preview,

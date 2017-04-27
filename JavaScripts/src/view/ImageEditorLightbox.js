@@ -57,7 +57,14 @@ export default class ImageEditorLightbox extends AbstractLightbox {
             },
             'didClose': () => {
                 Logger.debug('[ImageEditorLightbox] Fancybox closed');
-                Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_remove_save_image_button);
+
+
+                Feature.instance().call(
+                    Feature.feature.fancybox.saveImageButton,
+                    () => {
+                        this.image_editor_controller.save_image_button.remove();
+                    }
+                );
                 notification_center.notify(ImageEditorLightbox.Events.DID_CLOSE, notification_data);
             },
         });

@@ -4,86 +4,21 @@ import UiHelper from "../helper/UiHelper";
 import Assert from "../helper/Assert";
 import PreviewController from "../PreviewController";
 import NotificationHelper from "../NotificationCenter";
+import AbstractButton from "../view/AbstractButton";
+import AbstractFancyboxButton from "./AbstractFancyboxButton";
 
-export default class SaveImageButton {
+export default class SaveImageButton extends AbstractFancyboxButton {
     /**
-     * @return {SaveImageButton}
+     * @param controller
      */
-    static instance() {
-        if (!SaveImageButton._instance) {
-            SaveImageButton._instance = new SaveImageButton();
-        }
-
-        return SaveImageButton._instance;
-    }
-
-    /**
-     */
-    constructor() {
-        /**
-         * @type {jQuery|HTMLLinkElement}
-         * @private
-         */
-        this._button = null;
+    constructor(controller) {
+        super(controller);
 
         /**
          * @type {null}
          * @private
          */
         this._state = null;
-
-        this._on_click = this._on_click.bind(this);
-    }
-
-    /**
-     * @return {jQuery|HTMLLinkElement}
-     */
-    get button() {
-        return this._button;
-    }
-
-    /**
-     * Adds the button
-     *
-     * @param {PreviewController} preview_controller
-     * @param {DataInterface} zp
-     * @param {boolean} in_preview
-     * @param {string} name
-     * @param {string} guid
-     */
-    static fancybox_add_save_image_button(preview_controller, zp, in_preview, name, guid) {
-        SaveImageButton.instance().add(preview_controller, zp, in_preview, name, guid);
-    }
-
-    /**
-     * Change the button
-     *
-     * @param {boolean} changed
-     */
-    static fancybox_update_save_image_button(changed) {
-        SaveImageButton.instance().update(changed);
-    }
-
-    /**
-     * Remove the button
-     */
-    static fancybox_remove_save_image_button() {
-        SaveImageButton.instance().remove();
-    }
-
-    /**
-     * Adds the button if it does not already exist
-     *
-     * @param preview_controller
-     * @param {DataInterface} data
-     * @param {boolean} in_preview
-     * @param {string} name
-     * @param {string} guid
-     */
-    add(preview_controller, data, in_preview, name, guid) {
-        if (!this._button) {
-            this._button = this._create_button(preview_controller, data, in_preview, name, guid);
-        }
     }
 
     /**
@@ -119,71 +54,25 @@ export default class SaveImageButton {
     }
 
     /**
-     * @param {PreviewController} preview_controller
-     * @param {DataInterface} data
-     * @param {boolean} in_preview
-     * @param {string} name
-     * @param {string} guid
-     * @return {*|jQuery}
-     * @private
+     * @inheritDoc
      */
-    _create_button(preview_controller, data, in_preview, name, guid) {
-        Assert.assertInstanceOf(preview_controller, PreviewController);
-
+    _create_button(data, in_preview, name, guid) {
         const $outer = this._get_outer();
         if ($outer.length === 0) {
             throw new ReferenceError('Could not find fancybox-outer')
         }
 
-        const $button = $('<a id="zp-save-image-button" class="disabled">' +
+        return $('<a id="zp-save-image-button" class="no-middle disabled">' +
             '<span class="icon left-part" />' +
             '<span class="text">' +
             '<span class="save-image-text">' + save_text + '</span>' +
             '<span class="saved-image-text">' + saved_text + '</span>' +
             '</span>' +
             '</a>').appendTo($outer);
-
-        const $close = UiHelper.instance().fancybox_close_button.addClass('resizer-tweaks');
-
-        if (in_preview) {
-            $close
-                .clone()
-                .css('display', 'inline')
-                .click(function () {
-                    data._shape_to_show = name;
-
-                    Logger.log('[SaveImageButton] Close');
-                    preview_controller.get_preview_for_page_number(data.current_page).open_lightbox();
-                    // $('#preview-image-page-' + zp.current_page).click();
-
-                    $(this).remove();
-                    $close.attr('id', 'fancybox-close');
-                })
-                .appendTo($outer);
-
-            $close.attr('id', 'fancybox-close-orig');
-        }
-
-        $button.addClass('no-middle');
-
-        $button.click(() => {
-            this._on_click(data);
-        });
-
-        return $button;
     }
 
     /**
-     * @return {jQuery|HTMLElement}
-     * @private
-     */
-    _get_outer() {
-        return UiHelper.instance().fancybox_outer;
-    }
-
-    /**
-     * @param {DataInterface} data
-     * @private
+     * @inheritDoc
      */
     _on_click(data) {
         Logger.debug('[SaveImageButton] Click');
@@ -203,8 +92,16 @@ export default class SaveImageButton {
         this._get_outer().addClass('saved');
         $button.addClass('disabled');
 
-
         NotificationHelper.instance().notify(SaveImageButton.Events.CLICKED, {instance: this});
+    }
+
+    /**
+     * @inheritDoc
+     */
+    _build_get_share_name_callback(data, in_preview, name, guid) {
+        return () => {
+            return name;
+        }
     }
 }
 

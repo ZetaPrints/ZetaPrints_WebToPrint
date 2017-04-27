@@ -54,6 +54,7 @@ export default class PersonalizationForm {
         const preview_controller = this.preview_controller = new PreviewController(this, fake_add_to_cart_button);
         this.image_editor = new ImageEditorController(this);
         this.in_preview_edit_controller = new InPreviewEditController(this);
+        this._select_image = new SelectImage(preview_controller);
 
         this._preview_overlay = null;
 
@@ -237,6 +238,13 @@ export default class PersonalizationForm {
                 $fields.animate({opacity: 1}, 500);
             }
         });
+    }
+
+    /**
+     * @return {SelectImage}
+     */
+    get select_image() {
+        return this._select_image;
     }
 
     /**
@@ -840,13 +848,20 @@ export default class PersonalizationForm {
                 Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_hide);
             }
 
-            Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_add_use_image_button, $, data, is_in_preview);
+            // Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_add_use_image_button, $, data, is_in_preview);
+            Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+                this._select_image.add(data, is_in_preview);
+            }, $, data, is_in_preview);
         };
         lightbox_configuration.didShow = function () {
-            Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_update_preview_button, $);
+            Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+                this._select_image.update();
+            });
         };
         lightbox_configuration.didClose = function () {
-            Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_remove_use_image_button, $);
+            Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+                this._select_image.remove();
+            });
         };
 
         const lightbox = new Lightbox();

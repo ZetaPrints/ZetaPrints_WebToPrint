@@ -240,17 +240,26 @@ export default class PreviewController {
      * @private
      */
     _get_lightbox_callbacks() {
-        const personalization_form_instance = this.form_instance;
-        const data = this.form_instance.data;
-        const in_preview_edit_controller = personalization_form_instance.in_preview_edit_controller;
-        const shape_repository = personalization_form_instance.shape_repository;
+        const form_controller = this.form_instance;
+        const data = form_controller.data;
+        const in_preview_edit_controller = form_controller.in_preview_edit_controller;
+        const shape_repository = form_controller.shape_repository;
         const lightbox_configuration = new LightboxCallbackConfiguration();
+        const image_editor_controller = form_controller.image_editor;
+
         lightbox_configuration.willShow = function () {
             if (UiHelper.instance().select_image_button.length) {
-                Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_remove_use_image_button);
+                Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+                    form_controller.select_image.remove();
+                });
             }
-            if (SaveImageButton.instance().button) {
-                Feature.instance().call(Feature.feature.fancybox.saveImageButton, SaveImageButton.fancybox_remove_save_image_button);
+            if (image_editor_controller.save_image_button.button) {
+                Feature.instance().call(
+                    Feature.feature.fancybox.saveImageButton,
+                    () => {
+                        image_editor_controller.save_image_button.remove()
+                    }
+                );
             }
 
             if (!data.template_details.pages[data.current_page].static) {
