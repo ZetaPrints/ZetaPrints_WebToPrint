@@ -3,6 +3,7 @@
  */
 
 import Logger from "../Logger";
+import UiHelper from "../helper/UiHelper";
 export default class PreviewOverlay {
     /**
      * @param {HTMLElement} product_image_element
@@ -28,18 +29,14 @@ export default class PreviewOverlay {
             .appendTo(product_image_element);
     }
 
-    // get element() {
-    //     return this._element;
-    // }
-
     /**
      * Hides the Preview Overlay
      *
      * @return {PreviewOverlay}
      */
     hide() {
-        Logger.log('[PreviewOverlay] hide', this._element);
-        this._element.addClass('zp-hidden');
+        Logger.log('[PreviewOverlay] hide', this._element.get(0));
+        UiHelper.instance().hide(this._element);
 
         return this;
     }
@@ -50,8 +47,8 @@ export default class PreviewOverlay {
      * @return {PreviewOverlay}
      */
     show() {
-        Logger.log('[PreviewOverlay] show', this._element);
-        this._element.removeClass('zp-hidden');
+        Logger.log('[PreviewOverlay] show', this._element.get(0));
+        UiHelper.instance().show(this._element);
 
         return this;
     }

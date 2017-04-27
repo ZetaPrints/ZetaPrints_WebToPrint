@@ -13,12 +13,14 @@
 
 import jQuery from '../jQueryLoader';
 import UiHelper from "../helper/UiHelper";
+import Logger from "../Logger";
 
 export default class Resizing {
     /**
      * @param {object} opts
      */
     static fancybox_resizing_add(opts) {
+        Logger.log('fancybox_resizing_add');
         // ref to displayed image
         const $img = jQuery(UiHelper.instance().fancybox_image_selector);
 
@@ -35,7 +37,7 @@ export default class Resizing {
         // check if displayed size is smaller than loaded image
         // if it is, add max/restore button, do it if fancybox loads image only;
         // if needed will enable for
-        // other tyes too, but they will need to have defined width and height
+        // other types too, but they will need to have defined width and height
         if (img_orig_width > width && opts.type === 'image' && !$parent.length) {
             const $outer = UiHelper.instance().fancybox_outer; // get outer container
 
@@ -164,8 +166,8 @@ export default class Resizing {
         // center it to page
         if (typeof jQuery.fancybox['center'] === 'function') {
             jQuery.fancybox.center(true);
-        }else if (typeof jQuery.fancybox['update'] === 'function') {
-            jQuery.fancybox.update();
+        }else if (typeof jQuery.fancybox['reposition'] === 'function') {
+            jQuery.fancybox.reposition();
         }
     }
 

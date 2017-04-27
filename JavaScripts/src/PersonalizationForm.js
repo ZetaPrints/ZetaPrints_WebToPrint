@@ -644,7 +644,7 @@ export default class PersonalizationForm {
     _register_window_load() {
         const personalization_form_instance = this;
         const zp = this.data;
-        $(window).load(function (event) {
+        $(window).load(function () {
             if (zp.has_shapes /*&& window.place_all_shapes_for_page && shape_handler*/) {
                 Feature.instance().call(Feature.feature.inPreviewEdit, InPreviewEditController.precalculate_shapes, zp.template_details);
 
