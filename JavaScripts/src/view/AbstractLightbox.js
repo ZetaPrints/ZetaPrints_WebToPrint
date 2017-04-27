@@ -70,7 +70,7 @@ export default class AbstractLightbox {
         }
 
         prepared_options['closeBtn'] = options.showCloseButton;
-        prepared_options['beforeLoad'] = options.willShow;
+        prepared_options['beforeShow'] = options.willShow;
         prepared_options['afterShow'] = options.didShow;
         prepared_options['beforeClose'] = options.willClose;
         prepared_options['afterClose'] = options.didClose;
