@@ -45,15 +45,6 @@ export default class SaveImageButton extends AbstractFancyboxButton {
     }
 
     /**
-     * Remove the button
-     */
-    remove() {
-        this._button.remove();
-        this._get_outer().removeClass('saved');
-        this._button = null;
-    }
-
-    /**
      * @inheritDoc
      */
     _create_button(data, in_preview, name, guid) {
@@ -104,12 +95,6 @@ export default class SaveImageButton extends AbstractFancyboxButton {
         }
     }
 }
-
-/**
- * @type {SaveImageButton}
- * @private
- */
-SaveImageButton._instance = null;
 
 SaveImageButton.STATE_CLEAN = 1;
 SaveImageButton.STATE_DIRTY = 2;

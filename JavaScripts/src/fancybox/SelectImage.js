@@ -25,8 +25,7 @@ export default class SelectImage extends AbstractFancyboxButton {
             $('#zetaprints-preview-image-container')
                 .find(' > .zetaprints-field-shape[title="' + shape_name + '"] > .top')
                 .click();
-
-            this._restore_original_close_button();
+            this._close_button.remove();
         }
     }
 

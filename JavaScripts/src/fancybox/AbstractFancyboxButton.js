@@ -3,6 +3,7 @@ import UiHelper from "../helper/UiHelper";
 import Assert from "../helper/Assert";
 import PreviewController from "../PreviewController";
 import AbstractButton from "../view/AbstractButton";
+import CloseButton from "./CloseButton";
 
 export default class AbstractFancyboxButton extends AbstractButton {
     /**
@@ -13,16 +14,10 @@ export default class AbstractFancyboxButton extends AbstractButton {
         super(controller);
 
         /**
-         * @type {jQuery}
+         * @type {CloseButton}
          * @protected
          */
-        this._patched_close_button = null;
-
-        /**
-         * @type {jQuery}
-         * @protected
-         */
-        this._original_close_button = null;
+        this._close_button = null;
 
         /**
          * @type {boolean}
@@ -60,7 +55,7 @@ export default class AbstractFancyboxButton extends AbstractButton {
             if (typeof get_share_name_callback !== 'function') {
                 throw new TypeError('The return type of _build_get_shape_name_callback() must be function');
             }
-            this._prepare_close_button(data, get_share_name_callback);
+            this._close_button = new CloseButton(this._controller, get_share_name_callback);
         }
 
         this._button = button;
@@ -100,46 +95,37 @@ export default class AbstractFancyboxButton extends AbstractButton {
         throw new Error('Not implemented');
     }
 
-    /**
-     * @param {DataInterface} data
-     * @param {function} get_share_name_callback
-     * @protected
-     */
-    _prepare_close_button(data, get_share_name_callback) {
-        Assert.assertFunction(get_share_name_callback, 'get_share_name_callback');
-        const preview_controller = this._controller;
-
-        const original_close_button = UiHelper.instance().fancybox_close_button;
-        original_close_button.addClass('resizer-tweaks');
-
-        const patched_close_button = original_close_button.clone();
-        patched_close_button
-            .css('display', 'inline')
-            .click(() => {
-                data._shape_to_show = get_share_name_callback(data);
-
-                /** @type {Preview} */
-                const preview = preview_controller.get_preview_for_page_number(data.current_page);
-                preview.open_lightbox();
-
-                this._restore_original_close_button();
-            })
-            .appendTo(this._get_outer());
-
-        original_close_button.attr('id', 'fancybox-close-orig');
-
-        this._original_close_button = original_close_button;
-        this._patched_close_button = patched_close_button;
-    }
-
-    /**
-     * @protected
-     */
-    _restore_original_close_button() {
-        this._patched_close_button.remove();
-        this._patched_close_button = null;
-        this._original_close_button.attr('id', 'fancybox-close');
-    }
+    // /**
+    //  * @param {DataInterface} data
+    //  * @param {function} get_share_name_callback
+    //  * @protected
+    //  */
+    // _prepare_close_button(data, get_share_name_callback) {
+    //     Assert.assertFunction(get_share_name_callback, 'get_share_name_callback');
+    //     const preview_controller = this._controller;
+    //
+    //     const original_close_button = UiHelper.instance().fancybox_close_button;
+    //     original_close_button.addClass('resizer-tweaks');
+    //
+    //     const patched_close_button = original_close_button.clone();
+    //     patched_close_button
+    //         .css('display', 'inline')
+    //         .click(() => {
+    //             data._shape_to_show = get_share_name_callback(data);
+    //
+    //             /** @type {Preview} */
+    //             const preview = preview_controller.get_preview_for_page_number(data.current_page);
+    //             preview.open_lightbox();
+    //
+    //             this._restore_original_close_button();
+    //         })
+    //         .appendTo(this._get_outer());
+    //
+    //     original_close_button.attr('id', 'fancybox-close-orig');
+    //
+    //     this._original_close_button = original_close_button;
+    //     this._patched_close_button = patched_close_button;
+    // }
 
     /**
      * @return {jQuery|HTMLElement}
