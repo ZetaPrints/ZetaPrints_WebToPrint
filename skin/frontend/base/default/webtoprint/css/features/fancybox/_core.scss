@@ -1,0 +1,8 @@
+@import "../prelude";
+
+
+// Set Fancybox related variables
+$fancybox-image-url: $image-base + "fancybox-2" !default;
+
+// Load the core styles for Fancybox
+@import "../../../../../../../../node_modules/fancybox/dist/scss/jquery.fancybox";

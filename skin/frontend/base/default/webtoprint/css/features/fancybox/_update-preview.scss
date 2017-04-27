@@ -1,0 +1,77 @@
+@import "../prelude";
+
+#zp-update-preview-button {
+    display: block;
+    position: absolute;
+    right: 36px;
+    top: -15px;
+    color: $white;
+    text-decoration: none;
+    cursor: default;
+    z-index: 1103;
+    font: bold 8pt $font;
+    background: $url-update-preview-button-x repeat-x 0 -31px;
+    height: 30px;
+    white-space: nowrap;
+    &.no-middle {
+        right: 15px;
+    }
+    .icon {
+        display: block;
+        background: $url-update-preview-button-sprite no-repeat;
+        &.arrows {
+            background-position: -1px -36px;
+            width: 12px;
+            height: 10px;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            margin-top: -7px;
+        }
+    }
+    .left-part {
+        background-position: -27px -2px;
+        width: 21px;
+        height: 30px;
+        position: relative;
+        margin-left: -21px;
+        float: left;
+    }
+    .title {
+        display: block;
+        margin: 4px 4px 0 5px;
+        height: 18px;
+        line-height: 18px;
+    }
+}
+
+@media(max-width: 991px) {
+    #zp-update-preview-button {
+        right: 35px;
+        top: 5px;
+        &.no-middle {
+            right: 35px;
+            top: 5px;
+        }
+    }
+}
+
+.modified #zp-update-preview-button {
+    cursor: pointer;
+    background-position: 0 0;
+    .left-part {
+        background-position: 0 -2px;
+    }
+}
+
+.preview-updating #zp-update-preview-button .icon.arrows {
+    background: $url-update-preview-button-rotating-arrows no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    right: -2px;
+    margin-top: -10px;
+}
+
+#fancybox-outer.zp-hide-shapes .zetaprints-field-shape.bottom {
+    visibility: hidden !important;
+}

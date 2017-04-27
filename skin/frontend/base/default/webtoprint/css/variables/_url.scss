@@ -1,0 +1,55 @@
+// URLs
+$image-base: "../images/" !default;
+
+// Core
+$url-core-image-selector: url($image-base + "images-selector-sprites.png") !default;
+$url-core-text-field-resizer-handle-left: url($image-base + "text-field-resizer/images/left-handle.gif") !default;
+$url-core-text-field-resizer-handle-right: url($image-base + "text-field-resizer/images/right-handle.gif") !default;
+$url-core-button-sprites: url($image-base + "button-sprites.png") !default;
+$url-core-button-background: url($image-base + "button-background.png") !default;
+$url-core-preview-overlay-background: url($image-base + "preview-overlay-background.png") !default;
+$url-core-spinner: url($image-base + "loading-spinner.gif") !default;
+
+// Resizing
+$url-fancybox-resizing: url($image-base + "fancybox/fancybox.png") !default;
+
+// Update Preview
+$url-update-preview-button-sprite: url($image-base + "fancybox/zp-update-preview-button-sprite.png") !default;
+$url-update-preview-button-x: url($image-base + "fancybox/zp-update-preview-button-x.png") !default;
+$url-update-preview-button-rotating-arrows: url($image-base + "fancbox/zp-update-preview-button-rotating-arrows.gif") !default;
+
+// Colorpicker
+$url-colorpicker-map: url($image-base + "colorpicker/map.png") !default;
+$url-colorpicker-128-map: url($image-base + "colorpicker/128/map.png") !default;
+$url-colorpicker-map-opacity: url($image-base + "colorpicker/map-opacity.png") !default;
+$url-colorpicker-map-pointer: url($image-base + "colorpicker/map-pointer.png") !default;
+$url-colorpicker-bar: url($image-base + "colorpicker/bar.png") !default;
+$url-colorpicker-128-bar: url($image-base + "colorpicker/128/bar.png") !default;
+$url-colorpicker-bar-opacity: url($image-base + "colorpicker/bar-opacity.png") !default;
+$url-colorpicker-bar-alpha: url($image-base + "colorpicker/bar-alpha.png") !default;
+$url-colorpicker-128-bar-alpha: url($image-base + "colorpicker/128/bar-alpha.png") !default;
+$url-colorpicker-bar-pointer: url($image-base + "colorpicker/bar-pointer.png") !default;
+$url-colorpicker-preview-opacity: url($image-base + "colorpicker/preview-opacity.png") !default;
+
+// Combobox
+$url-combobox-field-sprites: url($image-base + "/combobox/sprites.gif") !default;
+
+// Image edit
+$url-image-edit-line: url($image-base + "image-edit/line.png") !default;
+$url-image-edit-sprite: url($image-base + "image-edit/sprite.png") !default;
+$url-image-edit-fit-to-field-crop-icon: url($image-base + "image-edit/fit-to-field-crop-icon.png") !default;
+$url-image-edit-rotate-r: url($image-base + "image-edit/rotate_r.png") !default;
+$url-image-edit-rotate-l: url($image-base + "image-edit/rotate_l.png") !default;
+$url-image-edit-crop: url($image-base + "image-edit/crop.png") !default;
+$url-image-edit-restore: url($image-base + "image-edit/restore.png") !default;
+$url-image-edit-delete: url($image-base + "image-edit/delete.png") !default;
+$url-image-edit-status-bar-sprite: url($image-base + "image-edit/status-bar-sprite.png") !default;
+
+// In Preview Edit
+$url-in-preview-edit-transparent-background: url($image-base + "transparent-background.gif") !default;
+$url-in-preview-edit-edited-shape-background: url($image-base + "edited-shape-background.png") !default;
+$url-in-preview-edit-in-preview-edit-sprite: url($image-base + "in-preview-edit-sprite.png") !default;
+$url-in-preview-edit-images-selector-sprites: $url-core-image-selector !default;
+
+// Text Field Editor
+$url-text-field-editor-sprites: url($image-base + "text-field-editor/sprites.png") !default;

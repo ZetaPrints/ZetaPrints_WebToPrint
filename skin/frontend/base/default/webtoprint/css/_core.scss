@@ -1,0 +1,1227 @@
+@import "variables";
+
+div {
+    &.zetaprints-image-tabs {
+        display: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        ul {
+            overflow: hidden;
+            margin-bottom: 5px;
+            list-style-image: none;
+            list-style-position: outside;
+            list-style-type: none;
+            li {
+                width: 120px;
+                float: left;
+                margin-right: 15px;
+                border: 1px solid transparent;
+                padding: 9px;
+                cursor: pointer;
+                text-align: center;
+                min-height: 100px;
+                //Instead of the line below you could use @include box-sizing($bs)
+                box-sizing: border-box;
+                &.selected {
+                    border-color: $color-gold-drop !important;
+                    cursor: default;
+                }
+                &:hover {
+                    border-color: $color-pumice;
+                }
+                img {
+                    display: block;
+                    max-height: 100px;
+                    max-width: 100px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    }
+    &.zetaprints-page-color-pickers {
+        display: none;
+    }
+    &.save-order {
+        background: none;
+        span {
+            margin-right: 10px;
+            font-size: 85%;
+        }
+        div.inner {
+            float: right;
+        }
+        img.ajax-loader {
+            vertical-align: middle;
+            margin-right: 10px;
+            display: none;
+        }
+    }
+    &.images-scroller {
+        overflow-x: auto;
+        position: relative;
+        overflow-y: hidden;
+        table {
+            border: 0;
+            border-spacing: 0;
+            margin-bottom: 2px;
+            *margin-bottom: 19px;
+            tr {
+                margin: 0;
+                padding: 0;
+            }
+            td {
+                padding: 0 10px;
+            }
+        }
+        input {
+            display: block;
+        }
+        img {
+            max-height: 100px;
+        }
+        .image-edit-thumb {
+            position: relative;
+            min-height: 21px;
+            cursor: pointer;
+        }
+        .zp-button {
+            float: right;
+            margin-left: 5px;
+            height: 15px;
+            line-height: 15px;
+            background: $color-steel-blue;
+            color: $white;
+            font-weight: bold;
+        }
+        .zp-edit-button {
+            padding: 0 4px;
+        }
+        .zp-delete-button {
+            width: 17px;
+            color: transparent;
+            background: $url-core-image-selector -222px -22px no-repeat;
+            font-size: 0;
+        }
+        div.buttons-row {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+    }
+    &.zetaprints-images-selector {
+        margin-bottom: 5px;
+        border: none;
+        background-color: $white;
+        &.expanded {
+            position: relative;
+            z-index: 1;
+            div.selector-content div.tabs-wrapper div.upload {
+                padding-left: 26px;
+            }
+        }
+        input {
+            padding: 0;
+            margin: 0;
+        }
+        a.image {
+            display: block;
+            text-decoration: none;
+        }
+        div.icon span {
+            display: none;
+        }
+        &.minimized div.selector-content {
+            display: none;
+        }
+    }
+    &.selector-content {
+        height: 154px;
+        background-color: $white;
+        div {
+            &.clear {
+                clear: both;
+            }
+            &.tabs-wrapper {
+                height: 100%;
+                border: 1px solid $color-nobel;
+                border-left: none;
+                border-top: none;
+                margin-left: 10em;
+                div {
+                    &.tab {
+                        padding-top: 6px;
+                        font-size: 90%;
+                        &.ui-tabs-hide {
+                            position: absolute;
+                            left: -100000px;
+                        }
+                    }
+                    &.color-picker {
+                        padding-left: 20px;
+                        input {
+                            margin-bottom: 10px;
+                            *margin-bottom: 11px;
+                        }
+                        div.color-sample {
+                            width: 100px;
+                            height: 70px;
+                            border: 1px solid $color-nobel;
+                            margin-bottom: 2px;
+                        }
+                    }
+                    &.upload {
+                        padding-left: 6px;
+                        position: relative;
+                        *height: 98%;
+                        div {
+                            &.recommended-size-notice {
+                                position: absolute;
+                                bottom: 0;
+                                line-height: 16px;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                color: $color-mountain-mist;
+                                font-size: 90%;
+                                div.zetaprints-icon {
+                                    margin-right: 1px;
+                                    margin-left: -2px;
+                                }
+                            }
+                            &.column {
+                                float: left;
+                                width: 49%;
+                                margin-top: 24px;
+                                *margin-top: 23px;
+                            }
+                            &.button {
+                                float: left;
+                                margin: 0 6px 6px 0;
+                                width: 78px;
+                                height: 22px;
+                                cursor: pointer;
+                                span {
+                                    display: none;
+                                }
+                                &.disabled {
+                                    cursor: default;
+                                }
+                                &.choose-file {
+                                    background: $url-core-image-selector -115px -28px no-repeat;
+                                    &.disabled {
+                                        background: $url-core-image-selector -115px 0 no-repeat;
+                                    }
+                                }
+                                &.cancel-upload {
+                                    background: $url-core-image-selector -115px -84px no-repeat;
+                                    &.disabled {
+                                        background: $url-core-image-selector -115px -56px no-repeat;
+                                    }
+                                }
+                            }
+                        }
+                        .zetaprints-text-field-wrapper {
+                            margin: 0 4px 5px 0;
+                        }
+                        label {
+                            font-weight: normal;
+                        }
+                        input.file-name {
+                            border: none;
+                            width: 100%;
+                            background-color: $white;
+                        }
+                        img.ajax-loader {
+                            display: none;
+                            margin: 2px 0 0;
+                        }
+                    }
+                }
+            }
+            &.icon span {
+                display: none;
+            }
+        }
+        input[type=radio] {
+            *height: 13px;
+            *width: 13px;
+        }
+        ul.tab-buttons {
+            height: 100%;
+            overflow: hidden;
+            float: left;
+            width: 10em;
+            list-style-image: none;
+            list-style-position: outside;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            a {
+                font-weight: bold;
+                text-decoration: none;
+                text-align: center;
+                display: block;
+                line-height: 30px;
+                padding: 0 2px 0 28px;
+            }
+            li {
+                position: relative;
+                border: 1px solid $color-nobel;
+                border-top: none;
+                background-color: $color-alabaster;
+                line-height: 20px;
+                font-size: 90%;
+                vertical-align: middle;
+                &.hidden {
+                    display: none;
+                }
+                &.ui-tabs-active {
+                    background-color: transparent;
+                    border-right: none;
+                }
+                &.last {
+                    border-bottom: none;
+                    border-left: none;
+                    height: 100%;
+                    background-color: transparent;
+                    font-weight: normal;
+                    min-height: 30px;
+                    line-height: 30px;
+                    vertical-align: middle;
+                    padding: 0 4px 0 0;
+                    text-align: right;
+                    label {
+                        input {
+                            margin-right: 1px;
+                            vertical-align: middle;
+                        }
+                        &.leave-blank-value {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+            }
+            div.icon {
+                position: absolute;
+                top: 50%;
+                left: 8px;
+                margin: -10px 0 0;
+                width: 20px;
+                height: 20px;
+                &.upload {
+                    background: $url-core-image-selector -90px 4px no-repeat;
+                }
+                &.user-images {
+                    background: $url-core-image-selector -90px -15px no-repeat;
+                }
+                &.stock-images {
+                    background: $url-core-image-selector -90px -33px no-repeat;
+                }
+                &.color-picker {
+                    background: $url-core-image-selector -90px -55px no-repeat;
+                }
+            }
+        }
+    }
+    &.zetaprints-previews-box {
+        div {
+            &.title {
+                margin-bottom: 5px;
+                a {
+                    cursor: pointer;
+                    text-decoration: none;
+                    span {
+                        text-decoration: underline;
+                    }
+                    &.show-title {
+                        display: none;
+                    }
+                }
+            }
+            &.content {
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 0 0 20px 0;
+                ul {
+                    overflow: hidden;
+                    li {
+                        float: left;
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
+        &.hide div {
+            &.content {
+                display: none;
+            }
+            &.title a {
+                &.hide-title {
+                    display: none;
+                }
+                &.show-title {
+                    display: inline;
+                }
+            }
+        }
+    }
+    &.zetaprints-icon {
+        display: block;
+        float: left;
+        height: 16px;
+        width: 16px;
+        background-repeat: no-repeat;
+        background-image: $url-core-image-selector;
+        &.attention {
+            background-position: -89px -80px;
+        }
+    }
+    &.zetaprints-buttons-row {
+        .zetaprints-button {
+            float: left;
+            margin: 0 2px;
+        }
+        div {
+            &.reset {
+                clear: both;
+            }
+            &.row-part {
+                width: 50%;
+                float: left;
+                &.first .zetaprints-button {
+                    float: right;
+                }
+            }
+        }
+    }
+    &.zetaprints-page-input-fields .zetaprints-text-field-wrapper:focus {
+        background-color: $color-zumthor;
+    }
+    &.product-shop dl {
+        margin-bottom: 5px;
+    }
+}
+
+a {
+    &.all-order-previews {
+        float: right;
+        position: relative;
+        margin-top: -2em;
+        span.show-title {
+            display: none;
+        }
+        &.hide-all span {
+            &.hide-title {
+                display: none;
+            }
+            &.show-title {
+                display: inline;
+            }
+        }
+    }
+    &.zetaprints-template-preview img {
+        max-width: 267px;
+        cursor: pointer;
+    }
+}
+
+.zetaprints-text-field-wrapper {
+    border: 1px solid $color-nobel;
+    background-color: $white;
+    padding: 0 8px;
+    zoom: 1;
+    line-height: 1.5;
+    .input-text {
+        border: none;
+        padding: 0;
+        width: 100%;
+        &:focus {
+            background: none;
+            border: none;
+        }
+    }
+    textarea {
+        border: none;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        resize: none;
+        &:focus {
+            background: none;
+            border: none;
+        }
+    }
+    input[readonly] {
+        color: $gray;
+    }
+    textarea[readonly] {
+        color: $gray;
+    }
+}
+
+.zetaprints-images-selector {
+    .head {
+        position: relative;
+        min-height: 30px;
+        border: 1px solid $color-nobel;
+        cursor: pointer;
+        padding: 0 8px;
+        .icon {
+            display: block;
+            position: absolute;
+            top: 50%;
+            height: 13px;
+            width: 13px;
+            margin: -6px 0 0;
+            background: transparent $url-core-image-selector 0 -19px no-repeat;
+        }
+        .title {
+            display: block;
+            margin: 0 45px 0 21px;
+            line-height: 30px;
+            cursor: inherit;
+        }
+        .image {
+            position: absolute;
+            top: 50%;
+            height: 9px;
+            margin: -4px 0 0;
+            background: $url-core-image-selector no-repeat;
+            span {
+                display: none;
+            }
+            &.up-down {
+                right: 8px;
+                background-position: -76px 2px;
+                width: 12px;
+                &:hover {
+                    background-position: -76px -12px;
+                }
+            }
+            &.collapse-expand {
+                right: 28px;
+                background-position: -39px 0;
+                width: 17px;
+                &:hover {
+                    background-position: -39px -16px;
+                }
+            }
+        }
+        &:hover .image.up-down {
+            background-position: -76px -12px;
+        }
+    }
+    &.no-value .head .icon {
+        background-position: 0 0;
+    }
+    &.minimized .head {
+        .image.up-down {
+            background-position: -61px 2px;
+            &:hover {
+                background-position: -61px -12px;
+            }
+        }
+        &:hover .image.up-down {
+            background-position: -61px -12px;
+        }
+    }
+    &.expanded .head .image.collapse-expand {
+        background-position: -18px 0;
+        &:hover {
+            background-position: -18px -16px;
+        }
+    }
+}
+
+.zetaprints-palette {
+    .selector-content {
+        padding: 3px 4px;
+        border: 1px solid $color-nobel;
+        border-top: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 62px;
+        white-space: nowrap;
+    }
+    .colour-picker {
+        white-space: normal;
+        height: 49px;
+        overflow: hidden;
+        padding: 3px 10px 3px 4px;
+    }
+}
+
+.zp-palette-colour {
+    display: inline-block;
+    width: 47px;
+    height: 47px;
+    position: relative;
+    input {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+    }
+}
+
+.zp-palette-fill {
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+.zp-palette-outline {
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+.zetaprints-notice {
+    color: $color-torch-red;
+    &.hidden {
+        display: none;
+    }
+    &.to-update-preview {
+        clear: both;
+        float: right;
+        *float: left;
+    }
+}
+
+#zp-warning-user-data-changed {
+    display: none;
+    margin: 10px 0;
+}
+
+.thumb-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: $black;
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70);
+    opacity: .7;
+    width: 100%;
+    height: 100%;
+    .top-image-wrapper {
+        position: absolute;
+        overflow: hidden;
+        img {
+            position: absolute;
+        }
+    }
+}
+
+.zetaprints-page-input-fields {
+    clear: both;
+    .ui-resizable {
+        position: relative;
+    }
+    .ui-resizable-handle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        //Instead of the line below you could use @include user-select($select)
+        user-select: none;
+        bottom: -1px;
+    }
+    .ui-resizable-w {
+        background: $url-core-text-field-resizer-handle-left center no-repeat;
+        left: -1px;
+        cursor: sw-resize;
+    }
+    .ui-resizable-sw {
+        background: $url-core-text-field-resizer-handle-left center no-repeat;
+        left: -1px;
+        cursor: sw-resize;
+    }
+    .ui-resizable-e {
+        background: $url-core-text-field-resizer-handle-right center no-repeat;
+        right: -1px;
+        cursor: se-resize;
+        display: none !important;
+    }
+    .ui-resizable-se {
+        background: $url-core-text-field-resizer-handle-right center no-repeat;
+        right: -1px;
+        cursor: se-resize;
+        display: none !important;
+    }
+    dd {
+        position: relative;
+        *position: static;
+    }
+}
+
+.zetaprints-button {
+    display: block;
+    cursor: pointer;
+    height: 22px;
+    padding-left: 5px;
+    background-color: $color-jordy-blue;
+    border: 1px solid $color-ship-cove;
+    &.zetaprints-hidden {
+        visibility: hidden;
+    }
+    span {
+        margin: 0 8px;
+        color: $white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    div.icon {
+        display: block;
+        float: left;
+        height: 22px;
+        width: 16px;
+        background-repeat: no-repeat;
+        background-image: $url-core-image-selector;
+    }
+    &.save-action div.icon {
+        background-position: -222px -41px;
+    }
+    &.restore-action div.icon {
+        width: 13px;
+        background-position: -222px -61px;
+    }
+}
+
+.zp-hidden {
+    display: none;
+}
+
+.zp-clear {
+    clear: both;
+    float: none;
+    width: 0;
+    height: 0;
+}
+
+.zetaprints-page-stock-images {
+    margin-top: 15px;
+    clear: both;
+}
+
+.zetaprints-page-size-table {
+    margin: 10px 0;
+    table {
+        border: 1px solid $color-bon-jour;
+        border-collapse: collapse;
+    }
+    td {
+        border: 1px solid $color-bon-jour;
+        font-size: 8pt;
+        padding: 0 4px;
+        text-align: center;
+    }
+    .page-size-table-icon {
+        background-color: $color-zircon;
+        vertical-align: middle;
+    }
+    .page-size-table-head td {
+        color: $color-storm-dust;
+        font-weight: bold;
+    }
+}
+
+.z-index-1 {
+    z-index: 1;
+}
+
+.zp-buttons-wrapper {
+    clear: left;
+    width: 267px;
+    .zp-button {
+        float: left;
+        margin: 10px 5px 0 0;
+        padding: 0 5px;
+        font-size: 95%;
+        height: 35px;
+        position: relative;
+    }
+}
+
+.zp-button {
+    cursor: pointer;
+}
+
+.zp-button-left {
+    background: $url-core-button-sprites no-repeat;
+    height: inherit;
+    width: 5px;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    background-position: 0 -23px;
+}
+
+.zp-button-right {
+    background: $url-core-button-sprites no-repeat;
+    height: inherit;
+    width: 5px;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    background-position: -29px -23px;
+}
+
+.zp-button-icon {
+    background: $url-core-button-sprites no-repeat;
+    height: inherit;
+    margin: 0 auto;
+}
+
+.zp-button-top {
+    height: 17px;
+    line-height: 17px;
+}
+
+.zp-button-bottom {
+    height: 17px;
+    line-height: 17px;
+}
+
+#zp-next-page-button {
+    float: right;
+    margin: 10px 0 0;
+    .zp-button-icon {
+        background-position: -83px 4px;
+        width: 10px;
+    }
+}
+
+.zp-button-content {
+    height: inherit;
+    background: $url-core-button-background repeat-x;
+    padding-top: 1px;
+}
+
+#zp-preview-overlay {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    &.zp-no-preview {
+        background: none;
+        span {
+            display: none;
+        }
+    }
+    span {
+        color: $white;
+        font-weight: bold;
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+    }
+}
+
+.zp-preview-overlay-spinner {
+    background: $url-core-button-sprites no-repeat 0 -90px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -20px 0 0 -20px;
+    div {
+        width: 24px;
+        height: 24px;
+        background: $url-core-spinner;
+        margin: 8px;
+    }
+}
+
+.zp-preview-overlay-text-wrapper {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    margin: 30px 0 0;
+}
+
+.zp-preview-overlay-text-middle {
+    background: $url-core-preview-overlay-background repeat;
+}
+
+.zp-preview-overlay-text-left {
+    width: 6px;
+    background: $url-core-button-sprites no-repeat;
+    background-position: 0 -65px;
+}
+
+.zp-preview-overlay-text-right {
+    width: 6px;
+    background: $url-core-button-sprites no-repeat;
+    background-position: -25px -65px;
+}
+
+#zp-preview-placeholder {
+    height: 200px;
+    width: 100%;
+}
+
+.zp-html-template {
+    display: none;
+}
+
+.ui-colorpicker {
+    background: linear-gradient(to bottom, $color-fuscous-gray, $color-bunker 30px);
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 0 5px 5px;
+    position: absolute;
+    z-index: 11000 !important;
+    font: 12px/15px $font;
+    * {
+        //Instead of the line below you could use @include box-sizing($bs)
+        box-sizing: border-box;
+        &:before {
+            //Instead of the line below you could use @include box-sizing($bs)
+            box-sizing: border-box;
+        }
+        &:after {
+            //Instead of the line below you could use @include box-sizing($bs)
+            box-sizing: border-box;
+        }
+    }
+    .ui-colorpicker-number {
+        border: 2px solid $color-gravel;
+        //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+        border-radius: 2px;
+        padding: 1px 2px;
+        margin: 0.1em;
+        width: auto;
+        height: auto;
+        font: 12px/15px $font;
+        width: 5em;
+    }
+    .ui-colorpicker-hex-input {
+        border: 2px solid $color-gravel;
+        //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+        border-radius: 2px;
+        padding: 1px 2px;
+        margin: 0.1em;
+        width: auto;
+        height: auto;
+        font: 12px/15px $font;
+    }
+    .ui-dialog-buttonpane {
+        position: absolute;
+        right: 0;
+        top: -1px;
+    }
+}
+
+.ui-dialog-titlebar {
+    cursor: move;
+    height: 22px;
+    margin: 0 -5px;
+}
+
+.ui-colorpicker-border {
+    border: 2px solid $color-gravel;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 2px;
+}
+
+.ui-colorpicker-preview {
+    background: $white;
+    height: 24px;
+}
+
+.ui-colorpicker-preview-initial {
+    width: 44px;
+}
+
+.ui-colorpicker-preview-current {
+    width: 44px;
+}
+
+.ui-colorpicker-map {
+    width: 260px;
+    height: 260px;
+}
+
+.ui-colorpicker-map-128 {
+    width: 132px;
+    height: 132px;
+}
+
+.ui-colorpicker-bar {
+    width: 20px;
+    height: 256px;
+}
+
+.ui-colorpicker-bar-128 {
+    height: 132px;
+}
+
+.ui-colorpicker-hex-container {
+    float: right;
+    padding: 1px 1px 0 0;
+}
+
+.ui-colorpicker-unit {
+    color: $color-silver;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+}
+
+.ui-colorpicker-ok {
+    font: 12px/15px $font;
+    background: transparent;
+    border: 1px solid transparent;
+    color: $color-silver;
+    cursor: pointer;
+    font-variant: small-caps;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+    text-transform: lowercase;
+    padding: 4px 4px 0;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 0 0 0 4px;
+    border-right: none;
+    border-top: none;
+    &:hover {
+        background: $color-tundora;
+        border-color: $color-fuscous-gray;
+        color: $color-concrete;
+    }
+}
+
+.ui-colorpicker-cancel {
+    font: 12px/15px $font;
+    background: transparent;
+    border: 1px solid transparent;
+    color: $color-silver;
+    cursor: pointer;
+    font-variant: small-caps;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+    text-transform: lowercase;
+    padding: 4px 4px 0;
+    border-top: none;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 0 0 4px 4px;
+    margin: 0 -3px 0 0;
+    &:hover {
+        background: $color-tundora;
+        border-color: $color-fuscous-gray;
+        color: $color-concrete;
+    }
+}
+
+.ui-colorpicker-switcher-rgb {
+    font: 12px/15px $font;
+    background: transparent;
+    border: 1px solid transparent;
+    color: $color-silver;
+    cursor: pointer;
+    font-variant: small-caps;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+    text-transform: lowercase;
+    border-bottom: medium none;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 4px 4px 0 0;
+    display: inline-block;
+    padding: 0 4px;
+    &:hover {
+        background: $color-tundora;
+        border-color: $color-fuscous-gray;
+        color: $color-concrete;
+    }
+}
+
+.ui-colorpicker-switcher-cmyk {
+    font: 12px/15px $font;
+    background: transparent;
+    border: 1px solid transparent;
+    color: $color-silver;
+    cursor: pointer;
+    font-variant: small-caps;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+    text-transform: lowercase;
+    border-bottom: medium none;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 4px 4px 0 0;
+    display: inline-block;
+    padding: 0 4px;
+    &:hover {
+        background: $color-tundora;
+        border-color: $color-fuscous-gray;
+        color: $color-concrete;
+    }
+}
+
+.ui-colorpicker-mode-rgb {
+    .ui-colorpicker-switcher-rgb {
+        background: $color-tundora;
+        border-color: $color-fuscous-gray;
+        color: $color-concrete;
+    }
+    .ui-colorpicker-cmyk-container {
+        display: none;
+    }
+}
+
+.ui-colorpicker-mode-cmyk {
+    .ui-colorpicker-switcher-cmyk {
+        background: $color-tundora;
+        border-color: $color-fuscous-gray;
+        color: $color-concrete;
+    }
+    .ui-colorpicker-rgb-container {
+        display: none;
+    }
+    .ui-colorpicker-hex-container {
+        display: none;
+    }
+}
+
+.ui-colorpicker-switcher {
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 4px 4px 0 0;
+    height: 22px;
+    left: -5px;
+    overflow: hidden;
+    padding: 6px 0 0 12px;
+    position: absolute;
+    top: 0;
+}
+
+#zetaprints-fake-add-to-cart-button {
+    cursor: not-allowed;
+}
+
+@media(max-width: 770px) {
+    .zetaprints-images-selector .head {
+        .title {
+            margin: 0 28px 0 21px;
+        }
+        .collapse-expand {
+            display: none;
+        }
+    }
+}
+
+button.disable {
+    cursor: default;
+    span {
+        background-color: $color-pink-swan;
+        border-color: $color-mountain-mist;
+    }
+}
+
+.colour-picker .zp-palette-colour {
+    display: block;
+    float: left;
+    border: 1px solid $color-nobel;
+    margin: 0 10px 0 0;
+}
+
+.data-table tbody {
+    &.odd tr.border.zetaprints-previews td {
+        border-bottom-width: 4px;
+    }
+    &.even tr.border.zetaprints-previews td {
+        border-bottom-width: 4px;
+    }
+}
+
+.zetaprints-dynamic-imaging img {
+    max-height: 100px;
+    *height: 100px;
+}
+
+span.zetaprints-share-link {
+    input {
+        display: none;
+    }
+    &.show {
+        a {
+            display: none;
+        }
+        input {
+            display: inline;
+        }
+    }
+}
+
+.add-to-links span.zetaprints-share-link.empty a {
+    color: $gray !important;
+    cursor: default;
+}
+
+.zp-user-data-changed #zp-warning-user-data-changed {
+    display: block;
+}
+
+.product-img-box .more-views {
+    margin-top: 5px;
+}
+
+#zetaprints-preview-image-container .product-image {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.zp-not-modified #zp-update-preview-form-button {
+    color: $color-star-dust;
+    cursor: default;
+    .zp-button-icon {
+        background-position: -39px -13px;
+    }
+}
+
+#zp-update-preview-form-button .zp-button-icon {
+    background-position: -39px 4px;
+    width: 12px;
+}
+
+#zp-editor-button .zp-button-icon {
+    background-position: 0 3px;
+    width: 11px;
+}
+
+#zp-enlarge-button .zp-button-icon {
+    background-position: -18px 2px;
+    width: 15px;
+}
+
+#zp-form-button .zp-button-icon {
+    background-position: -61px 2px;
+    width: 12px;
+}
+
+.ui-colorpicker-number:focus {
+    border-color: $color-storm-dust;
+}
+
+.ui-colorpicker-hex-input:focus {
+    border-color: $color-storm-dust;
+}
+
+.ui-colorpicker-rgb label {
+    color: $color-silver;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+}
+
+.ui-colorpicker-cmyk label {
+    color: $color-silver;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+}
+
+.ui-colorpicker-hex label {
+    color: $color-silver;
+    //Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+    text-shadow: 1px 1px $black;
+}
+
+.my-wishlist .product-image.in-dialog {
+    height: auto;
+}

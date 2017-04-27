@@ -1,0 +1,93 @@
+@import "prelude";
+
+.zp-combobox-input-wrapper {
+    margin-right: 19px;
+}
+
+.zp-combobox-button {
+    width: 19px;
+    background-color: $color-concrete;
+    border: 1px solid $color-nobel;
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    bottom: -1px;
+    cursor: pointer;
+    &:hover {
+        border-color: $color-suva-gray;
+        .zp-combobox-button-icon {
+            background-position: 0 -10px;
+        }
+    }
+    &.opened {
+        .zp-combobox-button-icon {
+            background-position: -13px 0;
+        }
+        &:hover .zp-combobox-button-icon {
+            background-position: -13px -10px;
+        }
+    }
+}
+
+.zp-combobox-button-icon {
+    background: $url-combobox-field-sprites no-repeat 0 0;
+    width: 7px;
+    height: 4px;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    margin: -2px 0 0 -3px;
+    *margin-left: -4px;
+}
+
+.zp-combobox-icon-wrapper {
+    height: 100%;
+    *height: auto;
+}
+
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    cursor: default;
+    width: 100% !important;
+    left: -1px !important;
+}
+
+.ui-menu {
+    list-style: none;
+    margin: 0;
+    display: block;
+    float: left;
+    border: 1px solid $color-nobel;
+    border-top: 0 none;
+    background-color: $white;
+    .ui-menu-item {
+        display: block;
+        margin: 0;
+        padding: 0;
+        a {
+            color: $color-log-cabin;
+            text-decoration: none;
+            display: block;
+            padding: 2px 4px;
+            height: 1.5em;
+            &.ui-state-hover {
+                background-color: $color-concrete;
+            }
+            &.ui-state-active {
+                background-color: $color-concrete;
+            }
+        }
+    }
+}
+
+.highlighted .zp-combobox-button {
+    border-color: $color-gold-drop;
+}
+
+* html .ui-autocomplete {
+    height: 100px;
+    width: 1px;
+}
