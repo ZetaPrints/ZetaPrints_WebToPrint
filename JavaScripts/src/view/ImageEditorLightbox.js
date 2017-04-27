@@ -42,6 +42,7 @@ export default class ImageEditorLightbox extends AbstractLightbox {
             'type': 'ajax',
             'href': this.href,
             'showCloseButton': true,
+            'closeOnOverlayClick': false,
             'willShow': () => {
                 notification_center.notify(ImageEditorLightbox.Events.DID_SHOW, notification_data);
             },
