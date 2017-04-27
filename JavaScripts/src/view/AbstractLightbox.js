@@ -63,7 +63,7 @@ export default class AbstractLightbox {
             prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {title: null});
         }
         if (!options.closeOnOverlayClick) {
-            prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {overlay: {closeClick: true}});
+            prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {overlay: {closeClick: false}});
         }
         if (!options.showOverlay) {
             prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {overlay: null});
