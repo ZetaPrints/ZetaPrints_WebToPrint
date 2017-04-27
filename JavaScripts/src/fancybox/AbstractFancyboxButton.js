@@ -36,7 +36,7 @@ export default class AbstractFancyboxButton extends AbstractButton {
      * @param {string} name
      * @param {string} guid
      */
-    add(data, in_preview, name = '', guid = '') {
+    add(data, in_preview = false, name = '', guid = '') {
         if (this._button) {
             return false;
         }

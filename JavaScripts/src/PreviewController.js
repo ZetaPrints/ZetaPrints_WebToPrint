@@ -10,14 +10,10 @@ import Preview from "./view/Preview";
 import TemplateDetail from "./model/TemplateDetail";
 import Page from "./model/Page";
 import Feature from "./Feature";
-import SaveImageButton from "./fancybox/SaveImageButton";
-import SelectImage from "./fancybox/SelectImage";
-import UpdatePreviewButtonController from "./UpdatePreviewButtonController";
 import Resizing from "./fancybox/Resizing";
 import DataHelper from "./helper/DataHelper";
-import LightboxConfiguration from "./model/LightboxConfiguration";
-import Lightbox from "./view/Lightbox";
 import LightboxCallbackConfiguration from "./model/LightboxCallbackConfiguration";
+import UpdatePreviewButton from "./fancybox/UpdatePreviewButton";
 
 export default class PreviewController {
     /**
@@ -33,6 +29,7 @@ export default class PreviewController {
         this._success = this._success.bind(this);
         this.update_preview = this.update_preview.bind(this);
         this._update_preview_error = this._update_preview_error.bind(this);
+        this._update_preview_button = new UpdatePreviewButton(this);
 
         /**
          * @type {Object.<string, Preview>}
@@ -263,7 +260,9 @@ export default class PreviewController {
             }
 
             if (!data.template_details.pages[data.current_page].static) {
-                Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreviewButtonController.fancybox_add_update_preview_button, data);
+                Feature.instance().call(Feature.feature.fancybox.updatePreview, () => {
+                    this._update_preview_button.add(data);
+                });
             }
         };
         lightbox_configuration.didShow = function () {
@@ -281,7 +280,9 @@ export default class PreviewController {
             }
 
             feature_instance.call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_add, this);
-            feature_instance.call(Feature.feature.fancybox.updatePreview, UpdatePreviewButtonController.fancybox_update_update_preview_button);
+            feature_instance.call(Feature.feature.fancybox.updatePreview, () => {
+                this._update_preview_button.update();
+            });
 
             if (false === (data.has_shapes && feature_instance.is_activated(Feature.feature.inPreviewEdit))) {
                 return;
@@ -316,7 +317,7 @@ export default class PreviewController {
             }
         };
         lightbox_configuration.didClose = function () {
-            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreviewButtonController.fancybox_remove_update_preview_button, $);
+            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreviewButton.fancybox_remove_update_preview_button, $);
             Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_hide);
         };
         lightbox_configuration.willClose = function () {

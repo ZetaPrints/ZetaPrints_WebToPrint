@@ -5,10 +5,9 @@ import ImageEditingContext from "./model/ImageEditingContext";
 import Feature from "./Feature";
 import SaveImageButton from "./fancybox/SaveImageButton";
 import Resizing from "./fancybox/Resizing";
-import UpdatePreview from "./UpdatePreviewButtonController";
 import ImageEditorLightbox from "./view/ImageEditorLightbox";
 import UiHelper from "./helper/UiHelper";
-import PreviewController from "./PreviewController";
+import UpdatePreviewButton from "./fancybox/UpdatePreviewButton";
 
 
 export default class ImageEditorController {
@@ -118,7 +117,12 @@ export default class ImageEditorController {
         let is_in_preview = false;
 
         if (UiHelper.instance().update_preview_button.length) {
-            Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreview.fancybox_remove_update_preview_button, $);
+            Feature.instance().call(
+                Feature.feature.fancybox.updatePreview,
+                () => {
+                    this.personalization_form_instance.preview_controller._update_preview_button.remove();
+                }
+            );
             is_in_preview = true;
         }
 
@@ -130,12 +134,7 @@ export default class ImageEditorController {
             Feature.feature.fancybox.saveImageButton,
             () => {
                 this._save_image_button.add(data, is_in_preview, image_name, image_guid);
-            },
-            this.personalization_form_instance.preview_controller,
-            data,
-            is_in_preview,
-            image_name,
-            image_guid
+            }
         );
     }
 }

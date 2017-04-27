@@ -14,7 +14,6 @@ import ImageEditorController from "./ImageEditorController";
 import ImageTabController from "./ImageTabController";
 import Feature from "./Feature";
 import Resizing from "./fancybox/Resizing";
-import UpdatePreview from "./UpdatePreviewButtonController";
 import SelectImage from "./fancybox/SelectImage";
 import Dataset from "./dataset/Dataset";
 import InPreviewEditController from "./InPreviewEditController";
@@ -120,15 +119,10 @@ export default class PersonalizationForm {
         }
         if (!this.has_shapes || !Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
             ui_helper.show('#stock-images-page-1, #input-fields-page-1');
-
             zp.is_fields_hidden = false;
-
             ui_helper.hide(ui_helper.editor_button);
-            // $editor_button.addClass('zp-hidden');
             ui_helper.hide(ui_helper.form_button);
-            // $form_button.addClass('zp-hidden');
             ui_helper.show(ui_helper.enlarge_button);
-            // $enlarge_button.removeClass('zp-hidden');
         }
 
         $('div.zetaprints-image-tabs, div.zetaprints-preview-button').css('display', 'block');
@@ -218,13 +212,9 @@ export default class PersonalizationForm {
         const data = this.data;
         return UiHelper.instance().form_button.click(function () {
             const $fields = $('#input-fields-page-' + data.current_page + ', #stock-images-page-' + data.current_page);
-
             const ui_helper = UiHelper.instance();
 
             data.is_fields_hidden = !ui_helper.has_hide_class($fields);
-            // zp.is_fields_hidden = !$fields.hasClass('zp-hidden');
-
-
             if (data.is_fields_hidden) {
                 $fields.animate({opacity: 0}, 500, function () {
                     ui_helper.hide($fields);
@@ -824,6 +814,11 @@ export default class PersonalizationForm {
      * @private
      */
     _register_in_dialog_lightbox() {
+        if (0 === $('a.in-dialog').length) {
+            return;
+        }
+
+        Logger.debug('[Form] Register fancyBox on a.in-dialog');
         const personalization_form_instance = this;
         const data = personalization_form_instance.data;
 
@@ -836,11 +831,16 @@ export default class PersonalizationForm {
             'speedOut': 500,
             'showTitle': false,
         });
-        lightbox_configuration.willShow = function () {
+        lightbox_configuration.willShow = () => {
             let is_in_preview = false;
 
             if (UiHelper.instance().update_preview_button.length) {
-                Feature.instance().call(Feature.feature.fancybox.updatePreview, UpdatePreview.fancybox_remove_update_preview_button, $);
+                Feature.instance().call(
+                    Feature.feature.fancybox.updatePreview,
+                    () => {
+                        this.preview_controller._update_preview_button.remove();
+                    }
+                );
                 is_in_preview = true;
             }
 
@@ -848,21 +848,19 @@ export default class PersonalizationForm {
                 Feature.instance().call(Feature.feature.fancybox.resizing, Resizing.fancybox_resizing_hide);
             }
 
-            // Feature.instance().call(Feature.feature.fancybox.selectImage, SelectImage.fancybox_add_use_image_button, $, data, is_in_preview);
             Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
                 this._select_image.add(data, is_in_preview);
-            }, $, data, is_in_preview);
+            });
         };
-        lightbox_configuration.didShow = function () {
-            Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+
+        Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+            lightbox_configuration.didShow = () => {
                 this._select_image.update();
-            });
-        };
-        lightbox_configuration.didClose = function () {
-            Feature.instance().call(Feature.feature.fancybox.selectImage, () => {
+            };
+            lightbox_configuration.didClose = () => {
                 this._select_image.remove();
-            });
-        };
+            };
+        });
 
         const lightbox = new Lightbox();
         lightbox.register('a.in-dialog', lightbox_configuration);

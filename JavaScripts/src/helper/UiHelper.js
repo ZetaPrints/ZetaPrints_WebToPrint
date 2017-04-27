@@ -168,6 +168,7 @@ export default class UiHelper {
 
     /**
      * @return {jQuery|HTMLElement}
+     * @deprecated
      */
     get update_preview_button() {
         return $('#zp-update-preview-button');
