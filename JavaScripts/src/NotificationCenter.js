@@ -3,6 +3,7 @@
  */
 import Logger from './Logger';
 import Assert from "./helper/Assert";
+import Environment from "./Environment";
 
 export default class NotificationCenter {
     /**
@@ -52,10 +53,14 @@ export default class NotificationCenter {
         Logger.debug(`[NotificationCenter] Dispatch notification ${event_name}: ${all_listeners.length} listeners`);
 
         all_listeners.forEach((listener) => {
-            try {
+            if (Environment.environment().debug_mode) {
                 listener(event_name, data);
-            } catch (e) {
-                Logger.warn('[NotificationCenter] Caught error during notifying ' + e);
+            } else {
+                try {
+                    listener(event_name, data);
+                } catch (e) {
+                    Logger.warn('[NotificationCenter] Caught error during notifying ' + e);
+                }
             }
         });
 

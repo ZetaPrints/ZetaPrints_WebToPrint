@@ -6,6 +6,7 @@ import $ from './jQueryLoader';
 import NotificationHelper from "./NotificationCenter";
 import GlobalEvents from "./GlobalEvents";
 import Assert from "./helper/Assert";
+require('./ajaxupload.js');
 
 /* jshint unused:false */
 class UploadResult {
