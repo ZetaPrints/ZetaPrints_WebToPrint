@@ -1,11 +1,8 @@
 import $ from '../jQueryLoader';
 import Logger from '../Logger';
-import UiHelper from "../helper/UiHelper";
-import Assert from "../helper/Assert";
-import PreviewController from "../PreviewController";
 import NotificationHelper from "../NotificationCenter";
-import AbstractButton from "../view/AbstractButton";
 import AbstractFancyboxButton from "./AbstractFancyboxButton";
+import GlobalEvents from "../GlobalEvents";
 
 export default class SaveImageButton extends AbstractFancyboxButton {
     /**
@@ -84,6 +81,7 @@ export default class SaveImageButton extends AbstractFancyboxButton {
         $button.addClass('disabled');
 
         NotificationHelper.instance().notify(SaveImageButton.Events.CLICKED, {instance: this});
+        NotificationHelper.instance().notify(GlobalEvents.USER_DATA_SAVED, {instance: this});
     }
 
     /**
