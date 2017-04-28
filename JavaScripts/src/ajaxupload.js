@@ -254,15 +254,17 @@
             disabledClass: 'disabled',
             // When user selects a file, useful with autoSubmit disabled
             // You can return false to cancel upload
-            onChange: function (file, extension) {
+            onChange: function (file, extension, uploader) {
             },
             // Callback to fire before file is uploaded
             // You can return false to cancel upload
-            onSubmit: function (file, extension) {
+            onSubmit: function (file, extension, uploader) {
             },
             // Fired when file upload is completed
             // WARNING! DO NOT USE "FALSE" STRING AS A RESPONSE!
-            onComplete: function (file, response) {
+            onComplete: function (file, response, uploader) {
+            },
+            onError: function (file, response, uploader) {
             }
         };
 
@@ -406,7 +408,8 @@
                 // as some browsers have path instead of it
                 var file = fileFromPath(input.value);
 
-                if (false === self._settings.onChange.call(self, file, getExt(file))) {
+                const onChangeCallbackResult = self._settings.onChange.call(self, file, getExt(file), self);
+                if (false === onChangeCallbackResult) {
                     self._clearInput();
                     return;
                 }
@@ -578,7 +581,13 @@
                     return;
                 }
 
-                var doc = iframe.contentDocument ? iframe.contentDocument : window.frames[iframe.id].document;
+                try {
+                    var doc = iframe.contentDocument ? iframe.contentDocument : window.frames[iframe.id].document;
+                } catch (e) {
+                    settings.onError.call(self, file, null, self);
+
+                    return;
+                }
 
                 // fixing Opera 9.26,10.00
                 if (doc.readyState && doc.readyState != 'complete') {
@@ -635,7 +644,7 @@
                         iframe: iframe
                     });
                 }
-                settings.onComplete.call(self, file, response);
+                settings.onComplete.call(self, file, response, self);
 
                 // Reload blank page, so that reloading main page
                 // does not re-submit the post. Also, remember to
@@ -659,7 +668,8 @@
             var file = fileFromPath(this._input.value);
 
             // user returned false to cancel upload
-            if (false === settings.onSubmit.call(this, file, getExt(file))) {
+            const onSubmitResult = settings.onSubmit.call(this, file, getExt(file), this);
+            if (false === onSubmitResult) {
                 this._clearInput();
                 return;
             }

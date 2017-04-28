@@ -4,6 +4,8 @@
 
 import $ from './jQueryLoader';
 import NotificationHelper from "./NotificationCenter";
+import GlobalEvents from "./GlobalEvents";
+import Assert from "./helper/Assert";
 
 /* jshint unused:false */
 class UploadResult {
@@ -21,48 +23,82 @@ export default class ImageUpload {
      * @param {PersonalizationForm} personalization_form
      */
     constructor(button, personalization_form) {
+        Assert.assertDomElement(button);
         this.personalization_form = personalization_form;
-        this._on_image_added = this._on_image_added.bind(this);
-        const _upload_complete = this._upload_complete = this._upload_complete.bind(this);
-        const _enable = this._enable = this._enable.bind(this);
 
+        /**
+         * @type {jQuery}
+         * @private
+         */
+        this._button = $(button);
+
+        this._on_image_added = this._on_image_added.bind(this);
+        this._upload_complete = this._upload_complete.bind(this);
+        this._enable = this._enable.bind(this);
+
+        this._initialize();
+    }
+
+    _initialize() {
+        const button = this._button;
+        /**
+         * @type {AjaxUpload|Window.AjaxUpload}
+         */
         let uploader = new AjaxUpload(button, {
             name: 'customer-image',
-            action: personalization_form.data.url.upload,
+            action: this.personalization_form.data.url.upload,
             responseType: 'json',
             autoSubmit: true,
-            onChange: function (file, extension) {
-                $(this._button)
+            onChange: (file) => {
+                button
                     .parents('.upload')
                     .find('input.file-name')
                     .val(file);
             },
-            onSubmit: function (file, extension) {
-                $(this._button) //Choose button
-                    .addClass('disabled')
-                    .next() //Cancel button
-                    .removeClass('disabled')
-                    .next() //Spinner
-                    .show();
-
-                this.disable();
+            onSubmit: (_, _2, uploader) => {
+                this._set_upload_active(uploader);
             },
-            onComplete: function (file, response) {
-                _upload_complete(file, response, this);
+            onComplete: (file, response, uploader) => {
+                this._upload_complete(file, response, uploader);
+            },
+            onError: (_, _2, uploader) => {
+                this._enable_and_hide_spinner(uploader);
             }
         });
 
         $(
             'div.button.cancel-upload',
-            $(button).parent()
+            button.parent()
         ).click(function () {
             if (!$(this).hasClass('disabled')) {
                 uploader.cancel();
-
-                const spinner = _enable(uploader);
-                spinner.hide();
+                this._enable_and_hide_spinner(uploader);
             }
         });
+    }
+
+    /**
+     * @param {AjaxUpload} uploader
+     * @private
+     */
+    _set_upload_active(uploader) {
+        this._button //Choose button
+            .addClass('disabled')
+            .next() //Cancel button
+            .removeClass('disabled')
+            .next() //Spinner
+            .show();
+
+        uploader.disable();
+    }
+
+    /**
+     * @param {AjaxUpload} uploader
+     * @private
+     */
+    _enable_and_hide_spinner(uploader) {
+        const spinner = this._enable(uploader);
+        spinner.hide();
     }
 
     /**
@@ -73,7 +109,7 @@ export default class ImageUpload {
     _enable(uploader) {
         uploader.enable();
 
-        const choose_button = $(uploader._button).removeClass('disabled');
+        const choose_button = this._button.removeClass('disabled');
         const cancel_button = choose_button.next().addClass('disabled');
 
         // Clear the input field
@@ -90,7 +126,6 @@ export default class ImageUpload {
      */
     _upload_complete(file, response, uploader) {
         const _on_image_added = this._on_image_added;
-
         const spinner = this._enable(uploader);
 
         if ('' + response === 'Error' || typeof response['error'] !== 'undefined') {
@@ -100,10 +135,11 @@ export default class ImageUpload {
             return;
         }
 
-        const upload_div = $(uploader._button).parents('.upload');
+        const upload_div = this._button.parents('.upload');
         const notification_data = {instance: this, file: file, response: response, uploadDiv: upload_div};
         NotificationHelper.instance().notify(AjaxUpload.Events.UPLOAD_COMPLETE, notification_data);
         NotificationHelper.instance().notify(ImageUpload.Events.UPLOAD_COMPLETE, notification_data);
+        NotificationHelper.instance().notify(GlobalEvents.USER_DATA_CHANGED, notification_data);
 
         const $selector = upload_div.parents('.selector-content');
         const upload_field_id = $selector.attr('id');
