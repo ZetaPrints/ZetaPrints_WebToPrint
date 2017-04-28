@@ -134,10 +134,12 @@ export default class Assert {
      */
     static assertInstanceOf(value, expected, argumentName = '') {
         if (!(value instanceof expected)) {
+            const class_name = Assert._get_class_name_from_impl(expected);
+            const description = Assert._get_value_description(value);
             if (argumentName) {
-                throw new TypeError(`Expected argument ${argumentName} to be an instance of "${expected}", "${typeof value}" given`);
+                throw new TypeError(`Expected argument ${argumentName} to be an instance of "${class_name}", "${description}" given`);
             }
-            throw new TypeError(`Expected value to be an instance of "${expected}", "${typeof value}" given`)
+            throw new TypeError(`Expected value to be an instance of "${class_name}", "${description}" given`)
         }
     }
 
@@ -154,5 +156,36 @@ export default class Assert {
             }
             throw new TypeError(`Expected value to be a DOM element, "${typeof value}" given`)
         }
+    }
+
+    /**
+     * @param {*} value
+     * @return {string}
+     * @private
+     */
+    static _get_value_description(value) {
+        const type = typeof value;
+        if (type !== 'object') {
+            return type;
+        }
+
+        return value.constructor && value.constructor.name
+            ? value.constructor.name
+            : Assert._get_class_name_from_impl(value.constructor);
+    }
+
+    /**
+     * @param {class} class_impl
+     * @return {string}
+     * @private
+     */
+    static _get_class_name_from_impl(class_impl) {
+        const signature = ('' + class_impl);
+
+        if (signature.substr(0, 11) === 'function ()') {
+            return signature;
+        }
+
+        return signature.substring(9, signature.indexOf(' {'));
     }
 }
