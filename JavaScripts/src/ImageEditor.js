@@ -11,20 +11,26 @@ import Assert from "./helper/Assert";
 import ImageEditorController from "./ImageEditorController";
 
 const fancybox_show_activity = () => {
+    Logger.log('[ImageEditor] fancybox show activity');
     const fancybox = $.fancybox;
     if (typeof fancybox['showLoading'] === 'function') {
-        fancybox.showLoading();
+        fancybox['showLoading']();
     } else if (typeof fancybox['showActivity'] === 'function') {
-        fancybox.showActivity();
+        fancybox['showActivity']();
+    } else {
+        Logger.error('[ImageEditor] No method found to show the fancyBox activity');
     }
 };
 
 const fancybox_hide_activity = () => {
+    Logger.log('[ImageEditor] fancybox hide activity');
     const fancybox = $.fancybox;
-    if (typeof fancybox['hideLoading '] === 'function') {
-        fancybox.hideLoading();
-    } else if (typeof fancybox['hideActivity '] === 'function') {
-        fancybox.hideActivity();
+    if (typeof fancybox['hideLoading'] === 'function') {
+        fancybox['hideLoading']();
+    } else if (typeof fancybox['hideActivity'] === 'function') {
+        fancybox['hideActivity']();
+    } else {
+        Logger.error('[ImageEditor] No method found to hide the fancyBox activity');
     }
 };
 
@@ -83,7 +89,10 @@ export default class ImageEditor {
 
         const container = this._container = $('.zetaprints-image-edit');
 
-        this._load_image();
+        this._show_activity();
+
+        this._load_image(context.image_id);
+
         this._initialize_info_bar(context);
 
         if (context.has_fit_in_field) {
@@ -108,9 +117,7 @@ export default class ImageEditor {
                 this._show_image_editor();
             }
 
-            fancybox_hide_activity();
-
-            fancybox_change_zindex(1100);
+            this._hide_activity();
         });
 
         context.container = {
@@ -130,12 +137,10 @@ export default class ImageEditor {
         });
 
         $('#zp-image-edit-action-cancel').click(() => {
-            if (container.hasClass('changed')) {
-                if (container.hasClass('crop-mode')) {
-                    this._crop_button_click_handler();
-                } else {
-                    this._fit_to_field_button_click_handler(true);
-                }
+            if (container.hasClass('changed') && container.hasClass('crop-mode')) {
+                this._crop_button_click_handler();
+            } else {
+                this._fit_to_field_button_click_handler(true);
             }
         });
 
@@ -169,26 +174,9 @@ export default class ImageEditor {
      * @param {string} id
      */
     reload_image(id) {
-        const context = this._context;
-        $.ajax({
-            url: context.url.image,
-            type: 'POST',
-            datatype: 'XML',
-            data: {
-                'zetaprints-action': 'img',
-                'zetaprints-ImageID': id
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert(cant_load_image_text + ': ' + textStatus);
-                fancybox_change_zindex(1100);
-            },
-            success: (data, textStatus) => {
-                NotificationHelper.instance().notify(ImageEditor.Events.IMAGE_LOADED, {instance: this, data: data});
-                context.image_id = id;
+        Logger.log(`[ImageEditor] Reload image #${id} ${this._context.url.image}`);
 
-                this._process_image_details(data);
-            }
-        });
+        this._load_image(id);
     }
 
     /**
@@ -212,7 +200,7 @@ export default class ImageEditor {
         const notification_helper = NotificationHelper.instance();
 
         if (container.hasClass('crop-mode')) {
-            fancybox_show_activity();
+            this._show_activity();
             this._server_side_cropping(user_image.power_crop('state'));
 
             notification_helper.notify(ImageEditor.Events.SAVE, {instance: this});
@@ -231,6 +219,34 @@ export default class ImageEditor {
         if (container.hasClass('editor-mode') && ImageEditor._image_editor) {
             ImageEditor._image_editor.save();
         }
+    }
+
+    /**
+     * @param {number|string} id
+     * @private
+     */
+    _load_image(id) {
+        const context = this._context;
+        const url = context.url.image;
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            datatype: 'XML',
+            data: {
+                'zetaprints-action': 'img',
+                'zetaprints-ImageID': id
+            },
+            error: (_, textStatus, errorThrown) => {
+                this._handle_ajax_error(cant_load_image_text, textStatus, errorThrown)
+            },
+            success: (data) => {
+                NotificationHelper.instance().notify(ImageEditor.Events.IMAGE_LOADED, {instance: this, data: data});
+                context.image_id = id;
+
+                this._process_image_details(data);
+            }
+        });
     }
 
     /**
@@ -569,7 +585,6 @@ export default class ImageEditor {
      */
     _server_side_cropping(data) {
         const context = this._context;
-        fancybox_change_zindex();
 
         $.ajax({
             url: this._context.url.image,
@@ -582,28 +597,15 @@ export default class ImageEditor {
                 'zetaprints-action': 'img-crop',
                 'zetaprints-ImageID': context.image_id
             },
-            error: (XMLHttpRequest, textStatus, errorThrown) => {
-                alert(cant_crop_image_text + ': ' + textStatus);
-                fancybox_change_zindex(1100);
+            error: (_, textStatus, errorThrown) => {
+                this._handle_ajax_error(cant_crop_image_text, textStatus, errorThrown)
             },
-            success: (data, textStatus) => {
+            success: (data) => {
                 this._clear_metadata();
                 this._clear_editor();
                 this._process_image_details(data);
             }
         });
-    }
-
-
-    /**
-     * @private
-     */
-    _load_image() {
-        const context = this._context;
-        fancybox_change_zindex();
-        fancybox_show_activity();
-
-        this.reload_image(context.image_id);
     }
 
     /**
@@ -612,12 +614,10 @@ export default class ImageEditor {
      */
     _server_side_rotation(direction) {
         const context = this._context;
-        const _this = this;
-        fancybox_change_zindex();
 
         this._clear_editor();
         this._clear_metadata();
-        fancybox_show_activity();
+        this._show_activity();
 
         $.ajax({
             url: context.url.image,
@@ -627,12 +627,11 @@ export default class ImageEditor {
                 'zetaprints-Rotation': direction,
                 'zetaprints-ImageID': context.image_id
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert(cant_rotate_image_text + ': ' + textStatus);
-                fancybox_change_zindex(1100);
+            error: (_, textStatus, errorThrown) => {
+                this._handle_ajax_error(cant_rotate_image_text, textStatus, errorThrown);
             },
-            success: function (data, textStatus) {
-                _this._process_image_details(data);
+            success: (data) => {
+                this._process_image_details(data);
             }
         });
     }
@@ -671,6 +670,8 @@ export default class ImageEditor {
 
         if (!(preview_width && preview_height && width && height)) {
             alert(unknown_error_occured_text);
+            console.log('unkno')
+            this._hide_activity();
 
             return;
         }
@@ -715,7 +716,6 @@ export default class ImageEditor {
      * @private
      */
     _delete_image() {
-        const _this = this;
         const context = this._context;
         if (confirm(delete_this_image_text)) {
             $.ajax({
@@ -725,12 +725,12 @@ export default class ImageEditor {
                     'zetaprints-action': 'img-delete',
                     'zetaprints-ImageID': context.image_id
                 },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert(cant_delete_text + ': ' + textStatus);
+                error: (_, textStatus, errorThrown) => {
+                    this._handle_ajax_error(cant_delete_text, textStatus, errorThrown);
                 },
-                success: function (data, textStatus) {
-                    _this._clear_editor();
-                    _this._clear_metadata();
+                success: () => {
+                    this._clear_editor();
+                    this._clear_metadata();
 
                     $('input[value="' + context.image_id + '"]').parent().remove();
                     $('#' + context.image_id).remove();
@@ -1014,7 +1014,6 @@ export default class ImageEditor {
     _show_image_editor() {
         Logger.warn('_show_image_editor', arguments);
         const context = this._context;
-        const image_editor = this;
         const $edit_container = $('#zetaprints-image-edit-container');
         const fancybox_center_function = $.fancybox.center;
 
@@ -1029,8 +1028,7 @@ export default class ImageEditor {
         };
 
         if (!ImageEditor._image_editor) {
-            fancybox_change_zindex();
-            fancybox_show_activity();
+            this._show_activity();
 
             ImageEditor._image_editor_wrapper = $('<div id="zp-image-edit-editor-wrapper" />')
                 .appendTo('body');
@@ -1061,14 +1059,11 @@ export default class ImageEditor {
                 },
                 onLoad: () => {
                     ImageEditor._image_editor.launch();
-
-                    fancybox_hide_activity();
-                    fancybox_change_zindex(1100);
+                    this._hide_activity();
                 },
                 onReady: () => {
-                    this._set_container_changed(true)
-
-                    this._update_save_image_button(true)
+                    this._set_container_changed(true);
+                    this._update_save_image_button(true);
                 },
                 onClose: () => {
                     ImageEditor._image_editor_wrapper.css('display', 'none');
@@ -1158,8 +1153,7 @@ export default class ImageEditor {
      */
     _restore_image() {
         const context = this._context;
-        fancybox_change_zindex();
-        fancybox_show_activity();
+        this._show_activity();
 
         this._clear_editor();
         this._clear_metadata();
@@ -1171,16 +1165,26 @@ export default class ImageEditor {
                 'zetaprints-action': 'img-restore',
                 'zetaprints-ImageID': context.image_id
             },
-            error: (XMLHttpRequest, textStatus, errorThrown) => {
-                alert(cant_restore_image_text + ': ' + textStatus);
-                fancybox_change_zindex(1100);
+            error: (_, textStatus, errorThrown) => {
+                this._handle_ajax_error(cant_restore_image_text, textStatus, errorThrown);
             },
-            success: (data, textStatus) => {
+            success: (data) => {
                 this._process_image_details(data);
             }
         });
     }
 
+    /**
+     * @param {string} custom_error_message
+     * @param {string} textStatus
+     * @param {string} errorThrown
+     * @private
+     */
+    _handle_ajax_error(custom_error_message, textStatus, errorThrown) {
+        Logger.error(textStatus, errorThrown);
+        this._hide_activity();
+        alert(custom_error_message + ': ' + textStatus);
+    }
 
     /**
      * @param {number} start_a
@@ -1419,6 +1423,16 @@ export default class ImageEditor {
             data = user_image.power_crop('state');
             this._update_editor_state(data);
         }
+    }
+
+    _show_activity() {
+        fancybox_change_zindex(1103);
+        fancybox_show_activity();
+    }
+
+    _hide_activity() {
+        fancybox_change_zindex(1100);
+        fancybox_hide_activity();
     }
 }
 

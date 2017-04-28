@@ -447,7 +447,6 @@ export default class PersonalizationForm {
      */
     upload_image_by_url(url) {
         const zp = this.data;
-        const personalization_form_instance = this;
         const options = {
             type: 'POST',
             dataType: 'json',
@@ -458,10 +457,9 @@ export default class PersonalizationForm {
             /**
              * @param {UploadResult} data
              */
-            success: function (data) {
-                personalization_form_instance.add_image_to_gallery(data.guid, data.thumbnail_url);
-
-                zp.image_edit.reload_image(data.guid);
+            success: (data) => {
+                this.add_image_to_gallery(data.guid, data.thumbnail_url);
+                this.image_editor.reload_image(data.guid);
             }
         };
 
