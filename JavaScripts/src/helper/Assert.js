@@ -106,4 +106,19 @@ export default class Assert {
             throw new TypeError(`Expected value to be an instance of "${expected}", "${typeof value}" given`)
         }
     }
+
+    /**
+     * Assert that the given value is a DOM element
+     *
+     * @param {*} value
+     * @param {string} argumentName
+     */
+    static assertDomElement(value, argumentName = '') {
+        if (!value.tagName) {
+            if (argumentName) {
+                throw new TypeError(`Expected argument ${argumentName} to be a DOM element, "${typeof value}" given`);
+            }
+            throw new TypeError(`Expected value to be a DOM element, "${typeof value}" given`)
+        }
+    }
 }
