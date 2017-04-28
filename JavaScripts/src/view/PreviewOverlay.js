@@ -35,7 +35,7 @@ export default class PreviewOverlay {
      * @return {PreviewOverlay}
      */
     hide() {
-        Logger.log('[PreviewOverlay] hide', this._element.get(0));
+        Logger.log('[PreviewOverlay] Hide', this._element.get(0));
         UiHelper.instance().hide(this._element);
 
         return this;
@@ -47,7 +47,7 @@ export default class PreviewOverlay {
      * @return {PreviewOverlay}
      */
     show() {
-        Logger.log('[PreviewOverlay] show', this._element.get(0));
+        Logger.log('[PreviewOverlay] Show', this._element.get(0));
         UiHelper.instance().show(this._element);
 
         return this;

@@ -20,7 +20,6 @@ export default class Resizing {
      * @param {object} opts
      */
     static fancybox_resizing_add(opts) {
-        Logger.log('fancybox_resizing_add');
         // ref to displayed image
         const $img = jQuery(UiHelper.instance().fancybox_image_selector);
 
