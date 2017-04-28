@@ -1241,8 +1241,8 @@ export default class ImageEditor {
             }
         });
 
-        //Use container's factor to convert original dimension to
-        //container's one (multiply by the factor) or vice versa (divide by the factor)
+        // Use container's factor to convert original dimension to
+        // container's one (multiply by the factor) or vice versa (divide by the factor)
         if (placeholder.width >= image.width
             && placeholder.height >= image.height) {
             container.factor = this._get_factor_a_to_b(
@@ -1266,7 +1266,7 @@ export default class ImageEditor {
         data.image.width = Math.round(image.width * container.factor);
         data.image.height = data.image.width / image.ratio;
 
-        //Centring selection frame and image to centre of the container
+        // Centring selection frame and image to centre of the container
         const width_centre = container.width / 2;
         const height_centre = container.height / 2;
 
