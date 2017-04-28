@@ -14,10 +14,16 @@ export default class Feature {
         return Feature._instance;
     }
 
-    constructor() {
+    /**
+     * @param {string[]} activated_features
+     */
+    constructor(activated_features = []) {
         if (Feature._instance) {
             Logger.error('An instance of Feature already exists');
         }
+
+        Feature._instance = this;
+        this._activated_features = activated_features;
     }
 
     /**
@@ -56,7 +62,8 @@ export default class Feature {
         if (typeof feature_name !== 'string') {
             throw new TypeError('Argument feature_name must be of type "string"');
         }
-        return true;
+
+        return -1 !== this._activated_features.indexOf(feature_name);
     }
 
     /**
@@ -67,9 +74,9 @@ export default class Feature {
             dataset: 'Dataset',
             inPreviewEdit: 'InPreviewEdit',
             fancybox: {
+                resizing: 'Fancybox/Resizing',
                 saveImageButton: 'Fancybox/SaveImageButton',
                 selectImage: 'Fancybox/SelectImage',
-                resizing: 'Fancybox/Resizing',
                 updatePreview: 'Fancybox/UpdatePreviewButton',
             }
         }
@@ -87,7 +94,7 @@ export default class Feature {
             return 'anonymous function';
         }
 
-        return method_dump.substring(9, method_dump.indexOf(' {') );
+        return method_dump.substring(9, method_dump.indexOf(' {'));
     }
 }
 
