@@ -1,7 +1,7 @@
 (function ($) {
-    var methods = {
+    const methods = {
         hide: function () {
-            $editor = this.data('text-field-editor');
+            let $editor = this.data('text-field-editor');
 
             if ($editor) {
                 $editor.removeClass('opened');
@@ -10,10 +10,11 @@
         },
 
         move: function (target) {
-            $editor = this.data('text-field-editor');
+            let $editor = this.data('text-field-editor');
 
-            if (!$editor)
+            if (!$editor) {
                 return;
+            }
 
             $editor
                 .removeClass('opened')
@@ -23,48 +24,49 @@
     };
 
     $.fn.text_field_editor = function (method) {
-        var settings = {
+        const settings = {
             button_parent: null,
             colour: '',
             change: function (data) {
             }
         };
 
-        if (methods[method])
+        if (methods[method]) {
             return methods[method]
                 .apply(this, Array.prototype.slice.call(arguments, 1));
-        else if (typeof method === 'object' || !method)
+        } else if (typeof method === 'object' || !method) {
             $.extend(settings, method);
-        else
+        } else {
             $.error('Method ' + method +
                 ' does not exist on jQuery.text_field_editor');
+        }
 
-        var $field = this;
+        const $field = this;
 
-        var $editor = $('<div class="zp-text-field-editor" />')
+        const $editor = $('<div class="zp-text-field-editor" />')
             .prependTo(settings.button_parent);
 
         $field.data('text-field-editor', $editor);
 
-        var $handle = $('<div class="zp-text-field-editor-handle">' +
+        const $handle = $('<div class="zp-text-field-editor-handle">' +
             '<div class="zp-text-field-editor-icon pen" />' +
             '</div>').appendTo($editor);
 
-        var $panel = $('<div class="zp-text-field-editor-panel">' +
+        const $panel = $('<div class="zp-text-field-editor-panel">' +
             '<div class="white-line" />' +
             '</div>')
             .appendTo($editor);
 
-        var $row = $('<div class="zp-text-field-editor-row">' +
+        const $row = $('<div class="zp-text-field-editor-row">' +
             '<div class="zp-text-field-editor-icon color-picker" />' +
             '</div>').appendTo($panel);
 
-        var $options = $('<div class="zp-text-field-editor-options" />')
+        const $options = $('<div class="zp-text-field-editor-options" />')
             .appendTo($row);
 
         $('<div class="zp-text-field-editor-clear" />').appendTo($row);
 
-        var name = 'zp-text-field-editor-colorpicker-'
+        const name = 'zp-text-field-editor-colorpicker-'
             + this.attr('name').substring(12);
 
         $('<div class="zp-text-field-editor-option">' +
@@ -72,13 +74,13 @@
             '<div><span>Default</span></div>' +
             '</div>').appendTo($options);
 
-        var $pallet = $('<div class="zp-text-field-editor-icon pallet">' +
+        const $pallet = $('<div class="zp-text-field-editor-icon pallet">' +
             '<div class="zp-text-field-editor-color-example" />' +
             '</div>');
 
-        var $color_example = $pallet.children();
+        const $color_example = $pallet.children();
 
-        var $radio_button = $('<input type="radio" name="' + name + '" value="" />');
+        const $radio_button = $('<input type="radio" name="' + name + '" value="" />');
 
         if (settings.colour) {
             $color_example.css('backgroundColor', settings.colour);
@@ -92,15 +94,15 @@
         $handle.click(function () {
             $(document).unbind('click.text-field-editor');
 
-            if ($editor.hasClass('opened'))
+            if ($editor.hasClass('opened')) {
                 $editor.removeClass('opened');
-            else {
+            } else {
                 $('div.zp-text-field-editor').removeClass('opened');
 
-                var offset = $handle.offset();
-                var position = $handle.position();
+                const offset = $handle.offset();
+                const position = $handle.position();
 
-                var c = offset.top == position.top && offset.left == position.left
+                const c = offset.top == position.top && offset.left == position.left
                     ? offset : position;
 
                 $panel.css({
@@ -117,17 +119,18 @@
         });
 
         $('input', $row).change(function () {
-            var value = $(this).val();
+            let value = $(this).val();
 
-            if (!value)
+            if (!value) {
                 $radio_button.colorpicker('open');
-            else if (value == 'default')
+            } else if (value == 'default') {
                 _change('color', undefined);
-            else
+            } else {
                 _change('color', value);
+            }
         });
 
-        var color_picker_on = false;
+        let color_picker_on = false;
 
         $radio_button.colorpicker({
             color: '804080',
@@ -170,11 +173,12 @@
         });
 
         function out_editor_click(event) {
-            if (color_picker_on)
+            if (color_picker_on) {
                 return;
+            }
 
-            var editor = $editor.get(0);
-            var child_parent = $(event.target)
+            const editor = $editor.get(0);
+            const child_parent = $(event.target)
                 .parents('div.zp-text-field-editor')
                 .get(0);
 
@@ -184,12 +188,13 @@
         }
 
         function _change(name, value) {
-            if (value === undefined)
+            if (value === undefined) {
                 $editor.removeClass('state-changed');
-            else
+            } else {
                 $editor.addClass('state-changed');
+            }
 
-            var data = {};
+            const data = {};
             data[name] = value;
 
             settings.change(data);
