@@ -1,6 +1,9 @@
 /**
  * Created by cod on 26.4.17.
  */
+import NotificationCenter from "../NotificationCenter";
+import GlobalEvents from "../GlobalEvents";
+import Assert from "./Assert";
 export default class DataHelper {
     /**
      * @param {number} page_number
@@ -53,9 +56,10 @@ export default class DataHelper {
 
     /**
      * @param {Page} page
+     * @param {boolean} send_notification
      * @api
      */
-    static store_user_data(page) {
+    static store_user_data(page, send_notification = true) {
         let name;
         const fields = page.fields;
         const images = page.images;
@@ -78,6 +82,10 @@ export default class DataHelper {
 
                 images[name].previous_value = images[name].value;
             }
+        }
+
+        if (send_notification) {
+            NotificationCenter.instance().notify(GlobalEvents.USER_DATA_SAVED, {instance: this, fields, images, page});
         }
     }
 
@@ -110,7 +118,7 @@ export default class DataHelper {
     }
 
     /**
-     * @param pages
+     * @param {Object.<string, Page>} pages
      * @return {boolean}
      * @api
      */
@@ -145,5 +153,22 @@ export default class DataHelper {
         }
 
         return previews.substring(1);
+    }
+
+    /**
+     * @param {number} page_number
+     * @return {object[]}
+     */
+    static serialize_fields_for_page(page_number) {
+        Assert.assertNumeric(page_number, 'page_number');
+        return $(
+            [
+                '#input-fields-page-' + page_number,
+                '#stock-images-page-' + page_number
+            ].join(', ')
+        )
+            .find('.zetaprints-field')
+            .filter(':text, textarea, :checked, select, [type="hidden"]')
+            .serializeArray();
     }
 }

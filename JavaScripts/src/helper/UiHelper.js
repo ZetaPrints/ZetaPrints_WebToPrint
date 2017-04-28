@@ -196,7 +196,14 @@ export default class UiHelper {
      * @return {*|jQuery|HTMLElement}
      */
     get select_image_elements() {
-        return $('.' + this.select_image_elements_class_name);
+        return $(this.select_image_elements_selector);
+    }
+
+    /**
+     * @return {string}
+     */
+    get select_image_elements_selector() {
+        return '.' + this.select_image_elements_class_name;
     }
 
     /**

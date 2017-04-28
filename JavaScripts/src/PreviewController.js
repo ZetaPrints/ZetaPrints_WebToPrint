@@ -73,12 +73,13 @@ export default class PreviewController {
     }
 
     /**
-     * Adds a preview
+     * Adds the previews to the product page
      *
      * @param {DataInterface} data
      */
     add_previews(data) {
-        //Add previews to the product page
+        Logger.debug(`[${this.constructor.name}] Add previews`);
+
         const pages = data.template_details.pages;
         for (let page_number in pages) {
             if (pages.hasOwnProperty(page_number)) {
@@ -158,7 +159,7 @@ export default class PreviewController {
         page.is_updating = false;
 
         if (!DataHelper.page_has_updating(pages)) {
-            //Enable Update preview action
+            // Enable Update preview action
             $update_preview_button.unbind('click');
             $update_preview_button.click(() => {
                 this.update_preview(this.form_instance.data);
@@ -172,27 +173,29 @@ export default class PreviewController {
      * Updates the preview
      *
      * @param {DataInterface} zeta_prints_data
-     * @param {number[]|number|undefined}update_pages
+     * @param {number[]} update_pages
      * @param {boolean} preserve_fields
      */
-    update_preview(zeta_prints_data, update_pages = undefined, preserve_fields = false) {
+    update_preview(zeta_prints_data, update_pages = [], preserve_fields = false) {
+        Logger.debug(`[${this.constructor.name}] Update preview`);
         Assert.assertObject(zeta_prints_data);
         const form_instance = this.form_instance;
 
         //!!!TODO: workaround
         // Remember page number
-        const current_page = typeof update_pages === 'undefined'
+        const current_page = typeof update_pages === 'undefined' || update_pages.length === 0
             ? zeta_prints_data.current_page
             : update_pages.shift();
 
         if (typeof current_page === 'undefined') {
-            Logger.warn('Could not detect current page');
+            Logger.warn('[PreviewController] Could not detect current page');
             return;
         }
 
         // Disable click action
-        UiHelper.instance().update_preview_form_button.unbind('click');
-        UiHelper.instance().preview_overlay.show();
+        const ui_helper = UiHelper.instance();
+        ui_helper.update_preview_form_button.unbind('click');
+        ui_helper.preview_overlay.show();
 
         if ($.fn.text_field_editor) {
             $('div.zetaprints-page-input-fields input,' +
@@ -357,7 +360,6 @@ export default class PreviewController {
      * @param {Page} page
      */
     _update_preview_error(page) {
-        const $update_preview_button = UiHelper.instance().update_preview_form_button;
         if (++this._number_of_failed_updates >= 2) {
             alert(cannot_update_preview_second_time);
 
@@ -368,14 +370,15 @@ export default class PreviewController {
             alert(cannot_update_preview);
         }
 
-        $update_preview_button.click(() => {
+        const ui_helper = UiHelper.instance();
+        ui_helper.update_preview_form_button.click(() => {
             Logger.log('Should update preview');
             this.update_preview(this.form_instance.data);
         });
 
         page.is_updating = false;
 
-        UiHelper.instance().preview_overlay.hide();
+        ui_helper.preview_overlay.hide();
     }
 
     /**
@@ -383,7 +386,7 @@ export default class PreviewController {
      * @param {Page} page
      * @param {number} current_page
      * @param {TemplateDetail} server_data
-     * @param update_pages
+     * @param {number[]} update_pages
      * @param preserve_fields
      * @param {DataInterface} local_data
      * @private
@@ -483,7 +486,8 @@ export default class PreviewController {
      * @private
      */
     _store_user_data(local_data, page) {
-        UiHelper.instance().product_form.user_data_changed = false;
+        const ui_helper = UiHelper.instance();
+        ui_helper.product_form.user_data_changed = false;
 
         if (
             DataHelper.is_all_pages_updated(local_data.template_details)
@@ -493,18 +497,18 @@ export default class PreviewController {
 
             $('input[name="zetaprints-previews"]').val(DataHelper.export_previews_to_string(local_data.template_details));
 
-            UiHelper.instance().hide($('div.zetaprints-notice.to-update-preview'));
+            ui_helper.hide($('div.zetaprints-notice.to-update-preview'));
             this.fake_add_to_cart_button.remove();
             $('div.save-order span').css('display', 'none');
 
             const pages = local_data.template_details.pages;
             for (let n in pages) {
                 if (pages.hasOwnProperty(n)) {
-                    DataHelper.store_user_data(pages[n]);
+                    DataHelper.store_user_data(pages[n], false);
                 }
             }
         } else {
-            DataHelper.store_user_data(page);
+            DataHelper.store_user_data(page, false);
         }
     }
 

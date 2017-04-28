@@ -277,7 +277,6 @@ export default class InPreviewEditController {
             $box = this._box;
         }
 
-        const select_image_elements_class_name = UiHelper.instance().select_image_elements_class_name;
 
         $box.find('.fieldbox-field').children().each(function () {
             const $element = $(this);
@@ -321,6 +320,7 @@ export default class InPreviewEditController {
                     data.parent.parents('dl').children('dt'));
             }
 
+            const select_image_elements_class_name = UiHelper.instance().select_image_elements_class_name;
             if (data.parent.hasClass(select_image_elements_class_name)) {
                 personalization_form_instance.scroll_strip($($element
                     .find('ul.tab-buttons li.ui-tabs-selected a')
@@ -794,7 +794,7 @@ export default class InPreviewEditController {
     _register_image_selector_handler() {
         const _this = this;
 
-        $(UiHelper.instance().select_image_elements_class_name)
+        $(UiHelper.instance().select_image_elements_selector)
             .mouseover(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
                 const name = $(this).attr('title');

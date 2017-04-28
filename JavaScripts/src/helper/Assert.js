@@ -57,6 +57,25 @@ export default class Assert {
     }
 
     /**
+     * Asserts that the given value is a jQuery object or DOM element
+     *
+     * @param {*} value
+     * @param {string} argumentName
+     */
+    static assertjQueryOrDomElement(value, argumentName = '') {
+        const actual_type = typeof value;
+        if (actual_type === 'object' && (typeof value.jquery !== 'undefined' || value.tagName)) {
+            return;
+        }
+
+        if (argumentName) {
+            throw new TypeError(`Expected argument ${argumentName} to be a jQuery object or DOM element, "${actual_type}" given`);
+        }
+        throw new TypeError(`Expected value to be a jQuery object or DOM element, "${actual_type}" given`);
+    }
+
+
+    /**
      * Asserts that the given value is of type string
      *
      * @param {*} value
@@ -74,6 +93,21 @@ export default class Assert {
      */
     static assertNumber(value, argumentName = '') {
         Assert.assertType(value, 'number', argumentName);
+    }
+
+    /**
+     * Asserts that the given value is of type number or can successfully be transformed into one
+     *
+     * @param {*} value
+     * @param {string} argumentName
+     */
+    static assertNumeric(value, argumentName = '') {
+        if (isNaN(parseFloat(value))) {
+            if (argumentName) {
+                throw new TypeError(`Argument ${argumentName} can not be converted into number, "${value}" given`);
+            }
+            throw new TypeError(`Value can not be converted into number, "${value}" given`);
+        }
     }
 
     /**

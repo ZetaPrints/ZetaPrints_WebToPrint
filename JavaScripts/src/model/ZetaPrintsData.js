@@ -46,12 +46,6 @@ DataInterface.prototype = {
         /**
          * @deprecated
          */
-        this.update_preview = () => {
-        };
-
-        /**
-         * @deprecated
-         */
         this.scroll_strip = () => {
         };
 

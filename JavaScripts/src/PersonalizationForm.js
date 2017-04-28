@@ -6,7 +6,7 @@ import ImageUpload from "./ImageUpload";
 import PreviewController from "./PreviewController";
 import FakeAddToCartButton from "./view/FakeAddToCartButton";
 import UiHelper from './helper/UiHelper';
-import MetaDataHelper from "./MetaDataHelper";
+import MetaDataHelper from "./helper/MetaDataHelper";
 
 import $ from './jQueryLoader';
 import ImageSelector from "./ImageSelector";
@@ -23,6 +23,9 @@ import LightboxConfiguration from "./model/LightboxConfiguration";
 import Assert from "./helper/Assert";
 import ZoomHelper from "./helper/ZoomHelper";
 import DataHelper from "./helper/DataHelper";
+import NotificationCenter from "./NotificationCenter";
+import GlobalEvents from "./GlobalEvents";
+import ImageSelectionController from "./ImageSelectionController";
 
 /**
  * @implements DataInterface
@@ -41,9 +44,8 @@ export default class PersonalizationForm {
         const personalization_form_instance = this;
 
         this._enlarge_editor_click_handler = this._enlarge_editor_click_handler.bind(this);
-        this.image_field_select_handler = this.image_field_select_handler.bind(this);
+        // this.image_field_select_handler = this.image_field_select_handler.bind(this);
         this.add_image_to_gallery = this.add_image_to_gallery.bind(this);
-        this.update_preview = this.update_preview.bind(this);
         zp.scroll_strip = this.scroll_strip = this.scroll_strip.bind(this);
 
         const $add_to_cart_button = this._get_add_to_cart_button();
@@ -53,6 +55,7 @@ export default class PersonalizationForm {
         const preview_controller = this.preview_controller = new PreviewController(this, fake_add_to_cart_button);
         this.image_editor = new ImageEditorController(this);
         this.in_preview_edit_controller = new InPreviewEditController(this);
+        this.image_selection_controller = new ImageSelectionController(this);
         this._select_image = new SelectImage(preview_controller);
 
         this._preview_overlay = null;
@@ -94,7 +97,7 @@ export default class PersonalizationForm {
         //If update_first_preview_on_load parameter was set
         if (zp.update_first_preview_on_load) {
             //Update preview for the first page
-            preview_controller.update_preview(this.data, undefined, zp.preserve_fields);
+            preview_controller.update_preview(this.data, [], zp.preserve_fields);
         }
         // Create array for preview images sharing links
         if (window.place_preview_image_sharing_link) {
@@ -175,7 +178,7 @@ export default class PersonalizationForm {
 
         Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_initialise, zp);
 
-        this._patchProductAddToCart();
+        this._patch_product_add_to_cart();
 
         this._add_dynamic_methods_to_data();
         this._init_image_upload_buttons();
@@ -184,12 +187,13 @@ export default class PersonalizationForm {
         this._register_click_next_page();
         this._register_in_dialog_lightbox();
         this._register_click_edit_thumbnail();
-        this._prepareTextFieldEditor();
+        this._prepare_text_field_editor();
         this._prepareQtip();
         this._register_input_field_events();
         this._register_delete_button_click();
         this._register_image_click();
         this._register_palette_change();
+        this._register_notification_listeners();
 
         if (zp.has_shapes) {
             Feature.instance().call(Feature.feature.inPreviewEdit, this.in_preview_edit_controller.add_in_preview_edit_handlers);
@@ -338,9 +342,6 @@ export default class PersonalizationForm {
         const data = this.data;
         const trs = $('.tabs-wrapper > .user-images > table > tbody > tr');
 
-        const image_field_select_handler = (event) => {
-            _this.image_field_select_handler($(event.target), data);
-        };
         const thumbnail_edit_click_handler = function (event) {
             event.preventDefault();
             const $target = $(this);
@@ -377,10 +378,9 @@ export default class PersonalizationForm {
                 .removeClass('zp-html-template')
                 .insertAfter($template);
 
-            $td
-                .children('.zetaprints-field')
-                .val(guid)
-                .change(image_field_select_handler);
+            const fields = $td.children('.zetaprints-field');
+            fields.val(guid);
+            _this.image_selection_controller.register_fields(fields);
 
             $td
                 .children('.image-edit-thumb')
@@ -404,57 +404,6 @@ export default class PersonalizationForm {
     }
 
     /**
-     * @param {jQuery|HTMLElement} target
-     * @param {DataInterface} data
-     */
-    image_field_select_handler(target, data) {
-        let $selector = target.parents(UiHelper.instance().select_image_elements_class_name);
-        let $content = $selector.parents('.selector-content');
-
-        if (!$selector.get(0)) {
-            $content = target.parents('.selector-content');
-            $selector = $content.data('in-preview-edit').parent;
-        }
-
-
-        const name = target.attr('name').substring(12);
-        const value = target.val();
-        const has_value = !!value.length;
-
-        const product_form = UiHelper.instance().product_form;
-        const page = data.template_details.pages[data.current_page];
-        const image = page.images[name];
-
-        if (image) {
-            image.value = value;
-
-            if (typeof image.previous_value !== 'undefined') {
-                product_form.user_data_changed = image.previous_value !== value;
-            }
-        }
-
-
-        const fancybox_outer = UiHelper.instance().fancybox_outer;
-        if (has_value) {
-            $selector.removeClass('no-value');
-            fancybox_outer.addClass('modified');
-            product_form.modified = true;
-
-            //If ZetaPrints advanced theme is enabled then mark shape as edited then image is selected
-            Feature.instance().call(Feature.feature.inPreviewEdit, () => {
-                this.in_preview_edit_controller.mark_shape_as_edited(page.shapes[name]);
-            });
-        } else {
-            $selector.addClass('no-value');
-            fancybox_outer.removeClass('modified');
-            //If ZetaPrints advanced theme is enabled then or unmark shape then Leave blank is selected
-            Feature.instance().call(Feature.feature.inPreviewEdit, () => {
-                this.in_preview_edit_controller.unmark_shape_as_edited(page.shapes[name]);
-            });
-        }
-    }
-
-    /**
      * @param {number} page_number
      * @param {object} links
      */
@@ -466,20 +415,6 @@ export default class PersonalizationForm {
             $('span.zetaprints-share-link').addClass('empty');
             $('#zetaprints-share-link-input').val('');
         }
-    }
-
-    /**
-     *
-     * @param {MouseEvent} event
-     * @param {undefined|*[]} update_pages
-     * @param {boolean} preserve_fields
-     * @return {boolean}
-     */
-    update_preview(event, update_pages, preserve_fields) {
-        this.preview_controller.update_preview(this.data, update_pages, preserve_fields);
-        event.preventDefault();
-
-        return false;
     }
 
     /**
@@ -603,11 +538,25 @@ export default class PersonalizationForm {
      * @private
      */
     _add_dynamic_methods_to_data() {
-        const _update_preview = this.update_preview;
+        const _this = this;
+
+        /**
+         * @param {MouseEvent} event
+         * @param {undefined|*[]} update_pages
+         * @param {boolean} preserve_fields
+         * @return {boolean}
+         */
+        const update_preview = function (event, update_pages, preserve_fields) {
+            _this.preview_controller.update_preview(_this.data, update_pages, preserve_fields);
+            event.preventDefault();
+
+            return false;
+        };
+
         this.data.update_preview = function () {
             Logger.warn('Called update_preview on ZetaPrints data');
             /** @type {function} _update_preview */
-            _update_preview.apply(this, arguments);
+            update_preview.apply(this, arguments);
         };
 
         this.data.show_user_images = ($panel) => {
@@ -658,7 +607,7 @@ export default class PersonalizationForm {
             }
 
             UiHelper.instance().select_image_elements.each(function () {
-                new ImageSelector(this, personalization_form_instance);
+                new ImageSelector(personalization_form_instance, this);
             });
         });
     }
@@ -760,9 +709,9 @@ export default class PersonalizationForm {
             const metadata = $input.data('metadata');
             if (metadata) {
                 metadata['img-id'] = $input.val();
-                MetaDataHelper.zp_set_metadata(field, metadata);
+                MetaDataHelper.replace_metadata(field, metadata, false);
             } else {
-                MetaDataHelper.zp_clear_metadata(field);
+                MetaDataHelper.clear_metadata(field, false);
             }
         });
     }
@@ -791,7 +740,7 @@ export default class PersonalizationForm {
                         const field = pages[page].fields[field_name];
 
                         if ('' + field.palette === '' + id) {
-                            MetaDataHelper.zp_set_metadata(field, {'col-f': colour});
+                            MetaDataHelper.replace_metadata(field, {'col-f': colour});
                         }
                     }
                 }
@@ -802,7 +751,7 @@ export default class PersonalizationForm {
                         const image = pages[page].images[image_name];
 
                         if ('' + image.palette === '' + id) {
-                            MetaDataHelper.zp_set_metadata(image, {'col-f': colour});
+                            MetaDataHelper.replace_metadata(image, {'col-f': colour});
                         }
                     }
                 }
@@ -888,27 +837,24 @@ export default class PersonalizationForm {
     /**
      * @private
      */
-    _patchProductAddToCart() {
-        const zp = this.data;
-        const preview_controller = this.preview_controller;
+    _patch_product_add_to_cart() {
+        if (typeof window.productAddToCartForm === 'object' && typeof window.productAddToCartForm.submit === 'function') {
+            const original_function = window.productAddToCartForm.submit;
 
-        if (typeof window.productAddToCartForm === 'object') {
-            if (typeof window.productAddToCartForm.submit === 'function') {
-                const func = window.productAddToCartForm.submit;
+            window.productAddToCartForm.submit = (button, url) => {
+                const text = window.notice_update_preview_after_data_changed,
+                    pages = this.data.template_details.pages,
+                    changed_pages = this._page_get_changed(pages);
 
-                window.productAddToCartForm.submit = (button, url) => {
-                    const text = window.notice_update_preview_after_data_changed,
-                        pages = zp.template_details.pages,
-                        changed_pages = this._page_get_changed(pages);
+                if (changed_pages.length > 0 && confirm(text)) {
+                    this.preview_controller.update_preview(this.data, changed_pages, false);
+                    return false;
+                }
 
-                    if (changed_pages.length > 0 && confirm(text)) {
-                        preview_controller.update_preview(zp, changed_pages, false);
-                        return false;
-                    }
-
-                    func(button, url);
-                };
-            }
+                original_function(button, url);
+            };
+        } else {
+            Logger.warn('Could not patch productAddToCartForm.submit() method');
         }
     }
 
@@ -940,7 +886,7 @@ export default class PersonalizationForm {
     /**
      * @private
      */
-    _prepareTextFieldEditor() {
+    _prepare_text_field_editor() {
         if (!$.fn.text_field_editor) {
             return;
         }
@@ -957,11 +903,11 @@ export default class PersonalizationForm {
                     const field = zp.template_details.pages[page]
                         .fields[$text_field.attr('name').substring(12)];
 
-                    const cached_value = MetaDataHelper.zp_get_metadata(field, 'col-f', '');
+                    const cached_value = MetaDataHelper.get_metadata(field, 'col-f', '');
 
                     //Remove metadata values, so they won't be used in update preview requests
                     //by default
-                    MetaDataHelper.zp_set_metadata(field, 'col-f', undefined);
+                    MetaDataHelper.set_metadata(field, 'col-f', undefined);
 
                     if (field['colour-picker'] !== 'RGB') {
                         return;
@@ -978,7 +924,7 @@ export default class PersonalizationForm {
                                 'col-f': data.color
                             };
 
-                            MetaDataHelper.zp_set_metadata(field, metadata);
+                            MetaDataHelper.replace_metadata(field, metadata);
                         }
                     });
                 }
@@ -1119,83 +1065,15 @@ export default class PersonalizationForm {
      * @private
      */
     _page_get_changed(pages) {
-        let n;
         const changed_pages = [];
-
-        for (n in pages) {
+        console.log(pages);
+        for (let n in pages) {
             if (pages.hasOwnProperty(n) && DataHelper.is_user_data_changed(pages[n])) {
                 changed_pages[changed_pages.length] = n;
             }
         }
 
         return changed_pages;
-    }
-
-    /**
-     * @param {string} s
-     * @return {string}
-     * @private
-     */
-    _prepare_string_for_php(s) {
-        return s.replace(/\./g, '\x0A');
-    }
-
-    /**
-     * @param {object[]} data
-     * @return {object[]}
-     * @private
-     */
-    _prepare_post_data_for_php(data) {
-        for (let i = 0, l = data.length; i < l; i++) {
-            data[i].name = this._prepare_string_for_php(data[i].name);
-        }
-
-        return data;
-    }
-
-    /**
-     * @param {Page} page
-     * @param {object[]}  data
-     * @return {object[]}
-     */
-    _prepare_metadata_from_page(page, data) {
-        let metadata;
-        let name;
-        let l = data.length;
-
-        const images = page.images;
-        for (name in images) {
-            if (images.hasOwnProperty(name) && (metadata = MetaDataHelper.zp_convert_metadata_to_string(images[name]))) {
-                data[l++] = {
-                    name: 'zetaprints-*#' + this._prepare_string_for_php(name),
-                    value: metadata
-                };
-            }
-        }
-        const fields = page.fields;
-        for (name in fields) {
-            if (fields.hasOwnProperty(name) && (metadata = MetaDataHelper.zp_convert_metadata_to_string(fields[name]))) {
-                data[l++] = {
-                    name: 'zetaprints-*_' + this._prepare_string_for_php(name),
-                    value: metadata
-                };
-            }
-        }
-
-        return data;
-    }
-
-    /**
-     * @param {number} page_number
-     * @return {object[]}
-     * @private
-     */
-    _serialize_fields_for_page(page_number) {
-        return $('#input-fields-page-' + page_number + ', #stock-images-page-'
-            + page_number)
-            .find('.zetaprints-field')
-            .filter(':text, textarea, :checked, select, [type="hidden"]')
-            .serializeArray();
     }
 
     /**
@@ -1208,10 +1086,7 @@ export default class PersonalizationForm {
          */
         const page = this.data.template_details.pages[page_number];
 
-        return this._prepare_metadata_from_page(
-            page,
-            this._prepare_post_data_for_php(this._serialize_fields_for_page(page_number))
-        );
+        return MetaDataHelper.get_prepared_metadata_from_page(page, page_number);
     }
 
     /**
@@ -1339,5 +1214,18 @@ export default class PersonalizationForm {
                 range.select();
             }
         }
+    }
+
+    /**
+     * @private
+     */
+    _register_notification_listeners() {
+        NotificationCenter.instance()
+            .register(GlobalEvents.USER_DATA_CHANGED, () => {
+                this.preview_controller.update_preview(this.data);
+            })
+            .register(GlobalEvents.USER_DATA_SAVED, () => {
+                this.preview_controller.update_preview(this.data);
+            });
     }
 }

@@ -2,30 +2,28 @@ import Logger from './Logger';
 
 import $ from './jQueryLoader';
 import ImageDimensions from "./model/ImageDimensions";
-import SaveImageButton from "./fancybox/SaveImageButton";
 import Feature from "./Feature";
 import MetaData from "./model/MetaData";
 import UiHelper from "./helper/UiHelper";
 import NotificationHelper from "./NotificationCenter";
-import MetaDataHelper from "./MetaDataHelper";
+import MetaDataHelper from "./helper/MetaDataHelper";
 import Assert from "./helper/Assert";
-import PersonalizationForm from "./PersonalizationForm";
 import ImageEditorController from "./ImageEditorController";
 
 const fancybox_show_activity = () => {
     const fancybox = $.fancybox;
-    if (typeof fancybox.showLoading === 'function') {
+    if (typeof fancybox['showLoading'] === 'function') {
         fancybox.showLoading();
-    } else if (typeof fancybox.showActivity === 'function') {
+    } else if (typeof fancybox['showActivity'] === 'function') {
         fancybox.showActivity();
     }
 };
 
 const fancybox_hide_activity = () => {
     const fancybox = $.fancybox;
-    if (typeof fancybox.hideLoading === 'function') {
+    if (typeof fancybox['hideLoading '] === 'function') {
         fancybox.hideLoading();
-    } else if (typeof fancybox.hideActivity === 'function') {
+    } else if (typeof fancybox['hideActivity '] === 'function') {
         fancybox.hideActivity();
     }
 };
@@ -559,9 +557,9 @@ export default class ImageEditor {
 
         if (metadata) {
             metadata['img-id'] = $input.val();
-            MetaDataHelper.zp_set_metadata(context.placeholder, metadata);
+            MetaDataHelper.replace_metadata(context.placeholder, metadata);
         } else {
-            MetaDataHelper.zp_clear_metadata(context.placeholder);
+            MetaDataHelper.clear_metadata(context.placeholder);
         }
     }
 
