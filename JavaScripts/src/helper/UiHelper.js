@@ -46,6 +46,8 @@ export default class UiHelper {
     hide(element) {
         if (Array.isArray(element)) {
             element.forEach((i) => this.hide(i));
+
+            return this;
         }
         if (typeof element === 'string' || typeof element.nodeName === 'string') {
             return this.hide($(element));
@@ -68,6 +70,8 @@ export default class UiHelper {
     show(element) {
         if (Array.isArray(element)) {
             element.forEach((i) => this.show(i));
+
+            return this;
         }
         if (typeof element === 'string' || typeof element.nodeName === 'string') {
             return this.show($(element));
