@@ -122,7 +122,7 @@ export default class InPreviewEditController {
             const name = names_collection[i];
 
             let $field = $('*[name="zetaprints-_' + name + '"], ' +
-                'div.zetaprints-images-selector[title="' + name + '"] div.head');
+                'div.' + UiHelper.instance().select_image_elements_class_name + '[title="' + name + '"] div.head');
 
             const $parent = $field.parents('.zetaprints-text-field-wrapper');
 
@@ -196,7 +196,7 @@ export default class InPreviewEditController {
 
             const $li = this._popup_field_by_name_create_li(shape_name, i, tab_title).appendTo($ul);
 
-            let $field;
+            let $field = null;
             if (page.fields && page.fields[shape_name]) {
                 const __ret = this._popup_field_by_name_for_text_field(zp, shape_name, name, page, $li);
                 $field = __ret.$field;
@@ -212,6 +212,10 @@ export default class InPreviewEditController {
                 } else {
                     width = min_width;
                 }
+            } else {
+                Logger.error(`[InPreviewEditController] Shape named ${shape_name} is neither in the page's fields nor in it's images `);
+
+                continue;
             }
 
 
@@ -273,6 +277,8 @@ export default class InPreviewEditController {
             $box = this._box;
         }
 
+        const select_image_elements_class_name = UiHelper.instance().select_image_elements_class_name;
+
         $box.find('.fieldbox-field').children().each(function () {
             const $element = $(this);
             let $_element = $element;
@@ -315,7 +321,7 @@ export default class InPreviewEditController {
                     data.parent.parents('dl').children('dt'));
             }
 
-            if (data.parent.hasClass('zetaprints-images-selector')) {
+            if (data.parent.hasClass(select_image_elements_class_name)) {
                 personalization_form_instance.scroll_strip($($element
                     .find('ul.tab-buttons li.ui-tabs-selected a')
                     .attr('href')));
@@ -788,7 +794,7 @@ export default class InPreviewEditController {
     _register_image_selector_handler() {
         const _this = this;
 
-        $('div.zetaprints-images-selector')
+        $(UiHelper.instance().select_image_elements_class_name)
             .mouseover(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
                 const name = $(this).attr('title');

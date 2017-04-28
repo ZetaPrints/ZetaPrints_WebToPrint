@@ -408,7 +408,7 @@ export default class PersonalizationForm {
      * @param {DataInterface} data
      */
     image_field_select_handler(target, data) {
-        let $selector = target.parents('div.zetaprints-images-selector');
+        let $selector = target.parents(UiHelper.instance().select_image_elements_class_name);
         let $content = $selector.parents('.selector-content');
 
         if (!$selector.get(0)) {

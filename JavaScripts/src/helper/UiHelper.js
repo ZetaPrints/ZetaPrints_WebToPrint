@@ -196,7 +196,14 @@ export default class UiHelper {
      * @return {*|jQuery|HTMLElement}
      */
     get select_image_elements() {
-        return $('.zetaprints-images-selector ');
+        return $('.' + this.select_image_elements_class_name);
+    }
+
+    /**
+     * @return {string}
+     */
+    get select_image_elements_class_name() {
+        return 'zetaprints-images-selector';
     }
 
     /**
