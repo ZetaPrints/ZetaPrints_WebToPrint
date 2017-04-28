@@ -172,9 +172,7 @@ export default class PersonalizationForm {
         }
 
         const image_tab_controller = new ImageTabController(this);
-        $('div.zetaprints-image-tabs li').click(function () {
-            image_tab_controller.handle_click(this)
-        });
+        image_tab_controller.register_click();
 
         Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_initialise, zp);
 

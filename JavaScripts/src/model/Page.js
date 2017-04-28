@@ -11,72 +11,77 @@ export default class Page extends DataObject {
         /**
          * @type {string}
          */
-        this.name = "";
+        this.name = undefined;
 
         /**
          * @type {{}}
          */
-        this.fields = {};
+        this.fields = undefined;
 
         /**
          * @type {boolean}
          */
-        this.static = false;
+        this.static = undefined;
 
         /**
          * @type {boolean}
          */
-        this.is_updating = false;
+        this.is_updating = undefined;
+
+        /**
+         * @type {boolean}
+         */
+        this.preview_is_scaled = undefined;
 
         /**
          * @type {string}
          */
-        this["preview-image"] = "";
+        this["preview-image"] = undefined;
 
         /**
          * @type {string}
          */
-        this["thumb-image"] = "";
+        this["thumb-image"] = undefined;
 
         /**
          * @type {number}
          */
-        this["width-in"] = 0;
+        this["width-in"] = undefined;
 
         /**
          * @type {number}
          */
-        this["height-in"] = 0;
+        this["height-in"] = undefined;
 
         /**
          * @type {number}
          */
-        this["width-cm"] = 0;
+        this["width-cm"] = undefined;
 
         /**
          * @type {number}
          */
-        this["height-cm"] = 0;
+        this["height-cm"] = undefined;
 
         /**
          * @type {string}
          */
-        this["preview-url"] = ""; // https://domain.tld/web-to-print/preview/get/guid/1234.jpg/
+        this["preview-url"] = undefined; // https://domain.tld/web-to-print/preview/get/guid/1234.jpg/
 
         /**
          * @type {string}
          */
-        this["thumb-url"] = ""; // https://domain.tld/web-to-print/thumbnail/get/guid/1234.jpg/width/100/height/100/
+        this["thumb-url"] = undefined; // https://domain.tld/web-to-print/thumbnail/get/guid/1234.jpg/width/100/height/100/
 
         /**
          * @type {object.<string, Shape>}
          */
-        this.shapes = {};
+        this.shapes = undefined;
 
         /**
          * @type {object.<string, {}>}
          */
-        this.images = {};
+        this.images = undefined;
 
         if (typeof data['shapes'] !== 'undefined') {
             data['shapes'] = this._transform_shapes(data['shapes']);

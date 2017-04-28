@@ -17,18 +17,26 @@ export default class ImageTabController {
     }
 
     /**
-     * @param {HTMLElement} element
+     * Register the on click event listener
      */
-    handle_click(element) {
+    register_click() {
+        const _this = this;
+        this._get_tab_buttons().click(function () {
+            _this._handle_click(this)
+        });
+    }
+
+    /**
+     * @param {HTMLElement} element
+     * @private
+     */
+    _handle_click(element) {
         const personalization_form = this.personalization_form;
         const data = personalization_form.data;
         const ui_helper = UiHelper.instance();
         const product_form = ui_helper.product_form;
 
-        console.log(element);
-        let page_rel;
-
-        $('div.zetaprints-image-tabs li').removeClass('selected');
+        this._get_tab_buttons().removeClass('selected');
 
         // Hide preview image, preview placeholder with spinner, text fields and image fields for the current page
         ui_helper.hide([
@@ -45,18 +53,15 @@ export default class ImageTabController {
         }
 
         $(element).addClass('selected');
-        page_rel = $('img', element).attr('rel');
-
+        const page_rel = $('img', element).attr('rel');
         personalization_form.disable_image_zoomer();
 
-        console.log('hidden', data.is_fields_hidden);
         // Show text fields and image fields for the selected page if it's enabled
         if (!data.is_fields_hidden) {
             ui_helper.show([
                 '#stock-images-' + page_rel,
                 '#input-fields-' + page_rel
             ]);
-            // $('#stock-images-' + page + ', #input-fields-' + page).removeClass('zp-hidden');
         }
 
         // Show preview image, preview placeholder with spinner for the selected page
@@ -65,15 +70,14 @@ export default class ImageTabController {
             '#zp-placeholder-for-preview-' + page_rel,
             '#page-size-' + page_rel
         ]);
-        // $('#preview-image-' + page + ', #zp-placeholder-for-preview-' + page + ', #page-size-' + page).removeClass('zp-hidden');
 
-        //Add resizer for text inputs and text areas for the selected page
+        // Add resizer for text inputs and text areas for the selected page
         if ($.fn.text_field_resizer) {
             $('#input-fields-' + page_rel + ' .zetaprints-text-field-wrapper').text_field_resizer();
         }
 
-        //Remember number of selected page
-        data.current_page = page_rel.split('-')[1] * 1;
+        // Remember number of selected page
+        data.current_page = parseInt(page_rel.split('-')[1], 10);
 
         product_form.modified = DataHelper.has_changed_fields_on_page(data.current_page);
 
@@ -84,20 +88,15 @@ export default class ImageTabController {
         //     .children('img')
         //     .outerWidth();
 
-        page_rel = data
-            .template_details
-            .pages[data.current_page];
-
-        if (!page_rel.preview_is_scaled || has_shapes) {
+        const page = new Page(data.template_details.pages[data.current_page]);
+        if (!page.preview_is_scaled || has_shapes) {
             ui_helper.hide(ui_helper.enlarge_button);
-            // ui_helper.enlarge_button.addClass('zp-hidden');
         } else {
-            //Show Enlarge button
+            // Show Enlarge button
             ui_helper.show(ui_helper.enlarge_button);
-            // ui_helper.enlarge_button.removeClass('zp-hidden');
         }
 
-        this._toggle_buttons(page_rel, has_shapes);
+        this._toggle_buttons(page, has_shapes);
 
         //Set preview images sharing link for the current page
         if (window.place_preview_image_sharing_link) {
@@ -122,14 +121,21 @@ export default class ImageTabController {
             $('#zp-dataset-button').addClass('hidden');
         }
 
-
-        product_form.user_data_changed = DataHelper.is_user_data_changed(page_rel);
+        product_form.user_data_changed = DataHelper.is_user_data_changed(page);
 
         if (personalization_form.can_show_next_page_button_for_page(data.current_page, data)) {
             ui_helper.next_page_button.show();
         } else {
             ui_helper.next_page_button.hide();
         }
+    }
+
+    /**
+     * @return {*|jQuery|HTMLElement}
+     * @private
+     */
+    _get_tab_buttons() {
+        return $('div.zetaprints-image-tabs li');
     }
 
     /**
@@ -141,6 +147,7 @@ export default class ImageTabController {
      */
     _toggle_buttons(page, has_shapes) {
         Assert.assertInstanceOf(page, Page);
+
         const ui_helper = UiHelper.instance();
         //Check if page is static then...
         if (page.static) {
