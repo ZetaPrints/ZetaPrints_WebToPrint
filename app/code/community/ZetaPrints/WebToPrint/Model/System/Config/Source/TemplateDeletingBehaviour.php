@@ -1,34 +1,37 @@
 <?php
 
-class ZetaPrints_WebToPrint_Model_System_Config_Source_TemplateDeletingBehaviour {
-  const NONE = -1;
-  const DELETE = -2;
+class ZetaPrints_WebToPrint_Model_System_Config_Source_TemplateDeletingBehaviour
+{
+    const NONE = -1;
+    const DELETE = -2;
 
-  protected $_options;
+    protected $_options;
 
-  public function toOptionArray () {
-    if (!$this->_options) {
+    public function toOptionArray()
+    {
+        if (!$this->_options) {
 
-      $collection = Mage::getResourceModel('catalog/category_collection');
-      $collection->addAttributeToSelect('name')
-        ->addPathFilter('^1/[0-9/]+$')
-        ->load();
+            $collection = Mage::getResourceModel('catalog/category_collection');
+            $collection->addAttributeToSelect('name')
+                ->addPathFilter('^1/[0-9/]+$')
+                ->load();
 
-      $categories = array();
+            $categories = [];
 
-      foreach($collection as $category)
-        $categories[] = array(
-          'label' => $category->getName(),
-          'value' => $category->getId() );
+            foreach ($collection as $category) {
+                $categories[] = [
+                    'label' => $category->getName(),
+                    'value' => $category->getId(),
+                ];
+            }
 
-      $this->_options = array(
-        array('value' => self::NONE, 'label' => 'Ignore'),
-        array('value' => self::DELETE, 'label' => 'Delete products'),
-        array('label' => 'Move products to category:', 'value' => $categories));
+            $this->_options = [
+                ['value' => self::NONE, 'label' => 'Ignore'],
+                ['value' => self::DELETE, 'label' => 'Delete products'],
+                ['label' => 'Move products to category:', 'value' => $categories],
+            ];
+        }
+
+        return $this->_options;
     }
-
-    return $this->_options;
-  }
 }
-
-?>

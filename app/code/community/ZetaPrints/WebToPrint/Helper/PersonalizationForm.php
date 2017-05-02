@@ -221,23 +221,25 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
             //... show it
             echo "<br /><a class=\"zetaprints-lowres-pdf-link\" href=\"{$href}\">{$title}</a>";
         }
-        ?>
-        <script type="text/javascript">
-            //<![CDATA[
-            jQuery(document).ready(function ($) {
-                $('a.in-dialog').fancybox({
-                    'opacity': true,
-                    'overlayShow': false,
-                    'transitionIn': 'elastic',
-                    'changeSpeed': 200,
-                    'speedIn': 500,
-                    'speedOut': 500,
-                    'titleShow': false
-                });
-            });
-            //]]>
-        </script>
-        <?php
+
+        echo <<<CODE
+<script type="text/javascript">
+    //<![CDATA[
+    jQuery(document).ready(function ($) {
+        $('a.in-dialog').fancybox({
+            'opacity': true,
+            'overlayShow': false,
+            'transitionIn': 'elastic',
+            'changeSpeed': 200,
+            'speedIn': 500,
+            'speedOut': 500,
+            'titleShow': false
+        });
+    });
+    //]]>
+</script>
+CODE;
+
         return true;
     }
 
@@ -1344,5 +1346,3 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
         <?php
     }
 }
-
-?>

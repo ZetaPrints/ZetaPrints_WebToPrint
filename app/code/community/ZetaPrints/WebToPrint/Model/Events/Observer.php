@@ -37,7 +37,9 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
             Mage::getSingleton('checkout/session')
                 ->addNotice(
-                    $helper->__('The product was added in fallback mode. We will update it manually with your input data.')
+                    $helper->__(
+                        'The product was added in fallback mode. We will update it manually with your input data.'
+                    )
                 );
 
             return;
@@ -70,7 +72,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         $options['zetaprints-dynamic-imaging'] = $dynamicImaging;
 
         if (!$dynamicImaging) {
-            $params = array();
+            $params = [];
 
             $params['TemplateID'] = $options['zetaprints-TemplateID'];
             $params['Previews'] = $options['zetaprints-previews'];
@@ -184,7 +186,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
                 }
             }
         } else {
-            $media_gallery = array('images' => array());
+            $media_gallery = ['images' => []];
         }
 
         $xml = null;
@@ -297,7 +299,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
             $file = $gallery_backend->addImage($product, $filename, null, true);
 
-            $data = array('label' => (string)$page['Name']);
+            $data = ['label' => (string)$page['Name']];
 
             if ($first_image) {
                 if (!$product->getSmallImage() || $product->getSmallImage() == 'no_selection') {
@@ -331,8 +333,11 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
             if ($product->hasWebtoprintTemplate() && $product->getWebtoprintTemplate()) {
                 Mage::getSingleton('catalog/session')->addNotice(
-                    Mage::helper('webtoprint')->__('Please specify the product\'s '
-                        . 'required option(s) and/or personalize it'));
+                    Mage::helper('webtoprint')->__(
+                        'Please specify the product\'s '
+                        . 'required option(s) and/or personalize it'
+                    )
+                );
 
                 $request->setParam('options', 0);
             }
@@ -418,8 +423,10 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         }
 
         //Generate URL for product with for-item parameter
-        $url = Mage::helper('webtoprint')->create_url_for_product($product,
-            array('for-item' => $item->getId()));
+        $url = Mage::helper('webtoprint')->create_url_for_product(
+            $product,
+            ['for-item' => $item->getId()]
+        );
 
         //Set generated URL and then save item object
         $item->setRedirectUrl($url)->save();
@@ -439,8 +446,10 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         $session = Mage::getSingleton('customer/session');
 
         if ($id = $session->getZetaprintsUser()) {
-            $credentials = array('id' => $id,
-                'password' => $session->getZetaprintsPassword());
+            $credentials = [
+                'id' => $id,
+                'password' => $session->getZetaprintsPassword(),
+            ];
         } else {
             $credentials = Mage::helper('webtoprint')
                 ->get_credentials_from_zp_cookie();
@@ -475,7 +484,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
                 $mediaConfig = Mage::getModel('catalog/product_media_config');
 
-                $downloadedPreviews = array();
+                $downloadedPreviews = [];
 
                 foreach ($previews as $preview) {
                     $filePath = $mediaConfig->getTmpMediaPath("previews/{$preview}");
@@ -584,11 +593,17 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
         if ($block->getProduct()->getAttributeSetId()
             || $block->getRequest()->getParam('set', null)
         ) {
-            $block->addTab('templates', array(
-                'label' => Mage::helper('webtoprint')->__('Web-to-print templates'),
-                'url' => $block->getUrl('adminhtml/webtoprint_product/templates',
-                    array('_current' => true)),
-                'class' => 'ajax'));
+            $block->addTab(
+                'templates',
+                [
+                    'label' => Mage::helper('webtoprint')->__('Web-to-print templates'),
+                    'url'   => $block->getUrl(
+                        'adminhtml/webtoprint_product/templates',
+                        ['_current' => true]
+                    ),
+                    'class' => 'ajax',
+                ]
+            );
         }
     }
 
