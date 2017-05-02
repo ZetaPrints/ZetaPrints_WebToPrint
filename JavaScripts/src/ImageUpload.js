@@ -40,6 +40,9 @@ export default class ImageUpload {
         this._initialize();
     }
 
+    /**
+     * @private
+     */
     _initialize() {
         const button = this._button;
         /**
@@ -67,13 +70,14 @@ export default class ImageUpload {
             }
         });
 
+        const _this = this;
         $(
             'div.button.cancel-upload',
             button.parent()
         ).click(function () {
             if (!$(this).hasClass('disabled')) {
                 uploader.cancel();
-                this._enable_and_hide_spinner(uploader);
+                _this._enable_and_hide_spinner(uploader);
             }
         });
     }

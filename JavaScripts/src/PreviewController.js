@@ -14,6 +14,7 @@ import Resizing from "./fancybox/Resizing";
 import DataHelper from "./helper/DataHelper";
 import LightboxCallbackConfiguration from "./model/LightboxCallbackConfiguration";
 import UpdatePreviewButton from "./fancybox/UpdatePreviewButton";
+import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
 
 export default class PreviewController {
     /**
@@ -197,11 +198,13 @@ export default class PreviewController {
         ui_helper.update_preview_form_button.unbind('click');
         ui_helper.preview_overlay.show();
 
-        if ($.fn.text_field_editor) {
-            $('div.zetaprints-page-input-fields input,' +
-                'div.zetaprints-page-input-fields textarea').each(function () {
-
-                $(this).text_field_editor('hide');
+        if (Feature.instance().is_activated(Feature.feature.textFieldEditor)) {
+            const input_fields_selector = ui_helper.input_fields_selector;
+            $([
+                input_fields_selector + ' input',
+                input_fields_selector + ' textarea'
+            ].join(', ')).each(function () {
+                TextFieldEditorHelper.hide(this);
             });
         }
 

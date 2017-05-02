@@ -48,7 +48,7 @@ export default class ImageSelectionController {
      * @param {jQuery|HTMLElement} target
      */
     _handle_image_selection_change(target) {
-        const name = target.attr('name').substring(12);
+        const name = UiHelper.get_name_for_element(target);
         const value = target.val();
         const has_value = !!value.length;
 

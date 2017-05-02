@@ -9,7 +9,7 @@ require('./powercrop/jquery-powercrop')($);
 require('./colorpicker/colorpicker.js');
 require('./colorpicker/switcher.js');
 require('./text-field-resizer/text-field-resizer.js');
-require('./text-field-editor/text-field-editor.js');
+// require('./text-field-editor/text-field-editor.js');
 require('./combobox-field/combobox-field.js');
 
 // require('./fancybox/jquery-fancybox.js')($);

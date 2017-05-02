@@ -2,6 +2,8 @@ import $ from './jQueryLoader'
 import ShapeRepository from "./model/ShapeRepository";
 import UiHelper from "./helper/UiHelper";
 import Logger from "./Logger";
+import Feature from "./Feature";
+import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
 
 export default class InPreviewEditController {
     /**
@@ -137,8 +139,10 @@ export default class InPreviewEditController {
     /**
      */
     dehighlight_field_by_name() {
-        $('.zetaprints-page-input-fields .highlighted,' +
-            '.zetaprints-page-stock-images .highlighted')
+        $([
+            UiHelper.instance().input_fields_selector + ' .highlighted',
+            '.zetaprints-page-stock-images .highlighted'
+        ].join(', '))
             .removeClass('highlighted');
     }
 
@@ -280,11 +284,9 @@ export default class InPreviewEditController {
 
         $box.find('.fieldbox-field').children().each(function () {
             const $element = $(this);
-            let $_element = $element;
-
-            if ($element.hasClass('zetaprints-text-field-wrapper')) {
-                $_element = $element.find('.zetaprints-field');
-            }
+            const field = $element.hasClass('zetaprints-text-field-wrapper')
+                ? $element.find('.zetaprints-field')
+                : $element;
 
             if ($.fn.colorpicker && $element.hasClass('selector-content')) {
                 $element
@@ -315,10 +317,9 @@ export default class InPreviewEditController {
             //!!! Stupid work around for stupid IE7
             $input.change().prop('checked', true);
 
-            if ($.fn.text_field_editor) {
-                $_element.text_field_editor('move',
-                    data.parent.parents('dl').children('dt'));
-            }
+            Feature.instance().call(Feature.feature.textFieldEditor, () => {
+                TextFieldEditorHelper.move(field, data.parent.parents('dl').children('dt'));
+            });
 
             const select_image_elements_class_name = UiHelper.instance().select_image_elements_class_name;
             if (data.parent.hasClass(select_image_elements_class_name)) {
@@ -691,9 +692,12 @@ export default class InPreviewEditController {
 
         const full_name = 'zetaprints-_' + name;
 
-        if ($.fn.text_field_editor && page.fields[shape_name]['colour-picker'] === 'RGB') {
-            $_field.text_field_editor('move', $li.find('.fieldbox-tab-inner'));
-        }
+        Feature.instance().call(Feature.feature.textFieldEditor, () => {
+            if (page.fields[shape_name]['colour-picker'] === 'RGB') {
+                TextFieldEditorHelper.move($_field, $li.find('.fieldbox-tab-inner'));
+            }
+        });
+
 
         $li.addClass('text-field');
 
@@ -819,19 +823,19 @@ export default class InPreviewEditController {
     _register_text_field_handler() {
         const _this = this;
 
-        $('div.zetaprints-page-input-fields')
+        UiHelper.instance().input_fields
             .find('dd')
             .find('input, textarea, select')
             .mouseover(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
-                const name = $(this).attr('name').substring(12);
+                const name = UiHelper.get_name_for_element(this);
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.highlight_shape(shape, _this._get_current_shapes_container());
             })
             .mouseout(function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
-                const name = $(this).attr('name').substring(12);
+                const name = UiHelper.get_name_for_element(this);
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.dehighlight_shape(shape, _this._get_current_shapes_container());

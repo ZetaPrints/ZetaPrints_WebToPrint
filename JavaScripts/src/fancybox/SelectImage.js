@@ -20,7 +20,7 @@ export default class SelectImage extends AbstractFancyboxButton {
         $outer.addClass('selected');
 
         if (this._in_preview) {
-            const shape_name = $input.attr('name').substring(12);
+            const shape_name = UiHelper.get_name_for_element($input);
 
             $('#zetaprints-preview-image-container')
                 .find(' > .zetaprints-field-shape[title="' + shape_name + '"] > .top')

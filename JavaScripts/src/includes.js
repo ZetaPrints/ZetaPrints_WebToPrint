@@ -14,6 +14,7 @@ import $ from './jQueryLoader';
 const environment = Environment.environment();
 const activated_features = [
     Feature.feature.dataset,
+    Feature.feature.textFieldEditor,
     // Feature.feature.inPreviewEdit,
     // Feature.feature.fancybox.resizing,
     Feature.feature.fancybox.saveImageButton,

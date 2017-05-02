@@ -26,6 +26,8 @@ import DataHelper from "./helper/DataHelper";
 import NotificationCenter from "./NotificationCenter";
 import GlobalEvents from "./GlobalEvents";
 import ImageSelectionController from "./ImageSelectionController";
+import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
+import TextFieldController from "./TextFieldController";
 
 /**
  * @implements DataInterface
@@ -346,7 +348,7 @@ export default class PersonalizationForm {
             const $input = $target.parent().children('input');
 
             _this._show_image_edit_dialog(
-                $input.attr('name').substring(12),
+                UiHelper.get_name_for_element($input),
                 $input.val(),
                 $target.children('img')
             );
@@ -521,6 +523,28 @@ export default class PersonalizationForm {
         }
     }
 
+    /**
+     * @param {string} name
+     * @param {*} value
+     */
+    input_field_did_change(name, value) {
+        const data = this.data;
+
+        if (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
+            const page = data.template_details.pages[data.current_page];
+
+            if (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
+                const shape = this.in_preview_edit_controller.get_shape_by_name(name, page.shapes);
+
+                if (shape) {
+                    this._shape_update_state(shape, !!value);
+                }
+            }
+        }
+
+        Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_update_state, data, name, false);
+    }
+
 
     /**
      * @param {boolean} value
@@ -634,7 +658,7 @@ export default class PersonalizationForm {
             const $input = $target.parent().children('input');
 
             personalization_form_instance._show_image_edit_dialog(
-                $input.attr('name').substring(12),
+                UiHelper.get_name_for_element($input),
                 $input.val(),
                 $target.children('img')
             );
@@ -647,30 +671,7 @@ export default class PersonalizationForm {
      * @private
      */
     _register_input_field_events() {
-        const personalization_form_instance = this;
-        $('div.zetaprints-page-input-fields input.input-text').keypress(function (event) {
-            if (event.keyCode === 13) {
-                return false;
-            }
-        });
-
-
-        $('div.zetaprints-page-input-fields')
-            .find('.zetaprints-field')
-            .filter('textarea, :text')
-            .keyup({zp: this}, function () {
-                personalization_form_instance._text_fields_change_handle(this)
-            })
-            .filter('[readonly]')
-            .click(function (event) {
-                personalization_form_instance._readonly_fields_click_handle(event, this)
-            })
-            .end()
-            .end()
-            .filter('select, :checkbox')
-            .change({zp: this}, function () {
-                personalization_form_instance._text_fields_change_handle(this)
-            });
+        new TextFieldController(this, UiHelper.instance().input_fields);
     }
 
     /**
@@ -700,7 +701,7 @@ export default class PersonalizationForm {
         $('input.zetaprints-images').click(function (event) {
             const $input = $(this);
             const page = personalization_form_instance.template_details.pages[personalization_form_instance.current_page];
-            const field = page.images[$input.attr('name').substring(12)];
+            const field = page.images[UiHelper.get_name_for_element($input)];
 
             const metadata = $input.data('metadata');
             if (metadata) {
@@ -883,21 +884,21 @@ export default class PersonalizationForm {
      * @private
      */
     _prepare_text_field_editor() {
-        if (!$.fn.text_field_editor) {
+        if (!Feature.instance().is_activated(Feature.feature.textFieldEditor)) {
             return;
         }
 
         const zp = this.data;
-        $('.zetaprints-page-input-fields .zetaprints-field')
+        $(UiHelper.instance().input_fields_selector + ' .zetaprints-field')
             .filter(':input:not([type="hidden"])')
             .each(function () {
                     const $text_field = $(this);
-                    const page = $text_field.parents('.zetaprints-page-input-fields')
+                    const page = $text_field.parents(UiHelper.instance().input_fields_selector)
                         .attr('id')
                         .substring(18);
 
                     const field = zp.template_details.pages[page]
-                        .fields[$text_field.attr('name').substring(12)];
+                        .fields[UiHelper.get_name_for_element($text_field)];
 
                     const cached_value = MetaDataHelper.get_metadata(field, 'col-f', '');
 
@@ -911,7 +912,7 @@ export default class PersonalizationForm {
 
                     const $button_container = $text_field.parents('dl').children('dt');
 
-                    $text_field.text_field_editor({
+                    TextFieldEditorHelper.init($text_field, {
                         button_parent: $button_container,
                         colour: cached_value,
 
@@ -932,7 +933,11 @@ export default class PersonalizationForm {
      */
     _prepareQtip() {
         if ($.fn.qtip) {
-            $('div.zetaprints-page-input-fields input[title], div.zetaprints-page-input-fields textarea[title]').qtip({
+            const input_fields_selector = UiHelper.instance().input_fields_selector;
+            $([
+                input_fields_selector + ' input[title]',
+                input_fields_selector + ' textarea[title]',
+            ].join(', ')).qtip({
                 position: {corner: {target: 'bottomLeft'}},
                 show: {delay: 1, solo: true, when: {event: 'focus'}},
                 hide: {when: {event: 'unfocus'}}
@@ -996,7 +1001,7 @@ export default class PersonalizationForm {
      */
     _prepareComboBox(pages) {
         //Get all dropdown text fields
-        let $selects = $('.zetaprints-page-input-fields').find('select.zetaprints-field');
+        let $selects = UiHelper.instance().input_fields.find('select.zetaprints-field');
 
         //Iterate over all text fields in template details...
         for (let page in pages) {
@@ -1140,76 +1145,6 @@ export default class PersonalizationForm {
         }
 
         this.in_preview_edit_controller.unmark_shape_as_edited(shape);
-    }
-
-    /**
-     * @param {jQuery|HTMLElement} element
-     */
-    _text_fields_change_handle(element) {
-        const $element = $(element);
-        const name = $element.attr('name').substring(12);
-        const value = $element.is(':checkbox') ? $element.is(':checked') : $element.val();
-        const state = !!value;
-        const zp = this.data;
-        const page = zp.template_details.pages[zp.current_page];
-        const field = page.fields[name];
-        const product_form = UiHelper.instance().product_form;
-
-        if (field) {
-            field.value = value;
-
-            if (typeof field.previous_value !== 'undefined') {
-                product_form.user_data_changed = field.previous_value !== value;
-            }
-        }
-
-        if (state) {
-            UiHelper.instance().fancybox_outer.addClass('modified');
-            product_form.modified = true;
-        } else {
-            UiHelper.instance().fancybox_outer.removeClass('modified');
-        }
-
-        if (zp.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
-            const shape = this.in_preview_edit_controller.get_shape_by_name(name, page.shapes);
-
-            if (shape) {
-                this._shape_update_state(shape, state);
-            }
-        }
-
-        Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_update_state, zp, name, false);
-    }
-
-    /**
-     *
-     * @param {Event} event
-     * @param {HTMLInputElement} element
-     */
-    _readonly_fields_click_handle(event, element) {
-        if (element.nodeName !== 'INPUT') {
-            throw new TypeError('Argument "element" must be a HTMLInputElement');
-        }
-        const name = $(this).attr('name').substring(12);
-
-        if (this.data.template_details.pages[zp.current_page].fields[name].dataset) {
-            $('#zp-dataset-button').click();
-        } else {
-            $(element)
-                .unbind(event)
-                .val('')
-                .prop('readonly', false);
-
-            //Workaround for IE browser.
-            //It moves cursor to the end of input field after focus.
-            if (element.createTextRange) {
-                const range = element.createTextRange();
-
-                range.collapse(true);
-                range.move('character', 0);
-                range.select();
-            }
-        }
     }
 
     /**

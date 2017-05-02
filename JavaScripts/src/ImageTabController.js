@@ -42,7 +42,7 @@ export default class ImageTabController {
         ui_helper.hide([
             'a.zetaprints-template-preview',
             'div.zetaprints-page-stock-images',
-            'div.zetaprints-page-input-fields',
+            UiHelper.instance().input_fields,
             'div.zetaprints-preview-placeholder',
             '.page-size-table-body'
         ]);

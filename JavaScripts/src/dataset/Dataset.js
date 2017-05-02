@@ -1,3 +1,7 @@
+import Lightbox from "../view/Lightbox";
+import $ from "../jQueryLoader";
+import UiHelper from "../helper/UiHelper";
+
 export default class Dataset {
     static zp_dataset_initialise(zp) {
         const $dataset = $('.zp-dataset');
@@ -100,7 +104,7 @@ export default class Dataset {
                     .filter('.' + name.replace(/ /g, '.'))
                     .removeClass('zp-dataset-selected');
 
-                $('#product_addtocart_form').removeClass('zp-not-modified');
+                UiHelper.instance().product_form.modified = true;
 
                 $this.addClass('zp-dataset-selected');
             });
@@ -145,7 +149,7 @@ export default class Dataset {
                     }
                 }
 
-                $('#product_addtocart_form').removeClass('zp-not-modified');
+                UiHelper.instance().product_form.modified = true;
 
                 $tr.addClass('zp-dataset-selected');
             });
@@ -153,7 +157,8 @@ export default class Dataset {
         const $button = $('#zp-dataset-button');
 
         $button.click(function () {
-            $.fancybox({
+            const lightbox = new Lightbox();
+            lightbox.open({
                 'type': 'inline',
                 'href': '#zp-dataset-page-' + zp.current_page
             });

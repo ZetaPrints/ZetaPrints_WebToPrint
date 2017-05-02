@@ -73,6 +73,7 @@ export default class Feature {
         return {
             dataset: 'Dataset',
             inPreviewEdit: 'InPreviewEdit',
+            textFieldEditor: 'textFieldEditor',
             fancybox: {
                 resizing: 'Fancybox/Resizing',
                 saveImageButton: 'Fancybox/SaveImageButton',

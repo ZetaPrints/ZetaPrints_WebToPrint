@@ -103,6 +103,16 @@ export default class UiHelper {
     }
 
     /**
+     * Returns the field or image name for the given element
+     *
+     * @param {HTMLElement|jQuery|string} element
+     * @return {string|jQuery}
+     */
+    static get_name_for_element(element) {
+        return $(element).attr('name').substring(12);
+    }
+
+    /**
      * @return {PreviewOverlay}
      */
     get preview_overlay() {
@@ -222,6 +232,20 @@ export default class UiHelper {
      */
     get select_image_button() {
         return $('#zp-select-image-button')
+    }
+
+    /**
+     * @return {*|jQuery|HTMLElement}
+     */
+    get input_fields() {
+        return $(this.input_fields_selector);
+    }
+
+    /**
+     * @return {string}
+     */
+    get input_fields_selector() {
+        return '.zetaprints-page-input-fields';
     }
 
     /**
