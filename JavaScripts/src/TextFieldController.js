@@ -5,6 +5,8 @@ import PersonalizationForm from "./PersonalizationForm";
 import Assert from "./helper/Assert";
 import Feature from "./Feature";
 import UiHelper from "./helper/UiHelper";
+import NotificationHelper from "./NotificationCenter";
+import GlobalEvents from "./GlobalEvents";
 export default class TextFieldController {
     constructor(personalization_form_instance, input_fields) {
         Assert.assertInstanceOf(personalization_form_instance, PersonalizationForm);
@@ -16,30 +18,32 @@ export default class TextFieldController {
 
         input_fields.find('input.input-text').keypress(this._ignore_enter);
 
-
-        input_fields
-            .find('.zetaprints-field')
-            .filter('textarea, :text')
+        const text_fields = input_fields.find('.zetaprints-field').filter('textarea, :text');
+        text_fields
             .keyup(function () {
-                _on_change(this);
+                _on_change(this, false);
             })
-            .filter('[readonly]')
-            .click(function (event) {
-                _on_click(event, this);
-            })
-            .end()
-            .end()
-            .filter('select, :checkbox')
             .change(function () {
-                _on_change(this);
+                _on_change(this, true);
             });
+
+        text_fields.filter('[readonly]').click(function (event) {
+            _on_click(event, this);
+        });
+
+
+        const non_text_fields = input_fields.find('.zetaprints-field').filter('select, :checkbox');
+        non_text_fields.change(function () {
+            _on_change(this, true);
+        });
     }
 
     /**
      * @param {HTMLElement} input_field
+     * @param {boolean} finished
      * @private
      */
-    _on_change(input_field) {
+    _on_change(input_field, finished) {
         const $element = $(input_field);
         const name = UiHelper.get_name_for_element($element);
         const value = $element.is(':checkbox') ? $element.is(':checked') : $element.val();
@@ -63,6 +67,10 @@ export default class TextFieldController {
             product_form.modified = true;
         } else {
             UiHelper.instance().fancybox_outer.removeClass('modified');
+        }
+
+        if (finished) {
+            NotificationHelper.instance().notify(GlobalEvents.USER_DATA_SAVED, {instance: this, value, field});
         }
 
         if (data.has_shapes && Feature.instance().is_activated(Feature.feature.inPreviewEdit)) {
