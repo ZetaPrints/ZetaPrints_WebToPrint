@@ -50,11 +50,7 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
                 Mage::logException($e);
             }
 
-            if (Mage::getIsDeveloperMode()) {
-                echo $this->formatErrorOutput($e);
-            } else {
-                echo 'Error';
-            }
+            echo $this->formatErrorOutput($e);
         }
     }
 
@@ -108,8 +104,8 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
             'URL'  => $img_url,
         ];
 
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        $url = $helper->getApiUrl();
+        $key = $helper->getApiKey();
 
         $image = zetaprints_download_customer_image($url, $key, $params);
 
@@ -160,8 +156,8 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
             'URL'  => $url,
         ];
 
-        $w2pBaseUrl = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        $w2pBaseUrl = $helper->getApiUrl();
+        $key = $helper->getApiKey();
 
         $image = zetaprints_download_customer_image($w2pBaseUrl, $key, $params);
 
@@ -242,10 +238,10 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
     {
         http_response_code($statusCode);
 
-        $exceptionData = [
-            'error'     => $exception->getMessage(),
-            'backtrace' => $exception->getTraceAsString(),
-        ];
+        $exceptionData = ['error' => $exception->getMessage()];
+        if (Mage::getIsDeveloperMode()) {
+            $exceptionData['backtrace'] = $exception->getTraceAsString();
+        }
 
         return json_encode($exceptionData, JSON_PRETTY_PRINT);
     }

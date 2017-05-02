@@ -176,8 +176,9 @@ class ZetaPrints_WebToPrint_Model_Convert_Mapper_Product_Updating extends  Mage_
               if ($cataloguesMapping === null) {
                 $cataloguesMapping = array();
 
-                $url = Mage::getStoreConfig('webtoprint/settings/url');
-                $key = Mage::getStoreConfig('webtoprint/settings/key');
+                  $dataHelper = Mage::helper('webtoprint');
+                  $url = $dataHelper->getApiUrl();
+                $key = $dataHelper->getApiKey();
 
                 $catalogues = zetaprints_get_list_of_catalogs($url, $key);
 

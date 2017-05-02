@@ -23,16 +23,16 @@ class ZetaPrints_WebToPrint_ImageController
     if(count($params) == 0)
       return;
 
-    $user_credentials = Mage::helper('webtoprint')
+      $helper = Mage::helper('webtoprint');
+      $user_credentials = $helper
                           ->get_zetaprints_credentials();
 
     $params['ID'] = $user_credentials['id'];
     $params['Hash'] = zetaprints_generate_user_password_hash($user_credentials['password']);
 
-    $url = Mage::getStoreConfig('webtoprint/settings/url');
-    $key = Mage::getStoreConfig('webtoprint/settings/key');
+    $url = $helper->getApiUrl();
+    $key = $helper->getApiKey();
 
     echo zetaprints_get_edited_image_url($url, $key, $params);
   }
 }
-?>

@@ -22,7 +22,7 @@ class ZetaPrints_WebToPrint_PhotothumbnailController
     if (($width + $height) != 0)
       $guid = str_replace('.', "_{$width}x{$height}.", $guid);
 
-    $url = Mage::getStoreConfig('webtoprint/settings/url') . '/photothumbs/'
+    $url = Mage::helper('webtoprint')->getApiUrl() . '/photothumbs/'
            . $guid;
 
     $response = zetaprints_get_content_from_url($url);

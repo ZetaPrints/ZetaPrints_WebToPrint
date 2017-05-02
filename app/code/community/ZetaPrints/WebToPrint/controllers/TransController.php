@@ -23,4 +23,3 @@ else return trans[msg];
 }";
   }
 }
-?>

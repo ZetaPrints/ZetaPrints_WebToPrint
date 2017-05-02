@@ -35,7 +35,7 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
             $params,
             [
                 'zetaprints-api-url'
-                => Mage::getStoreConfig('webtoprint/settings/url') . '/',
+                => Mage::helper('webtoprint')->getApiUrl() . '/',
             ]
         );
 
@@ -213,7 +213,7 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
 
         //If item has low resolution link to PDF...
         if (isset($options['zetaprints-order-lowres-pdf'])) {
-            $href = Mage::getStoreConfig('webtoprint/settings/url')
+            $href = Mage::helper('webtoprint')->getApiUrl()
                 . $options['zetaprints-order-lowres-pdf'];
 
             $title = $this->__('PDF Proof');
@@ -395,8 +395,8 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
 
     private function add_user_images($xml)
     {
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        $url = Mage::helper('webtoprint')->getApiUrl();
+        $key = Mage::helper('webtoprint')->getApiKey();
 
         $user_credentials = $this->get_zetaprints_credentials();
 
@@ -612,11 +612,11 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
                         }
 
                         if (isset($stockImages[$value])) {
-                            $url = Mage::getStoreConfig('webtoprint/settings/url')
+                            $url = Mage::helper('webtoprint')->getApiUrl()
                                 . 'photothumbs/'
                                 . $stockImages[$value]['thumb'];
 
-                            $small_url = Mage::getStoreConfig('webtoprint/settings/url')
+                            $small_url = Mage::helper('webtoprint')->getApiUrl()
                                 . 'photothumbs/'
                                 . $stockImages[$value]['small-thumb'];
 
@@ -631,8 +631,8 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
                                 $userImages = [];
 
                                 if ($customer->getId()) {
-                                    $url = Mage::getStoreConfig('webtoprint/settings/url');
-                                    $key = Mage::getStoreConfig('webtoprint/settings/key');
+                                    $url = Mage::helper('webtoprint')->getApiUrl();
+                                    $key = Mage::helper('webtoprint')->getApiKey();
 
                                     $data = [
                                         'ID'   => $customer->getZetaprintsUser(),
@@ -648,13 +648,13 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
                             }
 
                             if (isset($userImages[$value])) {
-                                $url = Mage::getStoreConfig('webtoprint/settings/url')
+                                $url = Mage::helper('webtoprint')->getApiUrl()
                                     . 'photothumbs/'
                                     . $userImages[$value]['thumbnail'];
 
                                 $tokens = explode('.', $userImages[$value]['thumbnail']);
 
-                                $small_url = Mage::getStoreConfig('webtoprint/settings/url')
+                                $small_url = Mage::helper('webtoprint')->getApiUrl()
                                     . 'photothumbs/'
                                     . $tokens[0] . '_0x100.' . $tokens[1];
 
@@ -793,7 +793,7 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
         //interface) and ZetaPrints Order ID option is in the item then...
         if ($isAdmin && isset($options['zetaprints-order-id'])) {
             //... create URL to order details on web-to-print site
-            $zp_order_url = Mage::getStoreConfig('webtoprint/settings/url')
+            $zp_order_url = Mage::helper('webtoprint')->getApiUrl()
                 . '?page=order-details;OrderID='
                 . $options['zetaprints-order-id'];
 
@@ -825,7 +825,7 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
             : explode(',', $options['zetaprints-previews']);
         $group = 'group-' . mt_rand();
 
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
+        $url = Mage::helper('webtoprint')->getApiUrl();
         ?>
         <tr class="border zetaprints-previews">
             <td class="last" colspan="<?php echo $item ? 5 : 10; ?>">
@@ -1274,7 +1274,7 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
                 'update_first_preview_on_load' => $updateFirstPreview,
                 'preserve_fields'              => $preserveFields,
                 'has_shapes'                   => $hasShapes,
-                'w2p_url'                      => Mage::getStoreConfig('webtoprint/settings/url'),
+                'w2p_url'                      => Mage::helper('webtoprint')->getApiUrl(),
                 'options'                      => $this->getCustomOptions(),
                 'url'                          => [
                     'preview'             => $this->_getUrl('web-to-print/preview'),

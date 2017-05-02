@@ -30,13 +30,14 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             return;
         }
 
+        $helper = Mage::helper('webtoprint');
         if (!isset($options['zetaprints-previews'])
             || !$options['zetaprints-previews']
         ) {
 
             Mage::getSingleton('checkout/session')
                 ->addNotice(
-                    Mage::helper('webtoprint')->__('The product was added in fallback mode. We will update it manually with your input data.')
+                    $helper->__('The product was added in fallback mode. We will update it manually with your input data.')
                 );
 
             return;
@@ -74,13 +75,13 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             $params['TemplateID'] = $options['zetaprints-TemplateID'];
             $params['Previews'] = $options['zetaprints-previews'];
 
-            $user_credentials = Mage::helper('webtoprint')
+            $user_credentials = $helper
                 ->get_zetaprints_credentials();
             $params['ID'] = $user_credentials['id'];
             $params['Hash'] = zetaprints_generate_user_password_hash($user_credentials['password']);
 
-            $url = Mage::getStoreConfig('webtoprint/settings/url');
-            $key = Mage::getStoreConfig('webtoprint/settings/key');
+            $url = $helper->getApiUrl();
+            $key = $helper->getApiKey();
 
             $order_details = zetaprints_create_order($url, $key, $params);
 
@@ -283,7 +284,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             }
 
             $client = new Varien_Http_Client(
-                Mage::getStoreConfig('webtoprint/settings/url')
+                Mage::helper('webtoprint')->getApiUrl()
                 . '/'
                 . (string)$page['PreviewImage']
             );
@@ -350,8 +351,9 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
             return;
         }
 
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        $helper = Mage::helper('webtoprint');
+        $url = $helper->getApiUrl();
+        $key = $helper->getApiKey();
 
         //For every item in the order
         foreach ($order->getAllItems() as $item) {
@@ -478,7 +480,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
                 foreach ($previews as $preview) {
                     $filePath = $mediaConfig->getTmpMediaPath("previews/{$preview}");
 
-                    $url = Mage::getStoreConfig('webtoprint/settings/url')
+                    $url = Mage::helper('webtoprint')->getApiUrl()
                         . '/preview/'
                         . $preview;
 

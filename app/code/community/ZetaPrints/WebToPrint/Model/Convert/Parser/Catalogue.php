@@ -5,8 +5,9 @@ class ZetaPrints_WebToPrint_Model_Convert_Parser_Catalogue
   implements ZetaPrints_Api {
 
   public function parse() {
-    $url = Mage::getStoreConfig('webtoprint/settings/url');
-    $key = Mage::getStoreConfig('webtoprint/settings/key');
+      $dataHelper = Mage::helper('webtoprint');
+      $url = $dataHelper->getApiUrl();
+    $key = $dataHelper->getApiKey();
 
     //Always print debug information. Issue #80
     $this->debug = true;

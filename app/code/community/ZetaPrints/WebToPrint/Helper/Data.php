@@ -27,7 +27,7 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             );
         }
 
-        return Mage::getStoreConfig('webtoprint/settings/url') . '/preview/'
+        return $this->getApiUrl() . '/preview/'
             . $guid;
     }
 
@@ -50,7 +50,7 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             $guid = str_replace('.', "_{$width}x{$height}.", $guid);
         }
 
-        return Mage::getStoreConfig('webtoprint/settings/url') . '/thumb/' . $guid;
+        return $this->getApiUrl() . '/thumb/' . $guid;
     }
 
     public function get_photo_thumbnail_url($guid, $width = 0, $height = 0)
@@ -72,7 +72,7 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             $guid = str_replace('.', "_{$width}x{$height}.", $guid);
         }
 
-        return Mage::getStoreConfig('webtoprint/settings/url') . '/photothumbs/'
+        return $this->getApiUrl() . '/photothumbs/'
             . $guid;
     }
 
@@ -249,8 +249,8 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             $id = zetaprints_generate_guid();
             $password = zetaprints_generate_password();
 
-            $url = Mage::getStoreConfig('webtoprint/settings/url');
-            $key = Mage::getStoreConfig('webtoprint/settings/key');
+            $url = $this->getApiUrl();
+            $key = $this->getApiKey();
 
             if (zetaprints_register_user($url, $key, $id, $password)) {
                 $credentials = ['id' => $id, 'password' => $password];
@@ -412,8 +412,8 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
 
     private function replace_user_input_from_order_details($template, $order_guid)
     {
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        $url = $this->getApiUrl();
+        $key = $this->getApiKey();
 
         $order_details = zetaprints_get_order_details($url, $key, $order_guid);
 
@@ -484,8 +484,8 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
 
 
         if ($user_was_registered) {
-            $url = Mage::getStoreConfig('webtoprint/settings/url');
-            $key = Mage::getStoreConfig('webtoprint/settings/key');
+            $url = $this->getApiUrl();
+            $key = $this->getApiKey();
 
             $data = [
                 'ID'   => $user_credentials['id'],
@@ -667,8 +667,8 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function completeZetaPrintsOrder($id)
     {
-        $url = Mage::getStoreConfig('webtoprint/settings/url');
-        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        $url = $this->getApiUrl();
+        $key = $this->getApiKey();
 
         //New GUID for completed order
         $newId = zetaprints_generate_guid();
@@ -798,6 +798,32 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             ->setProductOptions($options)
             ->save();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getApiUrl()
+    {
+        $url = trim(Mage::getStoreConfig('webtoprint/settings/url'));
+        if (!$url) {
+            throw new UnexpectedValueException('API URL is not defined');
+        }
+
+        return $url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApiKey()
+    {
+        $key = Mage::getStoreConfig('webtoprint/settings/key');
+        if (!$key) {
+            throw new UnexpectedValueException('API key is not defined');
+        }
+
+        return $key;
+    }
 }
 
 function wrong_id_hash_combo_handler($error)
@@ -815,8 +841,8 @@ function wrong_id_hash_combo_handler($error)
 
     $password = zetaprints_generate_password();
 
-    $url = Mage::getStoreConfig('webtoprint/settings/url');
-    $key = Mage::getStoreConfig('webtoprint/settings/key');
+    $url = $helper->getApiUrl();
+    $key = $helper->getApiKey();
 
     if (!zetaprints_register_user($url, $key, $id, $password)) {
         return false;
