@@ -90,6 +90,8 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
             );
         }
 
+        _zetaprints_debug("Uploaded image '$file_path'");
+
         /** @var ZetaPrints_WebToPrint_Helper_Data $helper */
         $helper = Mage::helper('webtoprint');
 
