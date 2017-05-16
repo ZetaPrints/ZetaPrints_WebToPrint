@@ -483,20 +483,20 @@ a.zetaprints-template-preview img {
     user-select: none;
     bottom: -1px; }
   .zetaprints-page-input-fields .ui-resizable-w {
-    background: url("../images/text-field-resizer/images/left-handle.gif") center no-repeat;
+    background: url("../images/text-field-resizer/left-handle.gif") center no-repeat;
     left: -1px;
     cursor: sw-resize; }
   .zetaprints-page-input-fields .ui-resizable-sw {
-    background: url("../images/text-field-resizer/images/left-handle.gif") center no-repeat;
+    background: url("../images/text-field-resizer/left-handle.gif") center no-repeat;
     left: -1px;
     cursor: sw-resize; }
   .zetaprints-page-input-fields .ui-resizable-e {
-    background: url("../images/text-field-resizer/images/right-handle.gif") center no-repeat;
+    background: url("../images/text-field-resizer/right-handle.gif") center no-repeat;
     right: -1px;
     cursor: se-resize;
     display: none !important; }
   .zetaprints-page-input-fields .ui-resizable-se {
-    background: url("../images/text-field-resizer/images/right-handle.gif") center no-repeat;
+    background: url("../images/text-field-resizer/right-handle.gif") center no-repeat;
     right: -1px;
     cursor: se-resize;
     display: none !important; }
@@ -2371,3 +2371,5 @@ div.zp-text-field-editor-color-example {
   width: 19px;
   height: 15px;
   margin-top: 1px !important; }
+
+/*# sourceMappingURL=styles.css.map */

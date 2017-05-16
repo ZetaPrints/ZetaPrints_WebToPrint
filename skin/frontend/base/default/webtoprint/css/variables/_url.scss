@@ -3,8 +3,8 @@ $image-base: "../images/" !default;
 
 // Core
 $url-core-image-selector: url($image-base + "images-selector-sprites.png") !default;
-$url-core-text-field-resizer-handle-left: url($image-base + "text-field-resizer/images/left-handle.gif") !default;
-$url-core-text-field-resizer-handle-right: url($image-base + "text-field-resizer/images/right-handle.gif") !default;
+$url-core-text-field-resizer-handle-left: url($image-base + "text-field-resizer/left-handle.gif") !default;
+$url-core-text-field-resizer-handle-right: url($image-base + "text-field-resizer/right-handle.gif") !default;
 $url-core-button-sprites: url($image-base + "button-sprites.png") !default;
 $url-core-button-background: url($image-base + "button-background.png") !default;
 $url-core-preview-overlay-background: url($image-base + "preview-overlay-background.png") !default;
