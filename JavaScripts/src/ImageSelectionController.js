@@ -34,7 +34,7 @@ export default class ImageSelectionController {
 
         const fields_jquery = fields;
 
-        const class_name = this.constructor.name || 'ImageSelectionController (subclass)';
+        const class_name = this.constructor.name ? this.constructor.name + ' extends ImageSelectionController' : 'ImageSelectionController (subclass)';
         Logger.log(`[${class_name}] Register ${fields_jquery.length} fields`);
         fields_jquery.change((event) => {
             Logger.log(`[${class_name}] Change`);

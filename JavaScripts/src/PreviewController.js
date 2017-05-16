@@ -79,7 +79,7 @@ export default class PreviewController {
      * @param {DataInterface} data
      */
     add_previews(data) {
-        Logger.debug(`[${this.constructor.name}] Add previews`);
+        Logger.debug(`[PreviewController] Add previews`);
 
         const pages = data.template_details.pages;
         for (let page_number in pages) {
@@ -178,7 +178,7 @@ export default class PreviewController {
      * @param {boolean} preserve_fields
      */
     update_preview(zeta_prints_data, update_pages = [], preserve_fields = false) {
-        Logger.debug(`[${this.constructor.name}] Update preview`);
+        Logger.debug(`[PreviewController] Update preview`);
         Assert.assertObject(zeta_prints_data);
         const form_instance = this.form_instance;
 
