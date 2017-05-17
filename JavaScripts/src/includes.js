@@ -8,9 +8,11 @@ require('jquery-ui-touch-punch-c');
 
 import Environment from './Environment';
 import Feature from './Feature';
+import UiHelper from './helper/UiHelper';
 import PersonalizationForm from './PersonalizationForm';
 import $ from './jQueryLoader';
 
+const ui_helper = UiHelper.instance();
 const environment = Environment.environment();
 const activated_features = [
     Feature.feature.dataset,
@@ -27,7 +29,8 @@ export {
     PersonalizationForm,
     $,
     feature,
-    environment
+    environment,
+    ui_helper
 }
 
 
