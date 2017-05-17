@@ -28,6 +28,7 @@ import GlobalEvents from "./GlobalEvents";
 import ImageSelectionController from "./ImageSelectionController";
 import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
 import TextFieldController from "./TextFieldController";
+import Environment from "./Environment";
 
 /**
  * @implements DataInterface
@@ -342,19 +343,7 @@ export default class PersonalizationForm {
         const data = this.data;
         const trs = $('.tabs-wrapper > .user-images > table > tbody > tr');
 
-        const thumbnail_edit_click_handler = function (event) {
-            event.preventDefault();
-            const $target = $(this);
-            const $input = $target.parent().children('input');
-
-            _this._show_image_edit_dialog(
-                UiHelper.get_name_for_element($input),
-                $input.val(),
-                $target.children('img')
-            );
-
-            return false;
-        };
+        const thumbnail_edit_click_handler = this._get_edit_thumbnail_click_handler();
 
         const delete_image_click_handle = function (event) {
             event.stopPropagation();
@@ -651,20 +640,40 @@ export default class PersonalizationForm {
      * @private
      */
     _register_click_edit_thumbnail() {
-        const personalization_form_instance = this;
+        $('.image-edit-thumb').click(this._get_edit_thumbnail_click_handler());
+    }
 
-        $('.image-edit-thumb').click(function () {
+    /**
+     * Returns the handler callback when a thumbnail's edit button is clicked
+     *
+     * A stub callback is returned if image editing is not enabled (e.g. because the screen is too small)
+     *
+     * @return {function}
+     * @private
+     */
+    _get_edit_thumbnail_click_handler() {
+        const image_editor = this.image_editor;
+
+        return function (event) {
+            event.preventDefault();
+
+            if (!Environment.environment().is_image_editing_enabled()) {
+                Logger.log('[PersonalizationForm] Image editing is disabled');
+
+                return false;
+            }
+
             const $target = $(this);
             const $input = $target.parent().children('input');
 
-            personalization_form_instance._show_image_edit_dialog(
-                UiHelper.get_name_for_element($input),
-                $input.val(),
-                $target.children('img')
-            );
+            const image_name = UiHelper.get_name_for_element($input);
+            const image_guid = $input.val();
+            const $thumb = $target.children('img');
+
+            image_editor.show(decodeURI(image_name), image_guid, $thumb);
 
             return false;
-        });
+        }
     }
 
     /**

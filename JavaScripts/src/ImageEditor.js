@@ -238,6 +238,7 @@ export default class ImageEditor {
                 'zetaprints-ImageID': id
             },
             error: (_, textStatus, errorThrown) => {
+                const cant_load_image_text = window.cant_load_image_text || 'Can not load image';
                 this._handle_ajax_error(cant_load_image_text, textStatus, errorThrown)
             },
             success: (data) => {
@@ -368,7 +369,7 @@ export default class ImageEditor {
 
         if (width_factor !== 1 || height_factor !== 1) {
             this._set_info_bar_state('cropped', true);
-            this._set_container_changed(true)
+            this._set_container_changed(true);
             this._update_save_image_button(true)
         } else {
             this._set_info_bar_state();
@@ -670,7 +671,7 @@ export default class ImageEditor {
 
         if (!(preview_width && preview_height && width && height)) {
             alert(unknown_error_occured_text);
-            console.log('unkno')
+            console.log('unkno');
             this._hide_activity();
 
             return;

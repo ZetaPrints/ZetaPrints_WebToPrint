@@ -97,6 +97,11 @@ div {
         }
         .zp-edit-button {
             padding: 0 4px;
+            display: none;
+
+            @media (min-width: $image-editing-min-viewport-width) {
+                display: block;
+            }
         }
         .zp-delete-button {
             width: 17px;

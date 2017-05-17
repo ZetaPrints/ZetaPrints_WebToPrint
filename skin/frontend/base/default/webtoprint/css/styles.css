@@ -77,7 +77,11 @@ div.images-scroller {
     color: white;
     font-weight: bold; }
   div.images-scroller .zp-edit-button {
-    padding: 0 4px; }
+    padding: 0 4px;
+    display: none; }
+    @media (min-width: 900px) {
+      div.images-scroller .zp-edit-button {
+        display: block; } }
   div.images-scroller .zp-delete-button {
     width: 17px;
     color: transparent;
