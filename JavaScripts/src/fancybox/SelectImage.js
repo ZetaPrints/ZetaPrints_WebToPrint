@@ -1,6 +1,7 @@
 import $ from  '../jQueryLoader'
 import UiHelper from "../helper/UiHelper";
 import AbstractFancyboxButton from "./AbstractFancyboxButton";
+import AbstractLightbox from "../view/AbstractLightbox";
 
 export default class SelectImage extends AbstractFancyboxButton {
     /**
@@ -27,6 +28,8 @@ export default class SelectImage extends AbstractFancyboxButton {
                 .click();
             this._close_button.remove();
         }
+
+        AbstractLightbox.close();
     }
 
     /**
@@ -84,7 +87,7 @@ export default class SelectImage extends AbstractFancyboxButton {
      */
     _get_image_inputs() {
         return UiHelper.instance().select_image_elements
-            .not('.minimized')
+            // .not('.minimized')
             .find(' > .selector-content > .tabs-wrapper > .images-scroller')
             .find('a[href="' + UiHelper.instance().fancybox_image.attr('src') + '"]')
             .parent()

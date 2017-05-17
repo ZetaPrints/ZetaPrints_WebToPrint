@@ -13,7 +13,7 @@ export default class Lightbox extends AbstractLightbox {
      * @param {LightboxConfiguration|object} options
      */
     register(element, options = undefined) {
-        Logger.debug('[Lightbox] register', element);
+        Logger.debug('[Lightbox] Register', element);
         $(element).fancybox(this._prepare_options(options || new LightboxConfiguration()));
     }
 
@@ -21,7 +21,7 @@ export default class Lightbox extends AbstractLightbox {
      * @param {LightboxConfiguration|object} options
      */
     open(options = undefined) {
-        Logger.debug('[Lightbox] open');
+        Logger.debug('[Lightbox] Open');
         $.fancybox(this._prepare_options(options || new LightboxConfiguration()));
     }
 }

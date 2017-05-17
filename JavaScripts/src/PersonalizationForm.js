@@ -778,6 +778,7 @@ export default class PersonalizationForm {
         const data = personalization_form_instance.data;
 
         const lightbox_configuration = new LightboxConfiguration({
+            'type': 'image',
             'opacity': true,
             'showOverlay': false,
             'transitionIn': 'elastic',

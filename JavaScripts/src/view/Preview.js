@@ -78,6 +78,8 @@ export default class Preview {
         $preview.find('img').attr('src', '' + url);
 
         this._url = '' + url;
+
+        Lightbox.redraw();
     }
 
     /**
