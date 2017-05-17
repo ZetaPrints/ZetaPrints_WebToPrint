@@ -3,8 +3,8 @@
     <update handle="webtoprint_form" />
 
     <reference name="head">
-      <action method="addItem"><type>skin_js</type><name>webtoprint/js/in-preview-edit.js</name></action>
-      <action method="addCss"><name>webtoprint/css/in-preview-edit.css</name></action>>
+      <action method="addItem"><type>skin_js</type><name>webtoprint_legacy/js/in-preview-edit.js</name></action>
+      <action method="addCss"><name>webtoprint_legacy/css/in-preview-edit.css</name></action>>
     </reference>
   </catalog_product_view>
 
@@ -20,8 +20,8 @@
     <update handle="webtoprint_form" />
 
     <reference name="head">
-      <action method="addItem"><type>skin_js</type><name>webtoprint/js/in-preview-edit.js</name></action>
-      <action method="addCss"><name>webtoprint/css/in-preview-edit.css</name></action>
+      <action method="addItem"><type>skin_js</type><name>webtoprint_legacy/js/in-preview-edit.js</name></action>
+      <action method="addCss"><name>webtoprint_legacy/css/in-preview-edit.css</name></action>
     </reference>
   </review_product_list>
 
