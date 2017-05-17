@@ -1,137 +1,139 @@
 @import "prelude";
 
-div {
-    &.zetaprints-image-edit {
-        font-family: $font;
-        font-size: 12px;
-        background-color: $color-jordy-blue;
-        text-align: left;
-        zoom: 1;
+.zetaprints-image-edit {
+    font-family: $font;
+    font-size: 12px;
+    background-color: $color-jordy-blue;
+    text-align: left;
+    zoom: 1;
+}
+
+.zetaprints-image-edit-wrapper {
+    float: left;
+}
+
+.info-bar {
+    font: bold 8pt $font;
+    line-height: 1.5em;
+    color: $color-bay-of-many;
+    padding: 1px 5px;
+    width: 607px;
+    div {
+        &.icon {
+            background: transparent $url-image-edit-status-bar-sprite no-repeat;
+        }
+        &.column {
+            float: left;
+            margin-right: 5px;
+            text-align: right;
+            overflow: hidden;
+            &.numbers {
+                color: $white;
+            }
+            &.left-text-position {
+                text-align: left;
+            }
+            &.last {
+                float: none;
+            }
+        }
+        &.reset {
+            clear: both;
+        }
+        &.row {
+            padding: 1px 0;
+            height: 1.5em;
+        }
+        &.question-sign {
+            width: 12px;
+            height: 12px;
+            background-position: -28px -17px;
+            &:hover {
+                background-position: -28px 0;
+            }
+        }
     }
-    &.zetaprints-image-edit-wrapper {
-        float: left;
+    .zp-outer {
+        display: table;
     }
-    &.info-bar {
-        font: bold 8pt $font;
-        line-height: 1.5em;
-        color: $color-bay-of-many;
-        padding: 1px 5px;
-        width: 607px;
+    .zp-middle {
+        display: table-cell;
+        vertical-align: middle;
+    }
+    &.small-image-warning {
         div {
-            &.icon {
-                background: transparent $url-image-edit-status-bar-sprite no-repeat;
-            }
-            &.column {
-                float: left;
-                margin-right: 5px;
-                text-align: right;
-                overflow: hidden;
-                &.numbers {
-                    color: $white;
-                }
-                &.left-text-position {
-                    text-align: left;
-                }
-                &.last {
-                    float: none;
-                }
-            }
-            &.reset {
-                clear: both;
-            }
-            &.row {
-                padding: 1px 0;
-                height: 1.5em;
-            }
-            &.question-sign {
-                width: 12px;
-                height: 12px;
-                background-position: -28px -17px;
-                &:hover {
-                    background-position: -28px 0;
-                }
-            }
-        }
-        .zp-outer {
-            display: table;
-        }
-        .zp-middle {
-            display: table-cell;
-            vertical-align: middle;
-        }
-        &.small-image-warning {
-            div {
-                &.numbers div.current {
-                    color: $color-monza;
-                }
-                &.notice-switchers div.current div.question-sign {
-                    background-position: -28px -34px;
-                }
-            }
-            span {
-                &.small-image-notice {
-                    display: inline;
-                }
-                &.default-notice {
-                    display: none;
-                }
-            }
-        }
-        &.low-cropped-resolution-warning {
-            div {
-                &.numbers div.current {
-                    color: $color-monza;
-                }
-                &.notice-switchers div.current div.question-sign {
-                    background-position: -28px -34px;
-                }
-            }
-            span {
-                &.low-cropped-resolution-notice {
-                    display: inline;
-                }
-                &.default-notice {
-                    display: none;
-                }
-            }
-        }
-        &.low-full-resolution-warning {
-            span {
-                &.low-full-resolution-notice {
-                    display: inline;
-                }
-                &.default-notice {
-                    display: none;
-                }
-            }
-            div.numbers div.current {
+            &.numbers div.current {
                 color: $color-monza;
             }
-        }
-        &.cropped-state {
-            div {
-                &.titles span.cropped-title {
-                    display: inline;
-                }
-                &.notice-switchers div.cropped-title {
-                    display: block;
-                }
+            &.notice-switchers div.current div.question-sign {
+                background-position: -28px -34px;
             }
-            .uploaded-title {
+        }
+        span {
+            &.small-image-notice {
+                display: inline;
+            }
+            &.default-notice {
                 display: none;
             }
         }
-        .cropped-title {
+    }
+    &.low-cropped-resolution-warning {
+        div {
+            &.numbers div.current {
+                color: $color-monza;
+            }
+            &.notice-switchers div.current div.question-sign {
+                background-position: -28px -34px;
+            }
+        }
+        span {
+            &.low-cropped-resolution-notice {
+                display: inline;
+            }
+            &.default-notice {
+                display: none;
+            }
+        }
+    }
+    &.low-full-resolution-warning {
+        span {
+            &.low-full-resolution-notice {
+                display: inline;
+            }
+            &.default-notice {
+                display: none;
+            }
+        }
+        div.numbers div.current {
+            color: $color-monza;
+        }
+    }
+    &.cropped-state {
+        div {
+            &.titles span.cropped-title {
+                display: inline;
+            }
+            &.notice-switchers div.cropped-title {
+                display: block;
+            }
+        }
+        .uploaded-title {
             display: none;
         }
     }
-    &.column.notices span {
+    .cropped-title {
         display: none;
-        &.default-notice {
-            display: inline;
-        }
     }
 }
+
+.column.notices span {
+    display: none;
+    &.default-notice {
+        display: inline;
+    }
+}
+
 .zetaprints-image-edit-menu {
     .fit-to-field-button-wrapper {
         background: none;
@@ -158,6 +160,7 @@ div {
         margin-top: -11px;
     }
 }
+
 .fit-to-field-mode {
     .zp-image-edit-actions-wrapper {
         display: block;
@@ -181,6 +184,7 @@ div {
         display: block;
     }
 }
+
 .crop-mode {
     .zp-image-edit-actions-wrapper {
         display: block;
@@ -195,11 +199,13 @@ div {
         display: block;
     }
 }
+
 .zp-image-edit-actions-wrapper {
     display: none;
     background-color: $white;
     padding: 18px 10px 0 5px;
 }
+
 .zp-image-edit-actions {
     background-color: $color-solitude;
     border: 1px solid $color-hawkes-blue;
@@ -207,6 +213,7 @@ div {
     font-size: 95%;
     padding: 1px 5px 1px 0;
 }
+
 .zp-image-edit-actions-button {
     display: none;
     float: left;
@@ -220,6 +227,7 @@ div {
         margin-right: 8px;
     }
 }
+
 .zp-image-edit-actions-button-icon {
     background: transparent $url-image-edit-sprite no-repeat;
     width: 14px;
@@ -228,6 +236,7 @@ div {
     top: 50%;
     margin-top: -7px;
 }
+
 .zp-image-edit-actions-separator {
     background: transparent $url-image-edit-sprite no-repeat;
     background-position: -23px -20px;
@@ -238,6 +247,7 @@ div {
     top: 50%;
     margin-top: -9px;
 }
+
 #zp-image-edit-action-cancel {
     cursor: default;
     color: $color-nepal;
@@ -245,12 +255,14 @@ div {
         background-position: -87px 1px;
     }
 }
+
 #zp-image-edit-cropping-notice {
     display: none;
     float: right;
     font-weight: bold;
     color: $color-guardsman-red;
 }
+
 #zetaprints-image-edit-container {
     width: 732px;
     height: 482px;
@@ -262,36 +274,46 @@ div {
     border-left: 3px solid $white;
     border-bottom: 3px solid $white;
 }
+
 #zetaprints-image-edit-user-image {
     margin: 1px 0 0 1px;
     &.zetaprints-hidden {
         display: none !important;
     }
 }
+
 #fit-to-field-button {
     background-image: $url-image-edit-fit-to-field-crop-icon;
 }
+
 #rotate-right-button {
     background-image: $url-image-edit-rotate-r;
 }
+
 #rotate-left-button {
     background-image: $url-image-edit-rotate-l;
 }
+
 #crop-button {
     background-image: $url-image-edit-crop;
 }
+
 #undo-button {
     background-image: $url-image-edit-restore;
 }
+
 #delete-button {
     background-image: $url-image-edit-delete;
 }
+
 #recommended-width {
     color: $black;
 }
+
 #recommended-height {
     color: $black;
 }
+
 .no-dpi {
     #info-bar-column-at-label {
         display: none;
@@ -303,6 +325,7 @@ div {
         display: none;
     }
 }
+
 #zp-image-edit-editor-wrapper {
     position: absolute;
     .avpw {
@@ -325,6 +348,7 @@ div {
         display: none;
     }
 }
+
 ul.zetaprints-image-edit-menu {
     float: left;
     padding: 0;
@@ -353,25 +377,32 @@ ul.zetaprints-image-edit-menu {
         background: transparent no-repeat top;
     }
 }
+
 #zp-image-edit-action-fit-image .zp-image-edit-actions-button-icon {
     background-position: 1px 2px;
 }
+
 #zp-image-edit-action-fill-field .zp-image-edit-actions-button-icon {
     background-position: -65px 2px;
 }
+
 #zp-image-edit-action-fit-width .zp-image-edit-actions-button-icon {
     background-position: -21px 2px;
 }
+
 #zp-image-edit-action-fit-height .zp-image-edit-actions-button-icon {
     background-position: -43px 2px;
 }
+
 .changed #zp-image-edit-action-cancel {
     cursor: pointer;
     color: $color-bay-of-many;
 }
+
 .info-bar.low-cropped-resolution-warning .notices .low-cropped-resolution-notice {
     color: $color-monza;
 }
+
 iv.info-bar.low-full-resolution-warning div.notice-switchers div.current div.question-sign {
     background-position: -28px -34px;
 }

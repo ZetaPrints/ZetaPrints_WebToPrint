@@ -1748,85 +1748,85 @@ span.zetaprints-share-link.show input {
 #fancybox-outer.zp-hide-shapes .zetaprints-field-shape.bottom {
   visibility: hidden !important; }
 
-div.zetaprints-image-edit {
+.zetaprints-image-edit {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   background-color: #93b4df;
   text-align: left;
   zoom: 1; }
 
-div.zetaprints-image-edit-wrapper {
+.zetaprints-image-edit-wrapper {
   float: left; }
 
-div.info-bar {
+.info-bar {
   font: bold 8pt Arial, Helvetica, sans-serif;
   line-height: 1.5em;
   color: #204a87;
   padding: 1px 5px;
   width: 607px; }
-  div.info-bar div.icon {
+  .info-bar div.icon {
     background: transparent url("../images/image-edit/status-bar-sprite.png") no-repeat; }
-  div.info-bar div.column {
+  .info-bar div.column {
     float: left;
     margin-right: 5px;
     text-align: right;
     overflow: hidden; }
-    div.info-bar div.column.numbers {
+    .info-bar div.column.numbers {
       color: white; }
-    div.info-bar div.column.left-text-position {
+    .info-bar div.column.left-text-position {
       text-align: left; }
-    div.info-bar div.column.last {
+    .info-bar div.column.last {
       float: none; }
-  div.info-bar div.reset {
+  .info-bar div.reset {
     clear: both; }
-  div.info-bar div.row {
+  .info-bar div.row {
     padding: 1px 0;
     height: 1.5em; }
-  div.info-bar div.question-sign {
+  .info-bar div.question-sign {
     width: 12px;
     height: 12px;
     background-position: -28px -17px; }
-    div.info-bar div.question-sign:hover {
+    .info-bar div.question-sign:hover {
       background-position: -28px 0; }
-  div.info-bar .zp-outer {
+  .info-bar .zp-outer {
     display: table; }
-  div.info-bar .zp-middle {
+  .info-bar .zp-middle {
     display: table-cell;
     vertical-align: middle; }
-  div.info-bar.small-image-warning div.numbers div.current {
+  .info-bar.small-image-warning div.numbers div.current {
     color: #db0d0d; }
-  div.info-bar.small-image-warning div.notice-switchers div.current div.question-sign {
+  .info-bar.small-image-warning div.notice-switchers div.current div.question-sign {
     background-position: -28px -34px; }
-  div.info-bar.small-image-warning span.small-image-notice {
+  .info-bar.small-image-warning span.small-image-notice {
     display: inline; }
-  div.info-bar.small-image-warning span.default-notice {
+  .info-bar.small-image-warning span.default-notice {
     display: none; }
-  div.info-bar.low-cropped-resolution-warning div.numbers div.current {
+  .info-bar.low-cropped-resolution-warning div.numbers div.current {
     color: #db0d0d; }
-  div.info-bar.low-cropped-resolution-warning div.notice-switchers div.current div.question-sign {
+  .info-bar.low-cropped-resolution-warning div.notice-switchers div.current div.question-sign {
     background-position: -28px -34px; }
-  div.info-bar.low-cropped-resolution-warning span.low-cropped-resolution-notice {
+  .info-bar.low-cropped-resolution-warning span.low-cropped-resolution-notice {
     display: inline; }
-  div.info-bar.low-cropped-resolution-warning span.default-notice {
+  .info-bar.low-cropped-resolution-warning span.default-notice {
     display: none; }
-  div.info-bar.low-full-resolution-warning span.low-full-resolution-notice {
+  .info-bar.low-full-resolution-warning span.low-full-resolution-notice {
     display: inline; }
-  div.info-bar.low-full-resolution-warning span.default-notice {
+  .info-bar.low-full-resolution-warning span.default-notice {
     display: none; }
-  div.info-bar.low-full-resolution-warning div.numbers div.current {
+  .info-bar.low-full-resolution-warning div.numbers div.current {
     color: #db0d0d; }
-  div.info-bar.cropped-state div.titles span.cropped-title {
+  .info-bar.cropped-state div.titles span.cropped-title {
     display: inline; }
-  div.info-bar.cropped-state div.notice-switchers div.cropped-title {
+  .info-bar.cropped-state div.notice-switchers div.cropped-title {
     display: block; }
-  div.info-bar.cropped-state .uploaded-title {
+  .info-bar.cropped-state .uploaded-title {
     display: none; }
-  div.info-bar .cropped-title {
+  .info-bar .cropped-title {
     display: none; }
 
-div.column.notices span {
+.column.notices span {
   display: none; }
-  div.column.notices span.default-notice {
+  .column.notices span.default-notice {
     display: inline; }
 
 .zetaprints-image-edit-menu .fit-to-field-button-wrapper {
