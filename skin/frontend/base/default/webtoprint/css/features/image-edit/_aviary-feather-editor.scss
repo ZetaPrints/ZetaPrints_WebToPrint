@@ -1,0 +1,25 @@
+@import "prelude";
+
+// Aviary.Feather editor
+#zp-image-edit-editor-wrapper {
+    position: absolute;
+    .avpw {
+        background: none;
+        border: none;
+        .avpw_primary_button {
+            background-color: $color-jordy-blue;
+            &:link {
+                background-color: $color-jordy-blue;
+            }
+            &:visited {
+                background-color: $color-jordy-blue;
+            }
+            &:active {
+                background-color: $color-jordy-blue;
+            }
+        }
+    }
+    #avpw_tool_main_container .avpw_mode_action {
+        display: none;
+    }
+}

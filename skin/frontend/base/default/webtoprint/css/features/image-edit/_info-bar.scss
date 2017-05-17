@@ -1,0 +1,142 @@
+@import "prelude";
+
+// Info bar bottom
+.info-bar {
+    font: bold 8pt $font;
+    line-height: 1.5em;
+    color: $color-bay-of-many;
+    padding: 1px 5px;
+    width: 607px;
+    .icon {
+        background: transparent $url-image-edit-status-bar-sprite no-repeat;
+    }
+    .column {
+        float: left;
+        margin-right: 5px;
+        text-align: right;
+        overflow: hidden;
+        &.numbers {
+            color: $white;
+        }
+        &.left-text-position {
+            text-align: left;
+        }
+        &.last {
+            float: none;
+        }
+        &.notices span {
+            display: none;
+            &.default-notice {
+                display: inline;
+            }
+        }
+    }
+
+    .reset {
+        clear: both;
+    }
+
+    .row {
+        padding: 1px 0;
+        height: 1.5em;
+    }
+
+    .question-sign {
+        width: 12px;
+        height: 12px;
+        background-position: -28px -17px;
+        &:hover {
+            background-position: -28px 0;
+        }
+    }
+    .zp-outer {
+        display: table;
+    }
+
+    .zp-middle {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .cropped-title {
+        display: none;
+    }
+
+    &.small-image-warning {
+        .numbers div.current {
+            color: $color-monza;
+        }
+        .notice-switchers div.current div.question-sign {
+            background-position: -28px -34px;
+        }
+        span.small-image-notice {
+            display: inline;
+        }
+        span.default-notice {
+            display: none;
+        }
+    }
+    &.low-cropped-resolution-warning {
+        .numbers div.current {
+            color: $color-monza;
+        }
+        .notice-switchers div.current div.question-sign {
+            background-position: -28px -34px;
+        }
+        span.low-cropped-resolution-notice {
+            display: inline;
+            color: $color-monza;
+        }
+        span.default-notice {
+            display: none;
+        }
+        .notices .low-cropped-resolution-notice {
+        }
+    }
+    &.low-full-resolution-warning {
+        span.low-full-resolution-notice {
+            display: inline;
+        }
+        span.default-notice {
+            display: none;
+        }
+        div.numbers div.current {
+            color: $color-monza;
+        }
+
+        .notice-switchers div.current div.question-sign {
+            background-position: -28px -34px;
+        }
+    }
+    &.cropped-state {
+        .titles span.cropped-title {
+            display: inline;
+        }
+        .notice-switchers div.cropped-title {
+            display: block;
+        }
+        .uploaded-title {
+            display: none;
+        }
+    }
+
+    #recommended-width {
+        color: $black;
+    }
+
+    #recommended-height {
+        color: $black;
+    }
+
+    .no-dpi {
+        #info-bar-column-at-label {
+            display: none;
+        }
+        #info-bar-column-dpi-value {
+            display: none;
+        }
+        #info-bar-column-dpi-label {
+            display: none;
+        }
+    }
+}

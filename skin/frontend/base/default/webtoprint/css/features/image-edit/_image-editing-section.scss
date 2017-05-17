@@ -1,0 +1,26 @@
+@import "prelude";
+
+// Image editing section
+.zetaprints-image-edit-wrapper {
+    float: left;
+
+    #zetaprints-image-edit-container {
+        width: 732px;
+        height: 482px;
+        background-color: $white;
+        overflow: hidden;
+        padding: 3px;
+        border-top: 7px solid $white;
+        border-right: 7px solid $white;
+        border-left: 3px solid $white;
+        border-bottom: 3px solid $white;
+    }
+
+    #zetaprints-image-edit-user-image {
+        background: purple;
+        margin: 1px 0 0 1px;
+        &.zetaprints-hidden {
+            display: none !important;
+        }
+    }
+}

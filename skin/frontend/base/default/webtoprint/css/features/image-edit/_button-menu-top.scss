@@ -1,0 +1,109 @@
+@import "prelude";
+
+// Top buttons
+.zp-image-edit-actions-wrapper {
+    display: none;
+    background-color: $white;
+    padding: 18px 10px 0 5px;
+
+    #zp-image-edit-cropping-notice {
+        display: none;
+        float: right;
+        font-weight: bold;
+        color: $color-guardsman-red;
+    }
+
+    .zp-image-edit-actions {
+        background-color: $color-solitude;
+        border: 1px solid $color-hawkes-blue;
+        font-family: $font;
+        font-size: 95%;
+        padding: 1px 5px 1px 0;
+    }
+
+    .zp-image-edit-actions-separator {
+        background: transparent $url-image-edit-sprite no-repeat;
+        background-position: -23px -20px;
+        width: 1px;
+        height: 19px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        margin-top: -9px;
+    }
+
+    .zp-image-edit-actions-button {
+        display: none;
+        float: left;
+        cursor: pointer;
+        color: $color-bay-of-many;
+        position: relative;
+        margin-left: 7px;
+
+        // Button text
+        span {
+            margin-left: 17px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .zp-image-edit-actions-button-icon {
+            background: transparent $url-image-edit-sprite no-repeat;
+            width: 14px;
+            height: 14px;
+            position: absolute;
+            top: 50%;
+            margin-top: -7px;
+        }
+    }
+
+    #zp-image-edit-action-cancel {
+        cursor: default;
+        color: $color-nepal;
+        .zp-image-edit-actions-button-icon {
+            background-position: -87px 1px;
+        }
+    }
+
+    #zp-image-edit-action-fit-image .zp-image-edit-actions-button-icon {
+        background-position: 1px 2px;
+    }
+
+    #zp-image-edit-action-fill-field .zp-image-edit-actions-button-icon {
+        background-position: -65px 2px;
+    }
+
+    #zp-image-edit-action-fit-width .zp-image-edit-actions-button-icon {
+        background-position: -21px 2px;
+    }
+
+    #zp-image-edit-action-fit-height .zp-image-edit-actions-button-icon {
+        background-position: -43px 2px;
+    }
+}
+
+.zetaprints-image-edit.changed .zp-image-edit-actions-wrapper #zp-image-edit-action-cancel {
+    cursor: pointer;
+    color: $color-bay-of-many;
+}
+
+.zetaprints-image-edit.fit-to-field-mode {
+    .zp-image-edit-actions-wrapper,
+    #zp-image-edit-action-fit-image,
+    #zp-image-edit-action-fill-field,
+    #zp-image-edit-action-fit-width,
+    #zp-image-edit-action-fit-height,
+    #zp-image-edit-action-cancel,
+    .fit-to-field-button-wrapper .arrow {
+        display: block;
+    }
+}
+
+.zetaprints-image-edit.crop-mode {
+    .zp-image-edit-actions-wrapper,
+    #zp-image-edit-cropping-notice,
+    #zp-image-edit-action-cancel,
+    .crop-button-wrapper .arrow {
+        display: block;
+    }
+}
