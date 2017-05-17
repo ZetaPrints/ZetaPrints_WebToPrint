@@ -9,6 +9,25 @@ $.fancybox.defaults.ajax.headers = {};
 
 export default class AbstractLightbox {
     /**
+     * Redraw the currently visible lightbox
+     */
+    static redraw() {
+        const fancybox_version = AbstractLightbox._get_version();
+        if (fancybox_version === 2) {
+            $.fancybox.update()
+        } else if (fancybox_version === 1) {
+            $.fancybox.resize();
+        }
+    }
+
+    /**
+     * Close the currently visible lightbox
+     */
+    static close() {
+        $.fancybox.close()
+    }
+
+    /**
      * @param {LightboxConfiguration|object} options
      * @return {*}
      * @protected
@@ -18,9 +37,7 @@ export default class AbstractLightbox {
             options = new LightboxConfiguration(options);
         }
 
-        const fancybox = $['fancybox'];
-        const fancybox_version = typeof fancybox.version === 'string' ? parseInt(fancybox.version, 10) : 1;
-
+        const fancybox_version = AbstractLightbox._get_version();
         if (fancybox_version === 2) {
             return this._prepare_options_for_v2(options);
         } else if (fancybox_version === 1) {
@@ -28,6 +45,16 @@ export default class AbstractLightbox {
         }
 
         throw new Error('No matching fancyBox version found');
+    }
+
+    /**
+     * @return {number}
+     * @private
+     */
+    static _get_version() {
+        const fancybox = $['fancybox'];
+
+        return typeof fancybox.version === 'string' ? parseInt(fancybox.version, 10) : 1;
     }
 
     /**
