@@ -938,8 +938,12 @@ CODE;
     public function get_js_for_order_preview_images($context)
     {
         ?>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+                integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+                crossorigin="anonymous"></script>
         <script type="text/javascript">
             //<![CDATA[
+            jQuery.noConflict();
             jQuery(document).ready(function ($) {
                 var $boxes = $('div.zetaprints-previews-box');
 
@@ -992,18 +996,19 @@ CODE;
                     });
                 });
 
-                $('a.in-dialog').fancybox({
-                    'opacity': true,
-                    'overlayShow': false,
-                    'transitionIn': 'elastic',
-                    'changeSpeed': 200,
-                    'speedIn': 500,
-                    'speedOut': 500,
-                    'titleShow': false
-                });
+                if ($.fn.fancybox) {
+                    $('a.in-dialog').fancybox({
+                        'opacity': true,
+                        'overlayShow': false,
+                        'transitionIn': 'elastic',
+                        'changeSpeed': 200,
+                        'speedIn': 500,
+                        'speedOut': 500,
+                        'titleShow': false
+                    });
 
-                $('#zp-user-input-link').fancybox();
-
+                    $('#zp-user-input-link').fancybox();
+                }
                 $('#zp-complete-order-link').click(function () {
                     $('<div class="zp-overlay">' +
                         '<div class="zp-overlay-spinner">' +
@@ -1029,8 +1034,12 @@ CODE;
             <span class="hide-title"><?php echo $this->__('Hide all order previews'); ?></span>
         </a>
 
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+                integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+                crossorigin="anonymous"></script>
         <script type="text/javascript">
             //<![CDATA[
+            jQuery.noConflict();
             jQuery(document).ready(function ($) {
                 $('a.all-order-previews').toggle(
                     function () {
