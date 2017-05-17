@@ -1,6 +1,7 @@
 /**
  * Created by cod on 27.4.17.
  */
+import Logger from "../Logger";
 import Assert from "../helper/Assert";
 export default class AbstractButton {
     /**
@@ -66,8 +67,13 @@ export default class AbstractButton {
      * May throw an error if the button does not exist
      */
     remove() {
-        this._button.remove();
-        this._button = null;
+        if (this._button) {
+            Logger.debug('[AbstractButton] Remove button');
+            this._button.remove();
+            this._button = null;
+        } else {
+            Logger.warn('[AbstractButton] Button element does not exist');
+        }
     }
 
     /**
