@@ -10,10 +10,6 @@ Logger.log = Logger.log || ef;
 Logger.warn = Logger.warn || ef;
 Logger.error = Logger.error || ef;
 
-if (Environment.environment().debug_mode) {
-    Logger.debug = Logger.debug || ef;
-} else {
-    Logger.debug = ef;
+Logger.debug = Environment.environment().debug_mode && Logger.debug ? Logger.debug : ef;
 
-}
 export default Logger;
