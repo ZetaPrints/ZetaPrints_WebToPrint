@@ -29,7 +29,9 @@ export default class SelectImage extends AbstractFancyboxButton {
             this._close_button.remove();
         }
 
-        AbstractLightbox.close();
+        setTimeout(() => {
+            AbstractLightbox.close();
+        }, 2000)
     }
 
     /**
