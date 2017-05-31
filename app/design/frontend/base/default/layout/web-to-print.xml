@@ -1,18 +1,18 @@
 <layout version="0.1.0">
     <webtoprint>
         <reference name="head">
-            <action method="addItem" ifconfig="webtoprint/compat/jquery">
-                <type>skin_js</type>
-                <name>webtoprint_legacy/js/jquery-1.11.2.min.js</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>webtoprint_legacy/js/jquery-migrate-1.2.1.min.js</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>webtoprint_legacy/fancybox/jquery-fancybox.js</name>
-            </action>
+            <!--<action method="addItem" ifconfig="webtoprint/compat/jquery">-->
+                <!--<type>skin_js</type>-->
+                <!--<name>webtoprint_legacy/js/jquery-1.11.2.min.js</name>-->
+            <!--</action>-->
+            <!--<action method="addItem">-->
+                <!--<type>skin_js</type>-->
+                <!--<name>webtoprint_legacy/js/jquery-migrate-1.2.1.min.js</name>-->
+            <!--</action>-->
+            <!--<action method="addItem">-->
+                <!--<type>skin_js</type>-->
+                <!--<name>webtoprint_legacy/fancybox/jquery-fancybox.js</name>-->
+            <!--</action>-->
         </reference>
     </webtoprint>
 
