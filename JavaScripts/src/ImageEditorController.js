@@ -7,8 +7,6 @@ import SaveImageButton from "./fancybox/SaveImageButton";
 import Resizing from "./fancybox/Resizing";
 import ImageEditorLightbox from "./view/ImageEditorLightbox";
 import UiHelper from "./helper/UiHelper";
-import UpdatePreviewButton from "./fancybox/UpdatePreviewButton";
-
 
 export default class ImageEditorController {
     /**
@@ -56,53 +54,15 @@ export default class ImageEditorController {
      */
     on_fancybox_complete(image_name, image_guid, $thumb) {
         Logger.debug('[ImageEditorController] Fancybox complete', image_name, image_guid, $thumb);
-        let personalization_form_instance = this.personalization_form_instance;
+        const personalization_form_instance = this.personalization_form_instance;
         const data = personalization_form_instance.data;
-        const page = data.template_details.pages[data.current_page];
 
         this._add_buttons(data, image_name, image_guid);
 
-        //Define image edit context
-        data.image_edit = new ImageEditingContext({
-            'url': {
-                'image': data.url.image,
-                'user_image_template': data.url['user-image-template']
-            },
-            '$selected_thumbnail': $thumb,
-            //!!! Temp solution
-            '$input': $thumb.parents().children('input.zetaprints-images'),
-            'image_id': image_guid,
-            'page': {
-                'width_in': page['width-in'],
-                'height_in': page['height-in']
-            },
-            'placeholder': page.images[image_name],
-            'upload_image_by_url': personalization_form_instance.upload_image_by_url
-        });
+        const image_editing_context = ImageEditingContext.create(personalization_form_instance, image_name, image_guid, $thumb);
 
-        //Check if current page has shapes...
-        if (page.shapes)
-        //...and then add shape info to the image edit context
-        {
-            data.image_edit.shape = page.shapes[image_name];
-        }
-
-        //Default values for options
-        data.image_edit.has_fit_in_field = true;
-
-        //Add options' values
-        if (data.options['image-edit']) {
-            const options = data.options['image-edit'];
-
-            data.image_edit.has_fit_in_field = options['in-context']
-                ? ('' + options['in-context']['@enabled']) !== '0'
-                : true;
-        }
-
-        // Disable fit in field functionality if current page doesn't have shapes
-        data.image_edit.has_fit_in_field = data.image_edit.has_fit_in_field && data.image_edit.shape !== undefined;
-
-        this.image_editor.load(data.image_edit);
+        data.image_edit = image_editing_context;
+        this.image_editor.load(image_editing_context);
     }
 
     /**

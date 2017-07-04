@@ -10,6 +10,9 @@ import Environment from './Environment';
 import Feature from './Feature';
 import UiHelper from './helper/UiHelper';
 import PersonalizationForm from './PersonalizationForm';
+import ImageEditingContext from './model/ImageEditingContext';
+import ImageManipulationService from './service/ImageManipulationService';
+import ImageThumbnailService from './service/ImageThumbnailService';
 import $ from './jQueryLoader';
 
 const ui_helper = UiHelper.instance();
@@ -27,6 +30,9 @@ const feature = new Feature(activated_features);
 
 export {
     PersonalizationForm,
+    ImageEditingContext,
+    ImageManipulationService,
+    ImageThumbnailService,
     $,
     feature,
     environment,

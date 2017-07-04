@@ -9,6 +9,10 @@ import NotificationHelper from "./NotificationCenter";
 import MetaDataHelper from "./helper/MetaDataHelper";
 import Assert from "./helper/Assert";
 import ImageEditorController from "./ImageEditorController";
+import ImageManipulationService from "./service/ImageManipulationService";
+import ImageEditingContext from "./model/ImageEditingContext";
+import RegexHelper from "./helper/RegexHelper";
+import ImageThumbnailService from "./service/ImageThumbnailService";
 
 const fancybox_show_activity = () => {
     Logger.log('[ImageEditor] fancybox show activity');
@@ -39,17 +43,8 @@ const fancybox_change_zindex = (new_value = 1103) => {
 };
 
 const get_value_by_regexp = (subject, exp) => {
-    const match = subject.match(exp);
-    if (match === null) {
-        return false;
-    }
-    if (match.length > 2) {
-        return match;
-    } else {
-        return match[1];
-    }
+    return RegexHelper.get_value_by_regexp(subject, exp);
 };
-
 
 export default class ImageEditor {
     /**
@@ -76,6 +71,18 @@ export default class ImageEditor {
         this._user_image = null;
 
         this._cropping_callback = this._cropping_callback.bind(this);
+
+        /**
+         * @type {ImageManipulationService}
+         * @private
+         */
+        this._image_manipulation_service = new ImageManipulationService();
+
+        /**
+         * @type {ImageThumbnailService}
+         * @private
+         */
+        this._image_thumbnail_service = new ImageThumbnailService();
     }
 
 
@@ -85,7 +92,7 @@ export default class ImageEditor {
      * @param {ImageEditingContext} context
      */
     load(context) {
-        this._context = context;
+        this.set_current_context(context);
 
         const container = this._container = $('.zetaprints-image-edit');
 
@@ -170,6 +177,42 @@ export default class ImageEditor {
         };
     }
 
+    set context(context) {
+        this.set_current_context(context)
+    }
+
+    /**
+     * Sets the current context value
+     *
+     * @param {ImageEditingContext} context
+     * @return {ImageEditor}
+     */
+    set_current_context(context) {
+        Assert.assertInstanceOf(context, ImageEditingContext);
+        Logger.debug(`[ImageEditor] Set current context`, context);
+        if (!context.image || Object.keys(context.image).length === 0) {
+            Logger.warn(`[ImageEditor] Current context has no image property`, context);
+        }
+
+        this._context = context;
+
+        return this;
+    }
+
+    /**
+     * Merge the given data with the current context and update the context data
+     *
+     * @param {object|ImageEditingContext} context_data
+     * @return {ImageEditingContext}
+     */
+    update_current_context(context_data) {
+        const merged_context = this._context.merge(context_data);
+        this.set_current_context(merged_context);
+
+        return merged_context;
+    }
+
+
     /**
      * @param {string} id
      */
@@ -243,9 +286,8 @@ export default class ImageEditor {
             },
             success: (data) => {
                 NotificationHelper.instance().notify(ImageEditor.Events.IMAGE_LOADED, {instance: this, data: data});
-                context.image_id = id;
 
-                this._process_image_details(data);
+                this._process_image_details(data, this._context.merge({image_id: id}));
             }
         });
     }
@@ -386,6 +428,7 @@ export default class ImageEditor {
         Feature.instance().call(
             Feature.feature.fancybox.saveImageButton,
             () => {
+                const x =this._controller._save_image_button;
                 this._controller._save_image_button.update(changed);
             }
         );
@@ -585,28 +628,18 @@ export default class ImageEditor {
      * @private
      */
     _server_side_cropping(data) {
-        const context = this._context;
-
-        $.ajax({
-            url: this._context.url.image,
-            type: 'POST',
-            data: {
-                'zetaprints-CropX1': data.selection.position.left / context.container.factor,
-                'zetaprints-CropY1': data.selection.position.top / context.container.factor,
-                'zetaprints-CropX2': (data.selection.position.left + data.selection.width) / context.container.factor,
-                'zetaprints-CropY2': (data.selection.position.top + data.selection.height) / context.container.factor,
-                'zetaprints-action': 'img-crop',
-                'zetaprints-ImageID': context.image_id
-            },
-            error: (_, textStatus, errorThrown) => {
-                this._handle_ajax_error(cant_crop_image_text, textStatus, errorThrown)
-            },
-            success: (data) => {
+        this._image_manipulation_service.crop(
+            this._context,
+            data,
+            (_, updated_context, processed_image_data) => {
                 this._clear_metadata();
                 this._clear_editor();
-                this._process_image_details(data);
+                this._update_ui(processed_image_data, updated_context);
+            },
+            (_, textStatus, errorThrown) => {
+                this._handle_ajax_error(cant_crop_image_text, textStatus, errorThrown);
             }
-        });
+        );
     }
 
     /**
@@ -614,55 +647,68 @@ export default class ImageEditor {
      * @private
      */
     _server_side_rotation(direction) {
-        const context = this._context;
-
         this._clear_editor();
         this._clear_metadata();
         this._show_activity();
 
-        $.ajax({
-            url: context.url.image,
-            type: 'POST',
-            data: {
-                'zetaprints-action': 'img-rotate',
-                'zetaprints-Rotation': direction,
-                'zetaprints-ImageID': context.image_id
+        this._image_manipulation_service.rotate(
+            this._context,
+            direction,
+            (_, updated_context, processed_image_data) => {
+                this._update_ui(processed_image_data, updated_context);
             },
-            error: (_, textStatus, errorThrown) => {
+            (_, textStatus, errorThrown) => {
                 this._handle_ajax_error(cant_rotate_image_text, textStatus, errorThrown);
-            },
-            success: (data) => {
-                this._process_image_details(data);
             }
-        });
+        );
     }
 
     /**
-     * @param xml
+     * @param {string} xml
+     * @param {ImageEditingContext} context
      * @private
      */
-    _process_image_details(xml) {
-        const context = this._context;
-        const source = context
-            .url
-            .user_image_template
-            .replace('image-guid.image-ext',
-                get_value_by_regexp(xml, /Thumb="([^"]*?)"/));
+    _process_image_details(xml, context) {
+        const result = this._image_manipulation_service.process_image_details(context, xml);
+        this._update_ui(result, result.context);
+    }
 
-        const preview_width = get_value_by_regexp(xml, /ThumbWidth="([^"]*?)"/);
-        const preview_height = get_value_by_regexp(xml, /ThumbHeight="([^"]*?)"/);
-        const width = get_value_by_regexp(xml, /ImageWidth="([^"]*?)"/);
-        const height = get_value_by_regexp(xml, /ImageHeight="([^"]*?)"/);
-        const undo_width = get_value_by_regexp(xml, /ImageWidthUndo="([^"]*?)"/);
-        const undo_height = get_value_by_regexp(xml, /ImageHeightUndo="([^"]*?)"/);
+    /**
+     * @param {ProcessedImageData} processed_image_data
+     * @param {ImageEditingContext} new_context
+     * @private
+     */
+    _update_ui(processed_image_data, new_context) {
+        Logger.debug('[ImageEditor] Update UI', processed_image_data);
+        this.set_current_context(new_context);
 
+        const source = processed_image_data.source;
+        const preview_width = processed_image_data.preview_width;
+        const preview_height = processed_image_data.preview_height;
+        const width = processed_image_data.width;
+        const height = processed_image_data.height;
+        const undo_width = processed_image_data.undo_width;
+        const undo_height = processed_image_data.undo_height;
+
+        // const source = context
+        //     .url
+        //     .user_image_template
+        //     .replace('image-guid.image-ext',
+        //         get_value_by_regexp(xml, /Thumb="([^"]*?)"/));
+        //
+        // const preview_width = get_value_by_regexp(xml, /ThumbWidth="([^"]*?)"/);
+        // const preview_height = get_value_by_regexp(xml, /ThumbHeight="([^"]*?)"/);
+        // const width = get_value_by_regexp(xml, /ImageWidth="([^"]*?)"/);
+        // const height = get_value_by_regexp(xml, /ImageHeight="([^"]*?)"/);
+        // const undo_width = get_value_by_regexp(xml, /ImageWidthUndo="([^"]*?)"/);
+        // const undo_height = get_value_by_regexp(xml, /ImageHeightUndo="([^"]*?)"/);
+
+        const undoButtonParent = $('#undo-button').parent();
         if (!(undo_width && undo_height)) {
-            $('#undo-button')
-                .parent()
+            undoButtonParent
                 .addClass('hidden');
         } else {
-            $('#undo-button')
-                .parent()
+            undoButtonParent
                 .removeClass('hidden')
                 .end()
                 .attr('title', undo_all_changes_text + '. ' + original_size_text + ': '
@@ -671,46 +717,21 @@ export default class ImageEditor {
 
         if (!(preview_width && preview_height && width && height)) {
             alert(unknown_error_occured_text);
-            console.log('unkno');
+            Logger.error(unknown_error_occured_text);
             this._hide_activity();
 
             return;
         }
 
-        context.image = {
-            width: width * 1,
-            height: height * 1,
-            ratio: (width * 1) / (height * 1),
-            width_in: (width * 1) / context.placeholder.width * context.placeholder.width_in,
-            thumb_width: preview_width,
-            thumb_height: preview_height
-        };
-
-        context.image.dpi = Math.round(context.image.width / context.image.width_in);
-
-        context.placeholder_to_image_factor = context.placeholder.width / context.image.width;
-
-        this._set_info_bar_value('current', 'width', context.image.width);
-        this._set_info_bar_value('current', 'height', context.image.height);
-        this._set_info_bar_value('current', 'dpi', context.image.dpi);
+        this._set_info_bar_value('current', 'width', new_context.image.width);
+        this._set_info_bar_value('current', 'height', new_context.image.height);
+        this._set_info_bar_value('current', 'dpi', new_context.image.dpi);
 
         this._user_image
             .addClass('zetaprints-hidden')
             .attr('src', source);
 
-        let tmp1 = $('input[value="' + context.image_id + '"]').parent().find('img');
-        if (tmp1.length === 0) {
-            tmp1 = $('#img' + context.image_id);
-        }
-        if (tmp1.length === 0) {
-            // tmp1 = $('input[value="' + _context.image_id + '"]').parent().find('img');
-            return;
-        }
-        if (source.match(/\.jpg/m)) {
-            tmp1.attr('src', source.replace(/\.(jpg|gif|png|jpeg|bmp)/i, "_0x100.jpg"));
-        } else {
-            tmp1.attr('src', source);
-        }
+        this._image_thumbnail_service.update_images_for_editing_context(new_context, source);
     }
 
     /**
@@ -1170,7 +1191,7 @@ export default class ImageEditor {
                 this._handle_ajax_error(cant_restore_image_text, textStatus, errorThrown);
             },
             success: (data) => {
-                this._process_image_details(data);
+                this._process_image_details(data, context);
             }
         });
     }
@@ -1401,6 +1422,7 @@ export default class ImageEditor {
             return;
         }
 
+        console.log('cropy data:', data);
         const crop_callback = simple_crop
             ? (data) => {
                 return this._cropping_callback(data)

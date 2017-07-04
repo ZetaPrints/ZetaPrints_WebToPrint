@@ -29,6 +29,7 @@ import ImageSelectionController from "./ImageSelectionController";
 import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
 import TextFieldController from "./TextFieldController";
 import Environment from "./Environment";
+import ImageManipulationService from "./service/ImageManipulationService";
 
 /**
  * @implements DataInterface
@@ -41,6 +42,8 @@ export default class PersonalizationForm {
         if (arguments.length !== 1) {
             throw new TypeError('Invalid number of arguments, expected 1 got ' + arguments.length);
         }
+
+        PersonalizationForm.shared_instance = this;
 
         /** @type {DataInterface} */
         const zp = this.data = data;
@@ -60,6 +63,7 @@ export default class PersonalizationForm {
         this.in_preview_edit_controller = new InPreviewEditController(this);
         this.image_selection_controller = new ImageSelectionController(this);
         this._select_image = new SelectImage(preview_controller);
+        this.image_manipulation_service = new ImageManipulationService();
 
         this._preview_overlay = null;
 
@@ -1170,3 +1174,8 @@ export default class PersonalizationForm {
             });
     }
 }
+
+/**
+ * @type {PersonalizationForm}
+ */
+PersonalizationForm.shared_instance = null;

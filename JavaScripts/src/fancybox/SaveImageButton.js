@@ -26,6 +26,7 @@ export default class SaveImageButton extends AbstractFancyboxButton {
     update(changed) {
         const new_state = changed === undefined ? SaveImageButton.STATE_UNDEFINED : (changed ? SaveImageButton.STATE_DIRTY : SaveImageButton.STATE_CLEAN);
         if (this._state !== new_state) {
+            Logger.debug(`[SaveImageButton] Update set ${changed ? '' : 'not '}changed`);
             this._state = new_state;
 
             if (new_state === SaveImageButton.STATE_UNDEFINED) {
@@ -77,8 +78,7 @@ export default class SaveImageButton extends AbstractFancyboxButton {
         image_editing_context.save();
         image_editing_context.$input.prop('checked', true).change();
 
-        this._get_outer().addClass('saved');
-        $button.addClass('disabled');
+        this.update(false);
 
         NotificationHelper.instance().notify(SaveImageButton.Events.CLICKED, {instance: this});
         NotificationHelper.instance().notify(GlobalEvents.USER_DATA_SAVED, {instance: this});
