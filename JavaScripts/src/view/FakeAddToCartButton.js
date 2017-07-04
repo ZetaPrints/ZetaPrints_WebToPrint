@@ -1,7 +1,7 @@
 /**
  * Created by cod on 10.4.17.
  */
-export default  class FakeAddToCartButton {
+export default class FakeAddToCartButton {
     /**
      * @param {jQuery} original_button
      */

@@ -5,6 +5,7 @@ import $ from "./../jQueryLoader";
 import DataObject from "./DataObject";
 import PersonalizationForm from "../PersonalizationForm";
 import Assert from "../helper/Assert";
+import Logger from "../Logger";
 export default class ImageEditingContext extends DataObject {
     constructor(data) {
         super();
@@ -58,6 +59,15 @@ export default class ImageEditingContext extends DataObject {
     }
 
     /**
+     * Returns the thumbnail element connected to this context
+     *
+     * @return {jQuery}
+     */
+    get_thumbnail_outlet() {
+        return this.$selected_thumbnail;
+    }
+
+    /**
      * Create a new context instance with the merged data from this instance and the parameter
      *
      * @param {object|ImageEditingContext} context_data
@@ -79,10 +89,17 @@ export default class ImageEditingContext extends DataObject {
         Assert.assertjQueryOrDomElement(input);
         const jQueryElement = $(input);
         const element = jQueryElement.get(0);
+
+        if (!element.name) {
+            throw new ReferenceError('Input element must have the property "name"');
+        }
+        if (!element.value) {
+            throw new ReferenceError('Input element must have the property "value"');
+        }
         const image_name = element.name.substr(12);
         const image_guid = element.value;
 
-        return ImageEditingContext.create(form_instance, image_name, image_guid, jQueryElement.siblings('image-edit-thumb'))
+        return ImageEditingContext.create(form_instance, image_name, image_guid, jQueryElement.siblings('.image-edit-thumb'))
     }
 
     /**
@@ -94,6 +111,10 @@ export default class ImageEditingContext extends DataObject {
      */
     static create(form_instance, image_name, image_guid, image_thumbnail) {
         Assert.assertInstanceOf(form_instance, PersonalizationForm);
+        Assert.assertjQuery(image_thumbnail, 'image_thumbnail');
+        if (image_thumbnail.length === 0) {
+            Logger.warn('[ImageEditingContext] jQuery image thumbnail element is empty');
+        }
         const data = form_instance.data;
         const page = data.template_details.pages[data.current_page];
 

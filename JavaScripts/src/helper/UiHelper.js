@@ -209,6 +209,15 @@ export default class UiHelper {
     /**
      * @return {*|jQuery|HTMLElement}
      */
+    get select_image_elements_inputs() {
+        return $('input.zetaprints-images').filter(function () {
+            return !$(this).parent().hasClass('zp-html-template')
+        });
+    }
+
+    /**
+     * @return {*|jQuery|HTMLElement}
+     */
     get select_image_elements() {
         return $(this.select_image_elements_selector);
     }

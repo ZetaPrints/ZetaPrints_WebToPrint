@@ -30,6 +30,8 @@ import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
 import TextFieldController from "./TextFieldController";
 import Environment from "./Environment";
 import ImageManipulationService from "./service/ImageManipulationService";
+import RotateLeftButton from "./view/RotateLeftButton";
+import RotateRightButton from "./view/RotateRightButton";
 
 /**
  * @implements DataInterface
@@ -199,6 +201,7 @@ export default class PersonalizationForm {
         this._register_image_click();
         this._register_palette_change();
         this._register_notification_listeners();
+        this._add_rotate_buttons();
 
         if (zp.has_shapes) {
             Feature.instance().call(Feature.feature.inPreviewEdit, this.in_preview_edit_controller.add_in_preview_edit_handlers);
@@ -375,6 +378,15 @@ export default class PersonalizationForm {
             fields.val(guid);
             _this.image_selection_controller.register_fields(fields);
 
+            fields.each(function () {
+                const rotate_left_button = new RotateLeftButton(_this, this);
+                const rotate_right_button = new RotateRightButton(_this, this);
+
+                // Buttons are floated right. So insert in reverse order
+                rotate_right_button.add();
+                rotate_left_button.add();
+            });
+
             $td
                 .children('.image-edit-thumb')
                 .click(thumbnail_edit_click_handler);
@@ -536,6 +548,10 @@ export default class PersonalizationForm {
         }
 
         Feature.instance().call(Feature.feature.dataset, Dataset.zp_dataset_update_state, data, name, false);
+    }
+
+    update_preview() {
+        this.preview_controller.update_preview(this.data);
     }
 
 
@@ -709,9 +725,25 @@ export default class PersonalizationForm {
     /**
      * @private
      */
+    _add_rotate_buttons() {
+        const personalization_form_instance = this;
+
+        UiHelper.instance().select_image_elements_inputs.each(function () {
+            const rotate_left_button = new RotateLeftButton(personalization_form_instance, this);
+            const rotate_right_button = new RotateRightButton(personalization_form_instance, this);
+
+            // Buttons are floated right. So insert in reverse order
+            rotate_right_button.add();
+            rotate_left_button.add();
+        });
+    }
+
+    /**
+     * @private
+     */
     _register_image_click() {
         const personalization_form_instance = this;
-        $('input.zetaprints-images').click(function (event) {
+        UiHelper.instance().select_image_elements_inputs.click(function (event) {
             const $input = $(this);
             const page = personalization_form_instance.template_details.pages[personalization_form_instance.current_page];
             const field = page.images[UiHelper.get_name_for_element($input)];

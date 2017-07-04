@@ -26,8 +26,6 @@ export default class ImageThumbnailService {
      */
     update_images_with_id(image_id, source) {
         let thumbnails = $('input[value="' + image_id + '"]').parent().find('img');
-        console.log('tmp1', thumbnails);
-
         if (thumbnails.length === 0) {
             thumbnails = $('#img' + image_id);
         }
