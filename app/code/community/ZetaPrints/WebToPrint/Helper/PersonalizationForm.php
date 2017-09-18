@@ -226,15 +226,17 @@ class ZetaPrints_WebToPrint_Helper_PersonalizationForm
 <script type="text/javascript">
     //<![CDATA[
     jQuery(document).ready(function ($) {
-        $('a.in-dialog').fancybox({
-            'opacity': true,
-            'overlayShow': false,
-            'transitionIn': 'elastic',
-            'changeSpeed': 200,
-            'speedIn': 500,
-            'speedOut': 500,
-            'titleShow': false
-        });
+        if (typeof jQuery.fancybox === 'function') {
+            $('a.in-dialog').fancybox({
+                'opacity': true,
+                'overlayShow': false,
+                'transitionIn': 'elastic',
+                'changeSpeed': 200,
+                'speedIn': 500,
+                'speedOut': 500,
+                'titleShow': false
+            });
+        }
     });
     //]]>
 </script>
