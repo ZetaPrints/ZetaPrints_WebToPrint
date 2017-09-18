@@ -13,6 +13,8 @@ import PersonalizationForm from './PersonalizationForm';
 import ImageEditingContext from './model/ImageEditingContext';
 import ImageManipulationService from './service/ImageManipulationService';
 import ImageThumbnailService from './service/ImageThumbnailService';
+import GlobalEvents from './GlobalEvents';
+import NotificationCenter from './NotificationCenter';
 import $ from './jQueryLoader';
 
 const ui_helper = UiHelper.instance();
@@ -36,7 +38,9 @@ export {
     $,
     feature,
     environment,
-    ui_helper
+    ui_helper,
+    GlobalEvents,
+    NotificationCenter
 }
 
 
