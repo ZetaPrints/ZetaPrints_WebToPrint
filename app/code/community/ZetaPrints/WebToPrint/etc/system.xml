@@ -169,6 +169,25 @@
                   <![CDATA[Edit values for <b>upload_max_filesize</b> and <b>post_max_size</b> settings in php.ini to increase file size limit.]]>
                 </comment>
               </uploading-length-limit>
+
+              <image_proxy_url translate="label">
+                <label>Image Proxy</label>
+                <frontend_type>text</frontend_type>
+                <backend_model>ZetaPrints_WebToPrint_Model_System_Config_Backend_ZetaPrintsUrl</backend_model>
+
+                <sort_order>10</sort_order>
+
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>0</show_in_store>
+                <validate>validate-url</validate>
+
+                <comment>
+                  <![CDATA[Proxy webserver to use to fetch images
+                  <br/>
+                  Example: <b>http://orders.example.com/</b>]]>
+                </comment>
+              </image_proxy_url>
             </fields>
           </settings>
 

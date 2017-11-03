@@ -225,7 +225,10 @@ class ZetaPrints_WebToPrint_UploadController extends Mage_Core_Controller_Front_
             $img_url = 'http://' . $_SERVER['SERVER_NAME'] . $img_url;
         }
 
-        return $img_url;
+        /** @var ZetaPrints_WebToPrint_Helper_Uri $uriHelper */
+        $uriHelper = Mage::helper('webtoprint/uri');
+
+        return $uriHelper->prepareImageDownloadUri($img_url);
 
         // TEMP fix
         //$img_url = 'http://w2p-proxy.devweb.li' . substr($img_url, strlen('http://shop.philatelie.li'));
