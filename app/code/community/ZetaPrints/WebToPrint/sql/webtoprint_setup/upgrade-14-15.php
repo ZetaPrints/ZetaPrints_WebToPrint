@@ -1,9 +1,9 @@
 <?php
 
-$profiles = array(
-    array(
+$profiles = [
+    [
         'name' => 'ZetaPrints templates synchronization',
-        'xml' => '<action '
+        'xml'  => '<action '
             . 'type="webtoprint/templates-synchronization" '
             . 'method="parse"'
             . '/>'
@@ -12,27 +12,27 @@ $profiles = array(
             . 'type="webtoprint/products-updating" '
             . 'method="map" '
             . 'process-quantities="yes" '
-            . '/>'
-    ),
-    array(
+            . '/>',
+    ],
+    [
         'name' => 'ZetaPrints simple products creation',
-        'xml' => '<action '
+        'xml'  => '<action '
             . 'type="webtoprint/products-creation" '
             . 'method="map" '
             . 'product-type="simple" '
             . 'process-quantities="yes" '
-            . '/>'
-    ),
-    array(
+            . '/>',
+    ],
+    [
         'name' => 'ZetaPrints virtual products creation',
-        'xml' => '<action '
+        'xml'  => '<action '
             . 'type="webtoprint/products-creation" '
             . 'method="map" '
             . 'product-type="virtual" '
             . 'process-quantities="yes" '
-            . '/>'
-    )
-);
+            . '/>',
+    ],
+];
 
 foreach ($profiles as $profile) {
     $profile_model = Mage::getModel('dataflow/profile');
@@ -41,8 +41,9 @@ foreach ($profiles as $profile) {
         $collection = $profile_model->getCollection();
         $collection->getSelect()->where('name = ?', $profile['name']);
 
-        if ($collection->count() == 1)
+        if ($collection->count() == 1) {
             $profile_model = $collection->getFirstItem();
+        }
     }
 
     $profile_model

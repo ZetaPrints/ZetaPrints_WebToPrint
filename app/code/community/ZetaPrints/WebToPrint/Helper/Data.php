@@ -564,7 +564,7 @@ class ZetaPrints_WebToPrint_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-//        throw new Exception(__LINE__ . ' ' . get_class($xml) . ' :'. $xml .': '. htmlspecialchars($xml->asXML()));
+        //        throw new Exception(__LINE__ . ' ' . get_class($xml) . ' :'. $xml .': '. htmlspecialchars($xml->asXML()));
 
         Mage::register('webtoprint-template-xml', $xml);
 

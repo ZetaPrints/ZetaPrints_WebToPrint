@@ -7,17 +7,23 @@ if ($profile_model->getResource()->isProfileExists($name)) {
     $collection = $profile_model->getCollection();
     $collection->getSelect()->where('name = ?', $name);
 
-    if ($collection->count() == 1)
+    if ($collection->count() == 1) {
         $collection->getFirstItem()->delete();
+    }
 }
 
-$profiles = array(
-    array('name' => 'ZetaPrints simple products creation',
-        'xml' => '<action type="webtoprint/products-creation" method="map" ' .
-            'product-type="simple" />'),
-    array('name' => 'ZetaPrints virtual products creation',
-        'xml' => '<action type="webtoprint/products-creation" method="map" ' .
-            'product-type="virtual" />'));
+$profiles = [
+    [
+        'name' => 'ZetaPrints simple products creation',
+        'xml'  => '<action type="webtoprint/products-creation" method="map" ' .
+            'product-type="simple" />',
+    ],
+    [
+        'name' => 'ZetaPrints virtual products creation',
+        'xml'  => '<action type="webtoprint/products-creation" method="map" ' .
+            'product-type="virtual" />',
+    ],
+];
 
 foreach ($profiles as $profile) {
     $profile_model = Mage::getModel('dataflow/profile');
@@ -26,8 +32,9 @@ foreach ($profiles as $profile) {
         $collection = $profile_model->getCollection();
         $collection->getSelect()->where('name = ?', $profile['name']);
 
-        if ($collection->count() == 1)
+        if ($collection->count() == 1) {
             $profile_model = $collection->getFirstItem();
+        }
     }
 
     $profile_model

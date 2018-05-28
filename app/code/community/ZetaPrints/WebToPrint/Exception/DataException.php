@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  Copyright notice
  *
@@ -24,10 +25,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
-/**
- * @author COD
- * Created 14.04.16 16:12
- */
 class ZetaPrints_WebToPrint_Exception_DataException extends RuntimeException
 {
 }

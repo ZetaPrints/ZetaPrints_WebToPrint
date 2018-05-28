@@ -1,8 +1,11 @@
 <?php
 
-$profiles = array(
-    array('name' => 'ZetaPrints catalogues creation',
-        'xml' => '<action type="webtoprint/catalogues-creation" method="parse" />'));
+$profiles = [
+    [
+        'name' => 'ZetaPrints catalogues creation',
+        'xml'  => '<action type="webtoprint/catalogues-creation" method="parse" />',
+    ],
+];
 
 foreach ($profiles as $profile) {
     $profile_model = Mage::getModel('dataflow/profile');
@@ -11,8 +14,9 @@ foreach ($profiles as $profile) {
         $collection = $profile_model->getCollection();
         $collection->getSelect()->where('name = ?', $profile['name']);
 
-        if ($collection->count() == 1)
+        if ($collection->count() == 1) {
             $profile_model = $collection->getFirstItem();
+        }
     }
 
     $profile_model

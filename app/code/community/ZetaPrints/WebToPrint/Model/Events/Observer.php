@@ -447,7 +447,7 @@ class ZetaPrints_WebToPrint_Model_Events_Observer implements ZetaPrints_Api
 
         if ($id = $session->getZetaprintsUser()) {
             $credentials = [
-                'id' => $id,
+                'id'       => $id,
                 'password' => $session->getZetaprintsPassword(),
             ];
         } else {

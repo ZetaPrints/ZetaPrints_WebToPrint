@@ -1153,7 +1153,7 @@ CODE;
 
                                         <th><?php echo $this->__($field['name']); ?></th>
 
-                                        <?php
+                                    <?php
                                     endif;
                                 endforeach;
                             endif;

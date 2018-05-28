@@ -40,11 +40,8 @@ class ZetaPrints_WebToPrint_Model_Convert_Mapper_Product_Creating
                 //... remember its ID
                 $used_templates[$product->getId()] = null;
 
-                //And if it has web-to-print attribute set then...
-                if ($product->hasWebtoprintTemplate() && $product->getWebtoprintTemplate(
-                    )
-                ) //... also remember the value of the attribute
-                {
+                //And if it has web-to-print attribute set then also remember the value of the attribute
+                if ($product->hasWebtoprintTemplate() && $product->getWebtoprintTemplate()) {
                     $used_templates[$product->getWebtoprintTemplate()] = null;
                 }
             }

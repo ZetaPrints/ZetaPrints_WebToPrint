@@ -8,12 +8,15 @@ if ($profile_model->getResource()->isProfileExists($profile_name)) {
     $collection = $profile_model->getCollection();
     $collection->getSelect()->where('name = ?', $profile_name);
 
-    if ($collection->count() == 1)
+    if ($collection->count() == 1) {
         $profile_model = $collection->getFirstItem();
+    }
 }
 
 $profile_model->setName($profile_name)
-    ->setActionsXml("<action type=\"webtoprint/templates-synchronization\" method=\"parse\" />\n<action type=\"webtoprint/products-updating\" method=\"map\" />")
+    ->setActionsXml(
+        "<action type=\"webtoprint/templates-synchronization\" method=\"parse\" />\n<action type=\"webtoprint/products-updating\" method=\"map\" />"
+    )
     ->setGuiData(false)
     ->setDataTransfer('interactive')
     ->save();
@@ -27,8 +30,9 @@ if ($profile_model->getResource()->isProfileExists($profile_name)) {
     $collection = $profile_model->getCollection();
     $collection->getSelect()->where('name = ?', $profile_name);
 
-    if ($collection->count() == 1)
+    if ($collection->count() == 1) {
         $profile_model = $collection->getFirstItem();
+    }
 }
 
 $profile_model->setName($profile_name)

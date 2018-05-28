@@ -13,11 +13,11 @@ class ZetaPrints_WebToPrint_Helper_Uri extends Mage_Core_Helper_Abstract
         $baseUrlLength = strlen($baseUrl);
         $host = str_replace(['http://', 'https://'], '', trim($baseUrl, '/'));
 
-//        echo rtrim($imageProxy, '/')
-//            . '/'
-//            . substr($imageUri, $baseUrlLength)
-//            . '?remote=' . $host;
-//        echo PHP_EOL;
+        //        echo rtrim($imageProxy, '/')
+        //            . '/'
+        //            . substr($imageUri, $baseUrlLength)
+        //            . '?remote=' . $host;
+        //        echo PHP_EOL;
 
         return $imageProxy
             . '/'
