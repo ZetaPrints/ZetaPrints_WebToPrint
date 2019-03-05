@@ -1308,10 +1308,10 @@ CODE;
             // Global vars go here
             var image_imageName = '';  //currently edited template image
             var userImageThumbSelected = null;  //user selected image to edit
+            zp = <?php echo $data ?>;
             // Global vars end
 
             jQuery(document).ready(function ($) {
-                zp = <?php echo $data ?>;
 
                 edit_button_text = "<?php echo $this->__('Edit');?>";
                 delete_button_text = "<?php echo $this->__('Delete'); ?>";
