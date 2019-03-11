@@ -43,24 +43,15 @@ class ZetaPrints_WebToPrint_ThumbnailController
                     ->setHeader('Cache-Control', 'public', true)
                     ->setHeader('Cache-Control', $headers['Cache-Control'])
                     ->setHeader('Expires', '', true)
-                    ->setHeader('Content-Type', $headers['Content-Type'], true)
                     ->setHeader('Content-Length', $headers['Content-Length'], true);
-            } else {
-                $type = explode('.', $guid);
-
-                if (count($type) == 2) {
-                    $type = $type[1];
-                }
-
-                if ($type == 'jpg') {
-                    $type = 'jpeg';
-                }
-
-                $this->getResponse()
-                    ->setHeader('Content-Type', 'image/' . $type);
             }
 
-            $this->getResponse()->setBody($response['content']['body']);
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $contentType = $finfo->buffer($response['content']['body']);
+
+            $this->getResponse()
+                ->setHeader('Content-Type', $contentType)
+                ->setBody($response['content']['body']);
         }
     }
 }
