@@ -1,6 +1,6 @@
-import Lightbox from "../view/Lightbox";
-import $ from "../jQueryLoader";
-import UiHelper from "../helper/UiHelper";
+import Lightbox from '../view/Lightbox';
+import $ from '../jQueryLoader';
+import UiHelper from '../helper/UiHelper';
 
 export default class Dataset {
     static zp_dataset_initialise(zp) {
@@ -18,7 +18,8 @@ export default class Dataset {
                     $(this)
                         .parent()
                         .removeClass('zp-dataset-active');
-                });
+                }
+            );
 
         const $td = $dataset
             .find('td')

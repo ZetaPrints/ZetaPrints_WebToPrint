@@ -1,11 +1,7 @@
-/**
- * Created by cod on 20.4.17.
- */
 import $ from '../jQueryLoader';
 import Logger from '../Logger';
-import LightboxConfiguration from "../model/LightboxConfiguration";
-import AbstractLightbox from "./AbstractLightbox";
-
+import LightboxConfiguration from '../model/LightboxConfiguration';
+import AbstractLightbox from './AbstractLightbox';
 
 export default class Lightbox extends AbstractLightbox {
     /**

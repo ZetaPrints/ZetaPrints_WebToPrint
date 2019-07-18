@@ -1,11 +1,9 @@
-/**
- * Created by cod on 20.4.17.
- */
-import $ from "./../jQueryLoader";
-import DataObject from "./DataObject";
-import PersonalizationForm from "../PersonalizationForm";
-import Assert from "../helper/Assert";
-import Logger from "../Logger";
+import $ from './../jQueryLoader';
+import DataObject from './DataObject';
+import PersonalizationForm from '../PersonalizationForm';
+import Assert from '../helper/Assert';
+import Logger from '../Logger';
+
 export default class ImageEditingContext extends DataObject {
     constructor(data) {
         super();
@@ -99,7 +97,12 @@ export default class ImageEditingContext extends DataObject {
         const image_name = element.name.substr(12);
         const image_guid = element.value;
 
-        return ImageEditingContext.create(form_instance, image_name, image_guid, jQueryElement.siblings('.image-edit-thumb'))
+        return ImageEditingContext.create(
+            form_instance,
+            image_name,
+            image_guid,
+            jQueryElement.siblings('.image-edit-thumb')
+        );
     }
 
     /**

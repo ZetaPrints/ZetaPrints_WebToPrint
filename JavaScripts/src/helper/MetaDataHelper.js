@@ -1,7 +1,8 @@
-import Assert from "./Assert";
-import DataHelper from "./DataHelper";
-import NotificationCenter from "../NotificationCenter";
-import GlobalEvents from "../GlobalEvents";
+import Assert from './Assert';
+import DataHelper from './DataHelper';
+import NotificationCenter from '../NotificationCenter';
+import GlobalEvents from '../GlobalEvents';
+
 export default class MetaDataHelper {
     /**
      * Sets the metadata for the given field
@@ -32,13 +33,12 @@ export default class MetaDataHelper {
 
         field.metadata[key] = value;
 
-
         if (send_notification) {
             NotificationCenter.instance().notify(GlobalEvents.USER_DATA_CHANGED, {
                 field,
                 key,
                 value: value || key
-            })
+            });
         }
     }
 
@@ -67,7 +67,7 @@ export default class MetaDataHelper {
             NotificationCenter.instance().notify(GlobalEvents.USER_DATA_CHANGED, {
                 field,
                 metadata
-            })
+            });
         }
     }
 
@@ -101,7 +101,7 @@ export default class MetaDataHelper {
         if (send_notification) {
             NotificationCenter.instance().notify(GlobalEvents.USER_DATA_CHANGED, {
                 field
-            })
+            });
         }
     }
 

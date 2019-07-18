@@ -1,6 +1,3 @@
-/**
- * Created by cod on 21.4.17.
- */
 export default class ShapeRepository {
     /**
      * @param {PersonalizationForm} personalisation_form

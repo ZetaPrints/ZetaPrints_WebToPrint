@@ -1,6 +1,3 @@
-/**
- * Created by cod on 21.4.17.
- */
 import Logger from './Logger';
 
 export default class Feature {
@@ -80,7 +77,7 @@ export default class Feature {
                 selectImage: 'Fancybox/SelectImage',
                 updatePreview: 'Fancybox/UpdatePreviewButton',
             }
-        }
+        };
     }
 
     /**

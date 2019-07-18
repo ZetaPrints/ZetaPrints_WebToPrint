@@ -1,7 +1,3 @@
-/**
- * Created by cod on 4.7.17.
- */
-
 export default class RegexHelper {
     /**
      * @param {string} subject

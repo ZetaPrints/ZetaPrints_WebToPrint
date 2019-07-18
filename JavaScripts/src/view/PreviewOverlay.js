@@ -1,9 +1,6 @@
-/**
- * Created by cod on 18.4.17.
- */
+import Logger from '../Logger';
+import UiHelper from '../helper/UiHelper';
 
-import Logger from "../Logger";
-import UiHelper from "../helper/UiHelper";
 export default class PreviewOverlay {
     /**
      * @param {HTMLElement} product_image_element

@@ -1,8 +1,8 @@
 import $ from '../jQueryLoader';
 import Logger from '../Logger';
-import NotificationHelper from "../NotificationCenter";
-import AbstractFancyboxButton from "./AbstractFancyboxButton";
-import GlobalEvents from "../GlobalEvents";
+import NotificationHelper from '../NotificationCenter';
+import AbstractFancyboxButton from './AbstractFancyboxButton';
+import GlobalEvents from '../GlobalEvents';
 
 export default class SaveImageButton extends AbstractFancyboxButton {
     /**
@@ -48,7 +48,7 @@ export default class SaveImageButton extends AbstractFancyboxButton {
     _create_button(data, in_preview, name, guid) {
         const $outer = this._get_outer();
         if ($outer.length === 0) {
-            throw new ReferenceError('Could not find fancybox-outer')
+            throw new ReferenceError('Could not find fancybox-outer');
         }
 
         return $('<a id="zp-save-image-button" class="no-middle disabled">' +
@@ -90,7 +90,7 @@ export default class SaveImageButton extends AbstractFancyboxButton {
     _build_get_share_name_callback(data, in_preview, name, guid) {
         return () => {
             return name;
-        }
+        };
     }
 }
 

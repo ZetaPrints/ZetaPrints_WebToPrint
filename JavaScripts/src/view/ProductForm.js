@@ -1,6 +1,3 @@
-/**
- * Created by cod on 26.4.17.
- */
 export default class ProductForm {
     /**
      * @param {jQuery|HTMLElement} element

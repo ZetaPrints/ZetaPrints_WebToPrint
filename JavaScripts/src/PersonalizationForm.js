@@ -2,36 +2,36 @@
  * @implements DataInterface
  */
 import Logger from './Logger';
-import ImageUpload from "./ImageUpload";
-import PreviewController from "./PreviewController";
-import FakeAddToCartButton from "./view/FakeAddToCartButton";
+import ImageUpload from './ImageUpload';
+import PreviewController from './PreviewController';
+import FakeAddToCartButton from './view/FakeAddToCartButton';
 import UiHelper from './helper/UiHelper';
-import MetaDataHelper from "./helper/MetaDataHelper";
+import MetaDataHelper from './helper/MetaDataHelper';
 
 import $ from './jQueryLoader';
-import ImageSelector from "./ImageSelector";
-import ImageEditorController from "./ImageEditorController";
-import ImageTabController from "./ImageTabController";
-import Feature from "./Feature";
-import Resizing from "./fancybox/Resizing";
-import SelectImage from "./fancybox/SelectImage";
-import Dataset from "./dataset/Dataset";
-import InPreviewEditController from "./InPreviewEditController";
-import ShapeRepository from "./model/ShapeRepository";
-import Lightbox from "./view/Lightbox";
-import LightboxConfiguration from "./model/LightboxConfiguration";
-import Assert from "./helper/Assert";
-import ZoomHelper from "./helper/ZoomHelper";
-import DataHelper from "./helper/DataHelper";
-import NotificationCenter from "./NotificationCenter";
-import GlobalEvents from "./GlobalEvents";
-import ImageSelectionController from "./ImageSelectionController";
-import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
-import TextFieldController from "./TextFieldController";
-import Environment from "./Environment";
-import ImageManipulationService from "./service/ImageManipulationService";
-import RotateLeftButton from "./view/RotateLeftButton";
-import RotateRightButton from "./view/RotateRightButton";
+import ImageSelector from './ImageSelector';
+import ImageEditorController from './ImageEditorController';
+import ImageTabController from './ImageTabController';
+import Feature from './Feature';
+import Resizing from './fancybox/Resizing';
+import SelectImage from './fancybox/SelectImage';
+import Dataset from './dataset/Dataset';
+import InPreviewEditController from './InPreviewEditController';
+import ShapeRepository from './model/ShapeRepository';
+import Lightbox from './view/Lightbox';
+import LightboxConfiguration from './model/LightboxConfiguration';
+import Assert from './helper/Assert';
+import ZoomHelper from './helper/ZoomHelper';
+import DataHelper from './helper/DataHelper';
+import NotificationCenter from './NotificationCenter';
+import GlobalEvents from './GlobalEvents';
+import ImageSelectionController from './ImageSelectionController';
+import TextFieldEditorHelper from './helper/TextFieldEditorHelper';
+import TextFieldController from './TextFieldController';
+import Environment from './Environment';
+import ImageManipulationService from './service/ImageManipulationService';
+import RotateLeftButton from './view/RotateLeftButton';
+import RotateRightButton from './view/RotateRightButton';
 
 /**
  * @implements DataInterface
@@ -79,7 +79,6 @@ export default class PersonalizationForm {
 
         const product_image_gallery = ui_helper.product_image_gallery;
         this._set_has_image_zoomer(this._detect_initial_has_image_zoomer(product_image_gallery));
-
 
         ui_helper.product_form.modified = DataHelper.has_changed_fields_on_page(zp.current_page);
 
@@ -164,7 +163,7 @@ export default class PersonalizationForm {
 
         if (DataHelper.is_all_pages_updated(template_details)
             || (personalization_form_instance._has_updated_pages(template_details)
-            && template_details.missed_pages === '')
+                && template_details.missed_pages === '')
             || template_details.missed_pages === 'include') {
             ui_helper.hide('div.zetaprints-notice.to-update-preview');
         } else {
@@ -204,7 +203,10 @@ export default class PersonalizationForm {
         this._add_rotate_buttons();
 
         if (zp.has_shapes) {
-            Feature.instance().call(Feature.feature.inPreviewEdit, this.in_preview_edit_controller.add_in_preview_edit_handlers);
+            Feature.instance().call(
+                Feature.feature.inPreviewEdit,
+                this.in_preview_edit_controller.add_in_preview_edit_handlers
+            );
         }
     }
 
@@ -363,7 +365,6 @@ export default class PersonalizationForm {
 
             return false;
         };
-
 
         trs.each(function () {
             const $tr = $(this);
@@ -554,7 +555,6 @@ export default class PersonalizationForm {
         this.preview_controller.update_preview(this.data);
     }
 
-
     /**
      * @param {boolean} value
      * @private
@@ -612,7 +612,7 @@ export default class PersonalizationForm {
     _init_image_upload_buttons() {
         const personalization_form_instance = this;
         $('div.button.choose-file').each(function () {
-            new ImageUpload(this, personalization_form_instance)
+            new ImageUpload(this, personalization_form_instance);
         });
     }
 
@@ -624,8 +624,11 @@ export default class PersonalizationForm {
         const zp = this.data;
         $(window).load(function () {
             if (zp.has_shapes /*&& window.place_all_shapes_for_page && shape_handler*/) {
-                Feature.instance().call(Feature.feature.inPreviewEdit, InPreviewEditController.precalculate_shapes, zp.template_details);
-
+                Feature.instance().call(
+                    Feature.feature.inPreviewEdit,
+                    InPreviewEditController.precalculate_shapes,
+                    zp.template_details
+                );
 
                 //Add all shapes only then there's no base image.
                 //Shapes will be added after first preview update then base image exists
@@ -693,7 +696,7 @@ export default class PersonalizationForm {
             image_editor.show(decodeURI(image_name), image_guid, $thumb);
 
             return false;
-        }
+        };
     }
 
     /**
@@ -923,7 +926,8 @@ export default class PersonalizationForm {
      * @private
      */
     _detect_initial_has_image_zoomer(product_image_element) {
-        return !!($(product_image_element).hasClass('product-image-zoom') || $(product_image_element).parent().hasClass('product-image-zoom'));
+        return !!($(product_image_element).hasClass('product-image-zoom') || $(product_image_element).parent().hasClass(
+            'product-image-zoom'));
     }
 
     /**

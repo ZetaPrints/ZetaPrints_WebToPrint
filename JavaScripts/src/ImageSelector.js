@@ -1,10 +1,7 @@
-/**
- * Created by cod on 18.4.17.
- */
-import ColorPicker from "./view/ColorPicker";
-import PersonalizationForm from "./PersonalizationForm";
-import Assert from "./helper/Assert";
-import ImageSelectionController from "./ImageSelectionController";
+import ColorPicker from './view/ColorPicker';
+import PersonalizationForm from './PersonalizationForm';
+import Assert from './helper/Assert';
+import ImageSelectionController from './ImageSelectionController';
 
 export default class ImageSelector extends ImageSelectionController {
     /**
@@ -150,7 +147,7 @@ export default class ImageSelector extends ImageSelectionController {
             element.removeClass('minimized');
 
             this._controller.show_colorpicker($panel);
-            this._controller.scroll_strip($panel)
+            this._controller.scroll_strip($panel);
         } else {
             this._controller.hide_colorpicker($panel);
 

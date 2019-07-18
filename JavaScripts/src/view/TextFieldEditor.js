@@ -1,6 +1,6 @@
-import $ from "../jQueryLoader";
-import Assert from "../helper/Assert";
-import UiHelper from "../helper/UiHelper";
+import $ from '../jQueryLoader';
+import Assert from '../helper/Assert';
+import UiHelper from '../helper/UiHelper';
 
 export default class TextFieldEditor {
     constructor(element, options = {}) {
@@ -49,7 +49,6 @@ export default class TextFieldEditor {
         $('<div class="zp-text-field-editor-option" />')
             .append($radio_button.wrap('<div />').parent())
             .append($pallet).appendTo($options);
-
 
         $('input', $row).change(function () {
             let value = $(this).val();
@@ -250,12 +249,9 @@ export default class TextFieldEditor {
     }
 }
 
-
 TextFieldEditor.default_settings = {
     button_parent: null,
     colour: '',
     change: function (data) {
     }
 };
-
-

@@ -1,5 +1,5 @@
-import Assert from "./Assert";
-import TextFieldEditor from "../view/TextFieldEditor";
+import Assert from './Assert';
+import TextFieldEditor from '../view/TextFieldEditor';
 
 export default class TextFieldEditorHelper {
     /**
@@ -38,6 +38,6 @@ export default class TextFieldEditorHelper {
         Assert.assertjQueryOrDomElement(element);
         Assert.assertObject(options);
 
-        $(element).data('text-field-editor', new TextFieldEditor(element, options))
+        $(element).data('text-field-editor', new TextFieldEditor(element, options));
     }
 }

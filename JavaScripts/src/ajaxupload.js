@@ -6,13 +6,14 @@
  */
 (function () {
     /* global window */
+
     /* jslint browser: true, devel: true, undef: true, nomen: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
     /**
      * Wrapper for FireBug's console.log
      */
     function log() {
-        if (typeof(console) != 'undefined' && typeof(console.log) == 'function') {
+        if (typeof (console) != 'undefined' && typeof (console.log) == 'function') {
             Array.prototype.unshift.call(arguments, '[Ajax Upload]');
             console.log(Array.prototype.join.call(arguments, ' '));
         }
@@ -194,7 +195,7 @@
      * @return filename
      */
     function fileFromPath(file) {
-        return file.replace(/.*(\/|\\)/, "");
+        return file.replace(/.*(\/|\\)/, '');
     }
 
     /**
@@ -279,7 +280,7 @@
         if (button.jquery) {
             // jQuery object was passed
             button = button[0];
-        } else if (typeof button == "string") {
+        } else if (typeof button == 'string') {
             if (/^#.*/.test(button)) {
                 // If jQuery user passes #elementId don't break it
                 button = button.slice(1);
@@ -289,7 +290,7 @@
         }
 
         if (!button || button.nodeType !== 1) {
-            throw new Error("Please make sure that you're passing a valid element");
+            throw new Error('Please make sure that you\'re passing a valid element');
         }
 
         if (button.nodeName.toUpperCase() == 'A') {
@@ -358,7 +359,7 @@
         _createInput: function () {
             var self = this;
 
-            var input = document.createElement("input");
+            var input = document.createElement('input');
             input.setAttribute('type', 'file');
             input.setAttribute('name', this._settings.name);
 
@@ -374,7 +375,7 @@
                 'cursor': 'pointer'
             });
 
-            var div = document.createElement("div");
+            var div = document.createElement('div');
             addStyles(div, {
                 'display': 'block',
                 'position': 'absolute',
@@ -391,11 +392,11 @@
 
             // Make sure that element opacity exists.
             // Otherwise use IE filter
-            if (div.style.opacity !== "0") {
-                if (typeof(div.filters) == 'undefined') {
+            if (div.style.opacity !== '0') {
+                if (typeof (div.filters) == 'undefined') {
                     throw new Error('Opacity not supported by the browser');
                 }
-                div.style.filter = "alpha(opacity=0)";
+                div.style.filter = 'alpha(opacity=0)';
             }
 
             addEvent(input, 'change', function () {
@@ -479,7 +480,6 @@
 
             });
 
-
             // commented because we now hide input on mouseleave
             /**
              * When the window is resized the elements
@@ -543,7 +543,7 @@
             // Create hidden input element for each data key
             for (var prop in settings.data) {
                 if (settings.data.hasOwnProperty(prop)) {
-                    var el = document.createElement("input");
+                    var el = document.createElement('input');
                     el.setAttribute('type', 'hidden');
                     el.setAttribute('name', prop);
                     el.setAttribute('value', settings.data[prop]);
@@ -564,9 +564,9 @@
             addEvent(iframe, 'load', function () {
 
                 if (// For Safari
-                iframe.src == "javascript:'%3Chtml%3E%3C/html%3E';" ||
-                // For FF, IE
-                iframe.src == "javascript:'<html></html>';") {
+                    iframe.src == 'javascript:\'%3Chtml%3E%3C/html%3E\';' ||
+                    // For FF, IE
+                    iframe.src == 'javascript:\'<html></html>\';') {
                     // First time around, do not delete.
                     // We reload to blank page, so that reloading main page
                     // does not re-submit the post.
@@ -598,7 +598,7 @@
                 }
 
                 // fixing Opera 9.64
-                if (doc.body && doc.body.innerHTML == "false") {
+                if (doc.body && doc.body.innerHTML == 'false') {
                     // In Opera 9.64 event was fired second time
                     // when body.innerHTML changed from false
                     // to server response approx. after 1 sec
@@ -626,7 +626,7 @@
                         }
 
                         if (response) {
-                            response = eval("(" + response + ")");
+                            response = eval('(' + response + ')');
                         } else {
                             response = {};
                         }
@@ -652,7 +652,7 @@
                 toDeleteFlag = true;
 
                 // Fix IE mixed content issue
-                iframe.src = "javascript:'<html></html>';";
+                iframe.src = 'javascript:\'<html></html>\';';
             });
         },
         /**
@@ -703,7 +703,7 @@
         },
 
         cancel: function () {
-            this._settings._iframe.src = "javascript:'<html></html>';";
+            this._settings._iframe.src = 'javascript:\'<html></html>\';';
         }
     };
 })();

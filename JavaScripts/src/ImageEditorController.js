@@ -1,12 +1,12 @@
 import Logger from './Logger';
 
 import ImageEditor from './ImageEditor';
-import ImageEditingContext from "./model/ImageEditingContext";
-import Feature from "./Feature";
-import SaveImageButton from "./fancybox/SaveImageButton";
-import Resizing from "./fancybox/Resizing";
-import ImageEditorLightbox from "./view/ImageEditorLightbox";
-import UiHelper from "./helper/UiHelper";
+import ImageEditingContext from './model/ImageEditingContext';
+import Feature from './Feature';
+import SaveImageButton from './fancybox/SaveImageButton';
+import Resizing from './fancybox/Resizing';
+import ImageEditorLightbox from './view/ImageEditorLightbox';
+import UiHelper from './helper/UiHelper';
 
 export default class ImageEditorController {
     /**
@@ -14,7 +14,7 @@ export default class ImageEditorController {
      */
     constructor(personalization_form_instance) {
         if (!personalization_form_instance) {
-            throw new ReferenceError('Missing argument "personalization_form_instance"')
+            throw new ReferenceError('Missing argument "personalization_form_instance"');
         }
         this.personalization_form_instance = personalization_form_instance;
         this.show = this.show.bind(this);
@@ -59,7 +59,12 @@ export default class ImageEditorController {
 
         this._add_buttons(data, image_name, image_guid);
 
-        const image_editing_context = ImageEditingContext.create(personalization_form_instance, image_name, image_guid, $thumb);
+        const image_editing_context = ImageEditingContext.create(
+            personalization_form_instance,
+            image_name,
+            image_guid,
+            $thumb
+        );
 
         data.image_edit = image_editing_context;
         this.image_editor.load(image_editing_context);

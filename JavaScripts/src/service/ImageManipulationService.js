@@ -1,12 +1,8 @@
-/**
- * Created by cod on 4.7.17.
- */
 import $ from './../jQueryLoader';
-import Assert from "../helper/Assert";
-import ImageEditingContext from "../model/ImageEditingContext";
-import RegexHelper from "../helper/RegexHelper";
-import ProcessedImageData from "../model/ProcessedImageData";
-
+import Assert from '../helper/Assert';
+import ImageEditingContext from '../model/ImageEditingContext';
+import RegexHelper from '../helper/RegexHelper';
+import ProcessedImageData from '../model/ProcessedImageData';
 
 const ef = () => {
 };
@@ -14,8 +10,6 @@ const ef = () => {
 const get_value_by_regexp = (subject, exp) => {
     return RegexHelper.get_value_by_regexp(subject, exp);
 };
-
-
 
 /**
  * @internal
@@ -39,7 +33,7 @@ class CroppingData {
             }
         };
 
-        throw new ReferenceError('This class is only for type hinting')
+        throw new ReferenceError('This class is only for type hinting');
     }
 }
 

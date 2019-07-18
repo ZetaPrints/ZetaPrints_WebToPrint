@@ -1,11 +1,5 @@
-/**
- * Created by cod on 7.4.17.
- */
-
-
-import ImageEditingContext from "./ImageEditingContext";
-import Page from "./Page";
-
+import ImageEditingContext from './ImageEditingContext';
+import Page from './Page';
 
 /**
  * @interface
@@ -26,16 +20,16 @@ DataInterface.prototype = {
         this.update_first_preview_on_load = false;
         this.preserve_fields = true;
         this.has_shapes = true;
-        this.w2p_url = "http://w2p.domain.tld/";
+        this.w2p_url = 'http://w2p.domain.tld/';
         this.options = [];
         this.url = {
-            "preview": "https://domain.tld/web-to-print/preview/",
-            "preview_download": "https://domain.tld/web-to-print/preview/download/",
-            "upload": "https://domain.tld/web-to-print/upload/",
-            "upload_by_url": "https://domain.tld/web-to-print/upload/byurl/",
-            "image": "https://domain.tld/web-to-print/image/update/",
-            "user-image-template": "https://domain.tld/web-to-print/photothumbnail/get/guid/image-guid.image-ext/width/0/height/0/",
-            "edit-image-template": "https://domain.tld/web-to-print/image/index/"
+            'preview': 'https://domain.tld/web-to-print/preview/',
+            'preview_download': 'https://domain.tld/web-to-print/preview/download/',
+            'upload': 'https://domain.tld/web-to-print/upload/',
+            'upload_by_url': 'https://domain.tld/web-to-print/upload/byurl/',
+            'image': 'https://domain.tld/web-to-print/image/update/',
+            'user-image-template': 'https://domain.tld/web-to-print/photothumbnail/get/guid/image-guid.image-ext/width/0/height/0/',
+            'edit-image-template': 'https://domain.tld/web-to-print/image/index/'
         };
 
         /**
@@ -68,10 +62,9 @@ DataInterface.prototype = {
          * @deprecated
          */
         this.hide_colorpicker = ($panel) => {
-        }
+        };
     }
 };
-
 
 /**
  * @implements DataInterface
@@ -90,7 +83,7 @@ export default class ZetaPrintsData {
         this.update_first_preview_on_load = false;
         this.preserve_fields = true;
         this.has_shapes = true;
-        this.w2p_url = "http://w2p.domain.tld/";
+        this.w2p_url = 'http://w2p.domain.tld/';
         this.options = [];
 
         /**
@@ -98,13 +91,13 @@ export default class ZetaPrintsData {
          */
         this._shape_to_show = undefined;
         this.url = {
-            "preview": "https://domain.tld/web-to-print/preview/",
-            "preview_download": "https://domain.tld/web-to-print/preview/download/",
-            "upload": "https://domain.tld/web-to-print/upload/",
-            "upload_by_url": "https://domain.tld/web-to-print/upload/byurl/",
-            "image": "https://domain.tld/web-to-print/image/update/",
-            "user-image-template": "https://domain.tld/web-to-print/photothumbnail/get/guid/image-guid.image-ext/width/0/height/0/",
-            "edit-image-template": "https://domain.tld/web-to-print/image/index/"
+            'preview': 'https://domain.tld/web-to-print/preview/',
+            'preview_download': 'https://domain.tld/web-to-print/preview/download/',
+            'upload': 'https://domain.tld/web-to-print/upload/',
+            'upload_by_url': 'https://domain.tld/web-to-print/upload/byurl/',
+            'image': 'https://domain.tld/web-to-print/image/update/',
+            'user-image-template': 'https://domain.tld/web-to-print/photothumbnail/get/guid/image-guid.image-ext/width/0/height/0/',
+            'edit-image-template': 'https://domain.tld/web-to-print/image/index/'
         };
 
         const $thumb = jQuery();
@@ -160,6 +153,6 @@ export default class ZetaPrintsData {
          * @deprecated
          */
         this.hide_colorpicker = ($panel) => {
-        }
+        };
     }
 }

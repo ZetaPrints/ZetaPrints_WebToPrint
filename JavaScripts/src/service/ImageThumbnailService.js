@@ -1,8 +1,6 @@
-/**
- * Created by cod on 4.7.17.
- */
-import ImageEditingContext from "../model/ImageEditingContext";
-import Assert from "../helper/Assert";
+import ImageEditingContext from '../model/ImageEditingContext';
+import Assert from '../helper/Assert';
+
 export default class ImageThumbnailService {
     /**
      * Update the thumbnail images for the given context
@@ -31,7 +29,7 @@ export default class ImageThumbnailService {
         }
         if (thumbnails.length > 0) {
             if (source.match(/\.jpg/m)) {
-                thumbnails.attr('src', source.replace(/\.(jpg|gif|png|jpeg|bmp)/i, "_0x100.jpg"));
+                thumbnails.attr('src', source.replace(/\.(jpg|gif|png|jpeg|bmp)/i, '_0x100.jpg'));
             } else {
                 thumbnails.attr('src', source);
             }

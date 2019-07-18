@@ -1,13 +1,10 @@
-/**
- * Created by cod on 18.4.17.
- */
-import UiHelper from "./helper/UiHelper";
-import Logger from "./Logger";
-import Feature from "./Feature";
-import PersonalizationForm from "./PersonalizationForm";
-import Assert from "./helper/Assert";
-import NotificationCenter from "./NotificationCenter";
-import GlobalEvents from "./GlobalEvents";
+import UiHelper from './helper/UiHelper';
+import Logger from './Logger';
+import Feature from './Feature';
+import PersonalizationForm from './PersonalizationForm';
+import Assert from './helper/Assert';
+import NotificationCenter from './NotificationCenter';
+import GlobalEvents from './GlobalEvents';
 
 export default class ImageSelectionController {
     /**

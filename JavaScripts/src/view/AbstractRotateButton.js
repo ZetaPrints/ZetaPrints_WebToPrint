@@ -1,15 +1,12 @@
-/**
- * Created by cod on 4.7.17.
- */
+import AbstractButton from './AbstractButton';
+import Assert from '../helper/Assert';
+import ImageEditingContext from '../model/ImageEditingContext';
+import PersonalizationForm from '../PersonalizationForm';
+import ImageManipulationService from '../service/ImageManipulationService';
+import ImageThumbnailService from '../service/ImageThumbnailService';
+import NotificationCenter from '../NotificationCenter';
+import GlobalEvents from '../GlobalEvents';
 
-import AbstractButton from "./AbstractButton";
-import Assert from "../helper/Assert";
-import ImageEditingContext from "../model/ImageEditingContext";
-import PersonalizationForm from "../PersonalizationForm";
-import ImageManipulationService from "../service/ImageManipulationService";
-import ImageThumbnailService from "../service/ImageThumbnailService";
-import NotificationCenter from "../NotificationCenter";
-import GlobalEvents from "../GlobalEvents";
 export default class AbstractRotateButton extends AbstractButton {
     /**
      * @param {PersonalizationForm} controller
@@ -81,13 +78,17 @@ export default class AbstractRotateButton extends AbstractButton {
         event.preventDefault();
         event.stopPropagation();
 
-        this._image_manipulation_service.rotate(this._image_editing_context, this._get_direction(), (_, context, processed_image_data) => {
-            this._image_editing_context = context;
-            this._image_thumbnail_service.update_images_for_editing_context(context, processed_image_data.source);
+        this._image_manipulation_service.rotate(
+            this._image_editing_context,
+            this._get_direction(),
+            (_, context, processed_image_data) => {
+                this._image_editing_context = context;
+                this._image_thumbnail_service.update_images_for_editing_context(context, processed_image_data.source);
 
-            NotificationCenter.instance().notify(GlobalEvents.USER_DATA_CHANGED, {image_editing_context: context});
-            NotificationCenter.instance().notify(GlobalEvents.USER_DATA_SAVED, {image_editing_context: context});
-        })
+                NotificationCenter.instance().notify(GlobalEvents.USER_DATA_CHANGED, {image_editing_context: context});
+                NotificationCenter.instance().notify(GlobalEvents.USER_DATA_SAVED, {image_editing_context: context});
+            }
+        );
     }
 
     /**

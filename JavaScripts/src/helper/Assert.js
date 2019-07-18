@@ -1,7 +1,3 @@
-/**
- * Created by cod on 24.4.17.
- */
-
 export default class Assert {
     /**
      * Asserts that given value is of the given type
@@ -15,7 +11,7 @@ export default class Assert {
             if (argumentName) {
                 throw new TypeError(`Expected argument ${argumentName} to be of type "${type}", "${typeof value}" given`);
             }
-            throw new TypeError(`Expected value to be of type "${type}", "${typeof value}" given`)
+            throw new TypeError(`Expected value to be of type "${type}", "${typeof value}" given`);
         }
     }
 
@@ -74,7 +70,6 @@ export default class Assert {
         throw new TypeError(`Expected value to be a jQuery object or DOM element, "${actual_type}" given`);
     }
 
-
     /**
      * Asserts that the given value is of type string
      *
@@ -121,7 +116,7 @@ export default class Assert {
             if (argumentName) {
                 throw new TypeError(`Expected argument ${argumentName} to be an instance of "Date", "${typeof value}" given`);
             }
-            throw new TypeError(`Expected value to be an instance of "Date", "${typeof value}" given`)
+            throw new TypeError(`Expected value to be an instance of "Date", "${typeof value}" given`);
         }
     }
 
@@ -139,7 +134,7 @@ export default class Assert {
             if (argumentName) {
                 throw new TypeError(`Expected argument ${argumentName} to be an instance of "${class_name}", "${description}" given`);
             }
-            throw new TypeError(`Expected value to be an instance of "${class_name}", "${description}" given`)
+            throw new TypeError(`Expected value to be an instance of "${class_name}", "${description}" given`);
         }
     }
 
@@ -154,7 +149,7 @@ export default class Assert {
             if (argumentName) {
                 throw new TypeError(`Expected argument ${argumentName} to be a DOM element, "${typeof value}" given`);
             }
-            throw new TypeError(`Expected value to be a DOM element, "${typeof value}" given`)
+            throw new TypeError(`Expected value to be a DOM element, "${typeof value}" given`);
         }
     }
 

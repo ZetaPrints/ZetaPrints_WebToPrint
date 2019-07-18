@@ -1,7 +1,5 @@
-/**
- * Created by cod on 20.4.17.
- */
-import LightboxCallbackConfiguration from "./LightboxCallbackConfiguration";
+import LightboxCallbackConfiguration from './LightboxCallbackConfiguration';
+
 export default class LightboxConfiguration extends LightboxCallbackConfiguration {
     constructor(data = {}) {
         super();

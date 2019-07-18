@@ -1,8 +1,5 @@
-/**
- * Created by cod on 25.4.17.
- */
-import UiHelper from "./UiHelper";
-import Logger from "../Logger";
+import UiHelper from './UiHelper';
+import Logger from '../Logger';
 
 export default class ZoomHelper {
     /**

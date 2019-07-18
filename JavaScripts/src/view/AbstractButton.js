@@ -1,8 +1,6 @@
-/**
- * Created by cod on 27.4.17.
- */
-import Logger from "../Logger";
-import Assert from "../helper/Assert";
+import Logger from '../Logger';
+import Assert from '../helper/Assert';
+
 export default class AbstractButton {
     /**
      * @param {object} controller

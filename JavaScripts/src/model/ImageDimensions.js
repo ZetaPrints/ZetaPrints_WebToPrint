@@ -1,8 +1,6 @@
-/**
- * Created by cod on 20.4.17.
- */
-import Position from "./Position";
-import DataObject from "./DataObject";
+import Position from './Position';
+import DataObject from './DataObject';
+
 export default class ImageDimensions extends DataObject {
     constructor(dimensions) {
         super();

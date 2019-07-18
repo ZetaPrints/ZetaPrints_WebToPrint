@@ -1,6 +1,3 @@
-/**
- * Created by cod on 20.4.17.
- */
 export default class DataObject {
     /**
      * @param {object} data

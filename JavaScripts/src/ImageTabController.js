@@ -1,12 +1,9 @@
-/**
- * Created by cod on 20.4.17.
- */
-import UiHelper from "./helper/UiHelper";
+import UiHelper from './helper/UiHelper';
 import $ from './jQueryLoader';
-import Assert from "./helper/Assert";
-import Feature from "./Feature";
-import Page from "./model/Page";
-import DataHelper from "./helper/DataHelper";
+import Assert from './helper/Assert';
+import Feature from './Feature';
+import Page from './model/Page';
+import DataHelper from './helper/DataHelper';
 
 export default class ImageTabController {
     /**
@@ -22,7 +19,7 @@ export default class ImageTabController {
     register_click() {
         const _this = this;
         this._get_tab_buttons().click(function () {
-            _this._handle_click(this)
+            _this._handle_click(this);
         });
     }
 
@@ -49,7 +46,10 @@ export default class ImageTabController {
 
         // Remove shapes for current page
         if (data.has_shapes) {
-            Feature.instance().call(Feature.feature.inPreviewEdit, personalization_form.in_preview_edit_controller.add_in_preview_edit_handlers);
+            Feature.instance().call(
+                Feature.feature.inPreviewEdit,
+                personalization_form.in_preview_edit_controller.add_in_preview_edit_handlers
+            );
         }
 
         $(element).addClass('selected');

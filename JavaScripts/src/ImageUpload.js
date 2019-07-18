@@ -1,11 +1,8 @@
-/**
- * Created by cod on 7.4.17.
- */
-
 import $ from './jQueryLoader';
-import NotificationHelper from "./NotificationCenter";
-import GlobalEvents from "./GlobalEvents";
-import Assert from "./helper/Assert";
+import NotificationHelper from './NotificationCenter';
+import GlobalEvents from './GlobalEvents';
+import Assert from './helper/Assert';
+
 require('./ajaxupload.js');
 
 /* jshint unused:false */
@@ -198,7 +195,6 @@ export default class ImageUpload {
             //$selector
             //    .find('> .tab-buttons > .hidden')
             //    .removeClass('hidden');
-
 
             // Show all "My images" tabs
             $td.closest('form')

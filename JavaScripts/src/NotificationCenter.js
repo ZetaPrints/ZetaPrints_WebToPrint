@@ -1,9 +1,6 @@
-/**
- * Created by cod on 26.4.17.
- */
 import Logger from './Logger';
-import Assert from "./helper/Assert";
-import Environment from "./Environment";
+import Assert from './helper/Assert';
+import Environment from './Environment';
 
 export default class NotificationCenter {
     /**

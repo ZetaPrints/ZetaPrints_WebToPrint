@@ -1,7 +1,4 @@
-/**
- * Created by cod on 20.4.17.
- */
-import DataObject from "./DataObject";
+import DataObject from './DataObject';
 
 export default class ProcessedImageData extends DataObject {
     constructor(data) {

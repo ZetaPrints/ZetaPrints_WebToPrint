@@ -1,7 +1,7 @@
-import $ from "../jQueryLoader";
-import UiHelper from "../helper/UiHelper";
-import Logger from "../Logger";
-import AbstractFancyboxButton from "./AbstractFancyboxButton";
+import $ from '../jQueryLoader';
+import UiHelper from '../helper/UiHelper';
+import Logger from '../Logger';
+import AbstractFancyboxButton from './AbstractFancyboxButton';
 
 export default class UpdatePreviewButton extends AbstractFancyboxButton {
     /**

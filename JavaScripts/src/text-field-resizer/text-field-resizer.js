@@ -31,11 +31,13 @@ $.fn.text_field_resizer = function () {
                         $field.focus();
                     });
 
-                    $field.data('text-field-resizer',
+                    $field.data(
+                        'text-field-resizer',
                         {
                             'style': $wrapper.attr('style'),
                             'wrapper': $wrapper
-                        });
+                        }
+                    );
                 },
 
                 start: function () {
@@ -60,4 +62,3 @@ $.fn.text_field_resizer = function () {
         }
     });
 };
-

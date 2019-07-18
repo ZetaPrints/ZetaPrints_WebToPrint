@@ -1,11 +1,8 @@
-/**
- * Created by cod on 25.4.17.
- */
+import UiHelper from '../helper/UiHelper';
+import Logger from '../Logger';
+import LightboxConfiguration from '../model/LightboxConfiguration';
+import Lightbox from './Lightbox';
 
-import UiHelper from "../helper/UiHelper";
-import Logger from "../Logger";
-import LightboxConfiguration from "../model/LightboxConfiguration";
-import Lightbox from "./Lightbox";
 export default class Preview {
     /**
      * @param {DataInterface} data
@@ -115,7 +112,6 @@ export default class Preview {
     _image_on_load(element, data) {
         this._controller.image_on_load_callback(data, this._page_number, element, this);
     }
-
 
     /**
      * @param {number} page_number

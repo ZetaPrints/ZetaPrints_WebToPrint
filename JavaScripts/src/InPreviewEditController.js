@@ -1,9 +1,9 @@
-import $ from './jQueryLoader'
-import ShapeRepository from "./model/ShapeRepository";
-import UiHelper from "./helper/UiHelper";
-import Logger from "./Logger";
-import Feature from "./Feature";
-import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
+import $ from './jQueryLoader';
+import ShapeRepository from './model/ShapeRepository';
+import UiHelper from './helper/UiHelper';
+import Logger from './Logger';
+import Feature from './Feature';
+import TextFieldEditorHelper from './helper/TextFieldEditorHelper';
 
 export default class InPreviewEditController {
     /**
@@ -11,7 +11,7 @@ export default class InPreviewEditController {
      */
     constructor(personalization_form_instance) {
         if (!personalization_form_instance) {
-            throw new ReferenceError('Missing argument "personalization_form_instance"')
+            throw new ReferenceError('Missing argument "personalization_form_instance"');
         }
         this.personalization_form_instance = personalization_form_instance;
         this.shape_repository = new ShapeRepository(personalization_form_instance);
@@ -222,7 +222,6 @@ export default class InPreviewEditController {
                 continue;
             }
 
-
             $field
                 .data('in-preview-edit', {
                     'style': $field.attr('style'),
@@ -280,7 +279,6 @@ export default class InPreviewEditController {
         if ($box.length === 0 && this._box) {
             $box = this._box;
         }
-
 
         $box.find('.fieldbox-field').children().each(function () {
             const $element = $(this);
@@ -396,8 +394,9 @@ export default class InPreviewEditController {
                 return false;
             }
 
-            UiHelper.instance().fancybox_content.find('div.zetaprints-field-shape.highlighted').removeClass('highlighted');
-            shape.addClass("highlighted");
+            UiHelper.instance().fancybox_content.find('div.zetaprints-field-shape.highlighted').removeClass(
+                'highlighted');
+            shape.addClass('highlighted');
 
             this.popdown_field_by_name();
 
@@ -406,18 +405,19 @@ export default class InPreviewEditController {
 
             let fields = [];
             if (!_shape._selected_shape_names) {
-                const c = this._glob_to_rel_coords(event.pageX,
+                const c = this._glob_to_rel_coords(
+                    event.pageX,
                     event.pageY,
                     event
                         .data
                         .container
-                        .children(UiHelper.instance().fancybox_image_selector));
+                        .children(UiHelper.instance().fancybox_image_selector)
+                );
 
                 const shapes = this._get_shapes_by_coords(c).reverse();
 
-
                 for (let i = 0; i < shapes.length; i++) {
-                    fields = fields.concat(shapes[i].name.split('; '))
+                    fields = fields.concat(shapes[i].name.split('; '));
                 }
 
                 _shape._fields = fields;
@@ -698,7 +698,6 @@ export default class InPreviewEditController {
             }
         });
 
-
         $li.addClass('text-field');
 
         return {$field, full_name};
@@ -788,7 +787,7 @@ export default class InPreviewEditController {
                 if (orig_position.top !== new_position.top || orig_position.left !== new_position.left) {
                     _this.toggle_field_by_name();
                 }
-            }
+            };
         }
     }
 

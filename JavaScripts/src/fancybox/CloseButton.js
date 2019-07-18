@@ -1,10 +1,9 @@
 import Logger from '../Logger';
-import UiHelper from "../helper/UiHelper";
-import Assert from "../helper/Assert";
-import NotificationHelper from "../NotificationCenter";
-import AbstractFancyboxButton from "./AbstractFancyboxButton";
-import PreviewController from "../PreviewController";
-import AbstractButton from "../view/AbstractButton";
+import UiHelper from '../helper/UiHelper';
+import Assert from '../helper/Assert';
+import NotificationHelper from '../NotificationCenter';
+import PreviewController from '../PreviewController';
+import AbstractButton from '../view/AbstractButton';
 
 export default class CloseButton extends AbstractButton {
     /**

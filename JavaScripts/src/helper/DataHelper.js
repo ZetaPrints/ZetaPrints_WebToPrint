@@ -1,9 +1,7 @@
-/**
- * Created by cod on 26.4.17.
- */
-import NotificationCenter from "../NotificationCenter";
-import GlobalEvents from "../GlobalEvents";
-import Assert from "./Assert";
+import NotificationCenter from '../NotificationCenter';
+import GlobalEvents from '../GlobalEvents';
+import Assert from './Assert';
+
 export default class DataHelper {
     /**
      * @param {number} page_number

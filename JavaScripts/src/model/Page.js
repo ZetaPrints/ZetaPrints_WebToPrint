@@ -1,8 +1,5 @@
-/**
- * Created by cod on 20.4.17.
- */
-import Shape from "./Shape";
-import DataObject from "./DataObject";
+import Shape from './Shape';
+import DataObject from './DataObject';
 
 export default class Page extends DataObject {
     constructor(data) {
@@ -36,42 +33,42 @@ export default class Page extends DataObject {
         /**
          * @type {string}
          */
-        this["preview-image"] = undefined;
+        this['preview-image'] = undefined;
 
         /**
          * @type {string}
          */
-        this["thumb-image"] = undefined;
+        this['thumb-image'] = undefined;
 
         /**
          * @type {number}
          */
-        this["width-in"] = undefined;
+        this['width-in'] = undefined;
 
         /**
          * @type {number}
          */
-        this["height-in"] = undefined;
+        this['height-in'] = undefined;
 
         /**
          * @type {number}
          */
-        this["width-cm"] = undefined;
+        this['width-cm'] = undefined;
 
         /**
          * @type {number}
          */
-        this["height-cm"] = undefined;
+        this['height-cm'] = undefined;
 
         /**
          * @type {string}
          */
-        this["preview-url"] = undefined; // https://domain.tld/web-to-print/preview/get/guid/1234.jpg/
+        this['preview-url'] = undefined; // https://domain.tld/web-to-print/preview/get/guid/1234.jpg/
 
         /**
          * @type {string}
          */
-        this["thumb-url"] = undefined; // https://domain.tld/web-to-print/thumbnail/get/guid/1234.jpg/width/100/height/100/
+        this['thumb-url'] = undefined; // https://domain.tld/web-to-print/thumbnail/get/guid/1234.jpg/width/100/height/100/
 
         /**
          * @type {object.<string, Shape>}

@@ -1,6 +1,3 @@
-/**
- * Created by cod on 20.4.17.
- */
 export default class Position {
     constructor(top = 0, left = 0) {
         /**

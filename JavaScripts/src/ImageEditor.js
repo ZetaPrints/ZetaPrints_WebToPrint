@@ -1,18 +1,18 @@
 import Logger from './Logger';
 
 import $ from './jQueryLoader';
-import ImageDimensions from "./model/ImageDimensions";
-import Feature from "./Feature";
-import MetaData from "./model/MetaData";
-import UiHelper from "./helper/UiHelper";
-import NotificationHelper from "./NotificationCenter";
-import MetaDataHelper from "./helper/MetaDataHelper";
-import Assert from "./helper/Assert";
-import ImageEditorController from "./ImageEditorController";
-import ImageManipulationService from "./service/ImageManipulationService";
-import ImageEditingContext from "./model/ImageEditingContext";
-import RegexHelper from "./helper/RegexHelper";
-import ImageThumbnailService from "./service/ImageThumbnailService";
+import ImageDimensions from './model/ImageDimensions';
+import Feature from './Feature';
+import MetaData from './model/MetaData';
+import UiHelper from './helper/UiHelper';
+import NotificationHelper from './NotificationCenter';
+import MetaDataHelper from './helper/MetaDataHelper';
+import Assert from './helper/Assert';
+import ImageEditorController from './ImageEditorController';
+import ImageManipulationService from './service/ImageManipulationService';
+import ImageEditingContext from './model/ImageEditingContext';
+import RegexHelper from './helper/RegexHelper';
+import ImageThumbnailService from './service/ImageThumbnailService';
 
 const fancybox_show_activity = () => {
     Logger.log('[ImageEditor] fancybox show activity');
@@ -85,7 +85,6 @@ export default class ImageEditor {
         this._image_thumbnail_service = new ImageThumbnailService();
     }
 
-
     /**
      * Loads the editor
      *
@@ -133,14 +132,14 @@ export default class ImageEditor {
         };
 
         $('#crop-button').click(() => {
-            this._crop_button_click_handler()
+            this._crop_button_click_handler();
         });
         $('#fit-to-field-button').click(() => {
-            this._fit_to_field_button_click_handler()
+            this._fit_to_field_button_click_handler();
         });
 
         $('#undo-button').click(() => {
-            this._restore_image()
+            this._restore_image();
         });
 
         $('#zp-image-edit-action-cancel').click(() => {
@@ -160,7 +159,7 @@ export default class ImageEditor {
         });
 
         $('#delete-button').click(() => {
-            this._delete_image()
+            this._delete_image();
         });
 
         $('#image-editor-button').click(() => {
@@ -178,7 +177,7 @@ export default class ImageEditor {
     }
 
     set context(context) {
-        this.set_current_context(context)
+        this.set_current_context(context);
     }
 
     /**
@@ -211,7 +210,6 @@ export default class ImageEditor {
 
         return merged_context;
     }
-
 
     /**
      * @param {string} id
@@ -282,7 +280,7 @@ export default class ImageEditor {
             },
             error: (_, textStatus, errorThrown) => {
                 const cant_load_image_text = window.cant_load_image_text || 'Can not load image';
-                this._handle_ajax_error(cant_load_image_text, textStatus, errorThrown)
+                this._handle_ajax_error(cant_load_image_text, textStatus, errorThrown);
             },
             success: (data) => {
                 NotificationHelper.instance().notify(ImageEditor.Events.IMAGE_LOADED, {instance: this, data: data});
@@ -346,7 +344,7 @@ export default class ImageEditor {
                 this._clear_editor();
                 const data = get_crop_data_callback();
                 if (typeof data === 'undefined') {
-                    throw new TypeError('The get_crop_data_callback must return a value')
+                    throw new TypeError('The get_crop_data_callback must return a value');
                 }
 
                 this._set_container_changed(true);
@@ -412,7 +410,7 @@ export default class ImageEditor {
         if (width_factor !== 1 || height_factor !== 1) {
             this._set_info_bar_state('cropped', true);
             this._set_container_changed(true);
-            this._update_save_image_button(true)
+            this._update_save_image_button(true);
         } else {
             this._set_info_bar_state();
             this._set_container_changed(false);
@@ -428,7 +426,7 @@ export default class ImageEditor {
         Feature.instance().call(
             Feature.feature.fancybox.saveImageButton,
             () => {
-                const x =this._controller._save_image_button;
+                const x = this._controller._save_image_button;
                 this._controller._save_image_button.update(changed);
             }
         );
@@ -1004,7 +1002,7 @@ export default class ImageEditor {
                 metadata
             );
 
-            this._set_container_changed(true)
+            this._set_container_changed(true);
         }
 
         this._show_crop(data);
@@ -1062,7 +1060,6 @@ export default class ImageEditor {
                     width: $edit_container.outerWidth(),
                     height: $edit_container.outerHeight()
                 });
-
 
             ImageEditor._image_editor = new Aviary.Feather({
                 image: 'zetaprints-image-edit-user-image',
@@ -1169,7 +1166,6 @@ export default class ImageEditor {
             .remove();
     }
 
-
     /**
      * Perform image restore
      */
@@ -1237,7 +1233,6 @@ export default class ImageEditor {
 
         return end_a - start_a;
     }
-
 
     /**
      * @param image
@@ -1312,7 +1307,8 @@ export default class ImageEditor {
      * @return {ImageDimensions}
      */
     _fit_into_container_using_metadata(image, placeholder, shape,
-                                       container, metadata) {
+                                       container, metadata
+    ) {
         const data = new ImageDimensions({
             selection: {
                 position: {
@@ -1349,7 +1345,7 @@ export default class ImageEditor {
             data.image.width = placeholder.width
                 * (metadata['abs-x2'] - metadata['abs-x1']) / shape.width
                 * (1 + metadata['cr-x1'] / (1 - metadata['cr-x1'])
-                + (1 - metadata['cr-x2']) / metadata['cr-x2']);
+                    + (1 - metadata['cr-x2']) / metadata['cr-x2']);
             data.image.height = data.image.width / image.ratio;
 
             data.selection.position.left = data.image.width * metadata['cr-x1'];
@@ -1385,10 +1381,12 @@ export default class ImageEditor {
         //Use container's factor to convert original dimension to
         //container's one (multiply by the factor)
         //or vice versa (divide by the factor)
-        container.factor = this._get_factor_a_to_b(container.width,
+        container.factor = this._get_factor_a_to_b(
+            container.width,
             container.height,
             total_width,
-            total_height);
+            total_height
+        );
 
         data.selection.width *= container.factor;
         data.selection.height *= container.factor;
@@ -1425,10 +1423,10 @@ export default class ImageEditor {
         console.log('cropy data:', data);
         const crop_callback = simple_crop
             ? (data) => {
-                return this._cropping_callback(data)
+                return this._cropping_callback(data);
             }
             : (data) => {
-                return this._fit_in_field_callback(data)
+                return this._fit_in_field_callback(data);
             };
 
         /**

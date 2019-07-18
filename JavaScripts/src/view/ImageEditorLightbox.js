@@ -1,12 +1,11 @@
 import Logger from '../Logger';
 
 import $ from '../jQueryLoader';
-import Feature from "../Feature";
-import SaveImageButton from "../fancybox/SaveImageButton";
-import LightboxConfiguration from "../model/LightboxConfiguration";
-import Assert from "../helper/Assert";
-import AbstractLightbox from "./AbstractLightbox";
-import NotificationHelper from "../NotificationCenter";
+import Feature from '../Feature';
+import LightboxConfiguration from '../model/LightboxConfiguration';
+import Assert from '../helper/Assert';
+import AbstractLightbox from './AbstractLightbox';
+import NotificationHelper from '../NotificationCenter';
 
 export default class ImageEditorLightbox extends AbstractLightbox {
     /**
@@ -58,7 +57,6 @@ export default class ImageEditorLightbox extends AbstractLightbox {
             },
             'didClose': () => {
                 Logger.debug('[ImageEditorLightbox] Fancybox closed');
-
 
                 Feature.instance().call(
                     Feature.feature.fancybox.saveImageButton,

@@ -1,11 +1,4 @@
-/**
- * Created by cod on 25.4.17.
- */
-/**
- * Created by cod on 10.4.17.
- */
-
-import $ from "../../jQueryLoader";
+import $ from '../../jQueryLoader';
 
 export default class Fancybox {
     /**

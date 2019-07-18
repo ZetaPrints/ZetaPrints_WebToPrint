@@ -1,20 +1,16 @@
-/**
- * Created by cod on 10.4.17.
- */
-
 import $ from './jQueryLoader';
-import UiHelper from "./helper/UiHelper";
-import Logger from "./Logger";
-import Assert from "./helper/Assert";
-import Preview from "./view/Preview";
-import TemplateDetail from "./model/TemplateDetail";
-import Page from "./model/Page";
-import Feature from "./Feature";
-import Resizing from "./fancybox/Resizing";
-import DataHelper from "./helper/DataHelper";
-import LightboxCallbackConfiguration from "./model/LightboxCallbackConfiguration";
-import UpdatePreviewButton from "./fancybox/UpdatePreviewButton";
-import TextFieldEditorHelper from "./helper/TextFieldEditorHelper";
+import UiHelper from './helper/UiHelper';
+import Logger from './Logger';
+import Assert from './helper/Assert';
+import Preview from './view/Preview';
+import TemplateDetail from './model/TemplateDetail';
+import Page from './model/Page';
+import Feature from './Feature';
+import Resizing from './fancybox/Resizing';
+import DataHelper from './helper/DataHelper';
+import LightboxCallbackConfiguration from './model/LightboxCallbackConfiguration';
+import UpdatePreviewButton from './fancybox/UpdatePreviewButton';
+import TextFieldEditorHelper from './helper/TextFieldEditorHelper';
 
 export default class PreviewController {
     /**
@@ -208,7 +204,6 @@ export default class PreviewController {
             });
         }
 
-
         /** @type {Page} */
         const page = zeta_prints_data.template_details.pages[current_page];
         const metadata = form_instance._prepare_metadata_from_page_number(current_page);
@@ -233,7 +228,14 @@ export default class PreviewController {
                 this._update_preview_error(page);
             },
             success: (data) => {
-                this._success(new Page(page), current_page, new TemplateDetail(data), update_pages, preserve_fields, zeta_prints_data)
+                this._success(
+                    new Page(page),
+                    current_page,
+                    new TemplateDetail(data),
+                    update_pages,
+                    preserve_fields,
+                    zeta_prints_data
+                );
             }
         });
     }
@@ -317,7 +319,7 @@ export default class PreviewController {
                 Feature.instance().call(
                     Feature.feature.fancybox.saveImageButton,
                     () => {
-                        image_editor_controller.save_image_button.remove()
+                        image_editor_controller.save_image_button.remove();
                     }
                 );
             }

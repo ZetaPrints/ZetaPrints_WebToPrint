@@ -12,8 +12,7 @@
  */
 
 import jQuery from '../jQueryLoader';
-import UiHelper from "../helper/UiHelper";
-import Logger from "../Logger";
+import UiHelper from '../helper/UiHelper';
 
 export default class Resizing {
     /**
@@ -165,7 +164,7 @@ export default class Resizing {
         // center it to page
         if (typeof jQuery.fancybox['center'] === 'function') {
             jQuery.fancybox.center(true);
-        }else if (typeof jQuery.fancybox['reposition'] === 'function') {
+        } else if (typeof jQuery.fancybox['reposition'] === 'function') {
             jQuery.fancybox.reposition();
         }
     }

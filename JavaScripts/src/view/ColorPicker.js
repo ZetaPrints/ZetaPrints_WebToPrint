@@ -1,6 +1,3 @@
-/**
- * Created by cod on 11.4.17.
- */
 export default class ColorPicker {
     /**
      *

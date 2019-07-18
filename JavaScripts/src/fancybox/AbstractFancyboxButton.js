@@ -1,9 +1,8 @@
-import $ from '../jQueryLoader';
-import UiHelper from "../helper/UiHelper";
-import Assert from "../helper/Assert";
-import PreviewController from "../PreviewController";
-import AbstractButton from "../view/AbstractButton";
-import CloseButton from "./CloseButton";
+import UiHelper from '../helper/UiHelper';
+import Assert from '../helper/Assert';
+import PreviewController from '../PreviewController';
+import AbstractButton from '../view/AbstractButton';
+import CloseButton from './CloseButton';
 
 export default class AbstractFancyboxButton extends AbstractButton {
     /**

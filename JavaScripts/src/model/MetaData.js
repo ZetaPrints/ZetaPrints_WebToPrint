@@ -1,7 +1,4 @@
-/**
- * Created by cod on 24.4.17.
- */
-import DataObject from "./DataObject";
+import DataObject from './DataObject';
 
 export default class MetaData extends DataObject {
     constructor(data) {

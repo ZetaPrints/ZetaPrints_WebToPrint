@@ -1,8 +1,5 @@
-/**
- * Created by cod on 4.7.17.
- */
+import AbstractRotateButton from './AbstractRotateButton';
 
-import AbstractRotateButton from "./AbstractRotateButton";
 export default class RotateLeftButton extends AbstractRotateButton {
     /**
      * @inheritDoc

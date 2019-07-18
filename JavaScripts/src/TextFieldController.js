@@ -1,12 +1,10 @@
-/**
- * Created by cod on 2.5.17.
- */
-import PersonalizationForm from "./PersonalizationForm";
-import Assert from "./helper/Assert";
-import Feature from "./Feature";
-import UiHelper from "./helper/UiHelper";
-import NotificationHelper from "./NotificationCenter";
-import GlobalEvents from "./GlobalEvents";
+import PersonalizationForm from './PersonalizationForm';
+import Assert from './helper/Assert';
+import Feature from './Feature';
+import UiHelper from './helper/UiHelper';
+import NotificationHelper from './NotificationCenter';
+import GlobalEvents from './GlobalEvents';
+
 export default class TextFieldController {
     constructor(personalization_form_instance, input_fields) {
         Assert.assertInstanceOf(personalization_form_instance, PersonalizationForm);
@@ -30,7 +28,6 @@ export default class TextFieldController {
         text_fields.filter('[readonly]').click(function (event) {
             _on_click(event, this);
         });
-
 
         const non_text_fields = input_fields.find('.zetaprints-field').filter('select, :checkbox');
         non_text_fields.change(function () {

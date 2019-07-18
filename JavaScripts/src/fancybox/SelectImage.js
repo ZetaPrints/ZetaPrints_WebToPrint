@@ -1,7 +1,7 @@
-import $ from  '../jQueryLoader'
-import UiHelper from "../helper/UiHelper";
-import AbstractFancyboxButton from "./AbstractFancyboxButton";
-import AbstractLightbox from "../view/AbstractLightbox";
+import $ from '../jQueryLoader';
+import UiHelper from '../helper/UiHelper';
+import AbstractFancyboxButton from './AbstractFancyboxButton';
+import AbstractLightbox from '../view/AbstractLightbox';
 
 export default class SelectImage extends AbstractFancyboxButton {
     /**
@@ -31,7 +31,7 @@ export default class SelectImage extends AbstractFancyboxButton {
 
         setTimeout(() => {
             AbstractLightbox.close();
-        }, 2000)
+        }, 2000);
     }
 
     /**
@@ -40,7 +40,7 @@ export default class SelectImage extends AbstractFancyboxButton {
     _build_get_shape_name_callback(data, in_preview, name, guid) {
         return () => {
             return this._detect_share_name();
-        }
+        };
     }
 
     /**
@@ -48,7 +48,7 @@ export default class SelectImage extends AbstractFancyboxButton {
      */
     _create_button(data, in_preview, name, guid) {
         if (UiHelper.instance().select_image_button.length) {
-            throw new Error('this must not happen')
+            throw new Error('this must not happen');
         }
 
         return $('<a id="zp-select-image-button" class="no-middle">' +
@@ -89,7 +89,7 @@ export default class SelectImage extends AbstractFancyboxButton {
      */
     _get_image_inputs() {
         return UiHelper.instance().select_image_elements
-            // .not('.minimized')
+        // .not('.minimized')
             .find(' > .selector-content > .tabs-wrapper > .images-scroller')
             .find('a[href="' + UiHelper.instance().fancybox_image.attr('src') + '"]')
             .parent()

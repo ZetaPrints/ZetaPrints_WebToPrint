@@ -1,12 +1,8 @@
-/**
- * Created by cod on 10.4.17.
- */
-
-import PreviewOverlay from "../view/PreviewOverlay";
-import $ from "../jQueryLoader";
-import Logger from "../Logger";
-import Fancybox from "./UiHelper/Fancybox";
-import ProductForm from "../view/ProductForm";
+import PreviewOverlay from '../view/PreviewOverlay';
+import $ from '../jQueryLoader';
+import Logger from '../Logger';
+import Fancybox from './UiHelper/Fancybox';
+import ProductForm from '../view/ProductForm';
 
 export default class UiHelper {
     /**
@@ -192,7 +188,7 @@ export default class UiHelper {
      * @return {jQuery|HTMLElement}
      */
     get form_button() {
-        return $('#zp-form-button')
+        return $('#zp-form-button');
     }
 
     /**
@@ -211,7 +207,7 @@ export default class UiHelper {
      */
     get select_image_elements_inputs() {
         return $('input.zetaprints-images').filter(function () {
-            return !$(this).parent().hasClass('zp-html-template')
+            return !$(this).parent().hasClass('zp-html-template');
         });
     }
 
@@ -240,7 +236,7 @@ export default class UiHelper {
      * @return {*|jQuery|HTMLElement}
      */
     get select_image_button() {
-        return $('#zp-select-image-button')
+        return $('#zp-select-image-button');
     }
 
     /**

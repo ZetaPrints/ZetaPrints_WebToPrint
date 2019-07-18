@@ -41,6 +41,6 @@ export {
     ui_helper,
     GlobalEvents,
     NotificationCenter
-}
+};
 
 

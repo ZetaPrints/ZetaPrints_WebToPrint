@@ -1,8 +1,5 @@
-/**
- * Created by cod on 20.4.17.
- */
 import $ from '../jQueryLoader';
-import LightboxConfiguration from "../model/LightboxConfiguration";
+import LightboxConfiguration from '../model/LightboxConfiguration';
 
 // Remove the X-fancybox header
 $.fancybox.defaults.ajax.headers = {};
@@ -14,7 +11,7 @@ export default class AbstractLightbox {
     static redraw() {
         const fancybox_version = AbstractLightbox._get_version();
         if (fancybox_version === 2) {
-            $.fancybox.update()
+            $.fancybox.update();
         } else if (fancybox_version === 1) {
             $.fancybox.resize();
         }
@@ -24,7 +21,7 @@ export default class AbstractLightbox {
      * Close the currently visible lightbox
      */
     static close() {
-        $.fancybox.close()
+        $.fancybox.close();
     }
 
     /**
@@ -90,7 +87,12 @@ export default class AbstractLightbox {
             prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {title: null});
         }
         if (!options.closeOnOverlayClick) {
-            prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {overlay: {closeClick: false}});
+            prepared_options['helpers'] = $.extend(
+                true,
+                {},
+                prepared_options['helpers'],
+                {overlay: {closeClick: false}}
+            );
         }
         if (!options.showOverlay) {
             prepared_options['helpers'] = $.extend(true, {}, prepared_options['helpers'], {overlay: null});

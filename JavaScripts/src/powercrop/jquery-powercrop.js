@@ -1,5 +1,5 @@
 module.exports = function ($) {
-    "use strict";
+    'use strict';
 
     let $container;
     const methods = {
@@ -73,7 +73,7 @@ module.exports = function ($) {
             .parent();
 
         if (settings.simple) {
-            $container.addClass('simple')
+            $container.addClass('simple');
         }
 
         this.hide().after($container).data('power-crop-container', $container);
@@ -310,7 +310,6 @@ module.exports = function ($) {
         } else {
             $image_top_wrapper = $image_top;
         }
-
 
         update_position(complete_data(settings.data));
 
