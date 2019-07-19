@@ -1,26 +1,31 @@
 <?php
 
 class ZetaPrints_WebToPrint_Webtoprint_OrderController
-  extends Mage_Adminhtml_Controller_Action
-  implements ZetaPrints_Api {
+    extends Mage_Adminhtml_Controller_Action
+    implements ZetaPrints_Api
+{
 
-  public function completeAction () {
-    $request = $this->getRequest();
-  
-    if (!$request->has('item'))
-      return;
+    public function completeAction()
+    {
+        $request = $this->getRequest();
 
-    $item = $request->get('item');
+        if (!$request->has('item')) {
+            return;
+        }
 
-    $item = Mage::getModel('sales/order_item')->load($item);
+        $item = $request->get('item');
 
-    if (!$item->getId())
-      return;
+        $item = Mage::getModel('sales/order_item')->load($item);
 
-    Mage::helper('webtoprint')->completeOrderItem($item);
+        if (!$item->getId()) {
+            return;
+        }
 
-    $this->_redirect('adminhtml/sales_order/view',
-                     array('order_id' => $item->getOrder()->getId()));
-  }
+        Mage::helper('webtoprint')->completeOrderItem($item);
+
+        $this->_redirect(
+            'adminhtml/sales_order/view',
+            ['order_id' => $item->getOrder()->getId()]
+        );
+    }
 }
-?>

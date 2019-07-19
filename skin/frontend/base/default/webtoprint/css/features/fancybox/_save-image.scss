@@ -1,0 +1,61 @@
+@import "../prelude";
+
+#zp-save-image-button {
+    display: block;
+    position: absolute;
+    right: 36px;
+    top: -15px;
+    color: $white;
+    text-decoration: none;
+    cursor: pointer;
+    z-index: 1103;
+    font: bold 8pt $font;
+    &.no-middle {
+        right: 15px;
+    }
+    &.disabled {
+        cursor: default;
+        .text {
+            background-position: 0 -31px;
+        }
+        .icon.left-part {
+            background-position: -21px -2px;
+            width: 19px;
+        }
+    }
+    .icon {
+        display: block;
+        background: $url-update-preview-button-sprite no-repeat;
+        &.left-part {
+            float: left;
+            background-position: 0 -2px;
+            width: 13px;
+            height: 30px;
+        }
+    }
+    .text {
+        display: block;
+        float: right;
+        background: $url-update-preview-button-x repeat-x;
+        height: 30px;
+        *float: none;
+        span {
+            display: block;
+            margin: 4px 4px 0 0;
+            height: 18px;
+            line-height: 18px;
+        }
+        .saved-image-text {
+            display: none;
+        }
+    }
+}
+
+.saved #zp-save-image-button .text {
+    .save-image-text {
+        display: none;
+    }
+    .saved-image-text {
+        display: block;
+    }
+}

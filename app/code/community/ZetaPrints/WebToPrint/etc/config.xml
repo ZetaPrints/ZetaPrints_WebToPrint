@@ -48,12 +48,6 @@
         <class>ZetaPrints_WebToPrint_Block</class>
       </webtoprint>
 
-      <page>
-        <rewrite>
-          <html_footer>ZetaPrints_WebToPrint_Block_Html_Footer</html_footer>
-        </rewrite>
-      </page>
-
       <wishlist>
         <rewrite>
           <customer_sidebar>ZetaPrints_WebToPrint_Block_Customer_Sidebar</customer_sidebar>

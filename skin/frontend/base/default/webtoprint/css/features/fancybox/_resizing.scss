@@ -1,0 +1,42 @@
+@import "../prelude";
+
+$url-fancybox-resizing: url($image-base + "fancybox/fancybox.png") !default;
+
+#fancybox-resize {
+    position: absolute;
+    right: 14px;
+    top: -15px;
+    z-index: 1103;
+    a {
+        height: 30px;
+        width: 30px;
+        display: inline-block;
+        cursor: pointer;
+        background: $url-fancybox-resizing no-repeat transparent;
+    }
+    .maximize {
+        background-position: -40px -200px;
+    }
+    .restore {
+        background-position: -40px -233px;
+    }
+    &.middle-position {
+        a {
+            width: 22px;
+        }
+        .maximize {
+            background-position: -44px -305px;
+        }
+        .restore {
+            background-position: -44px -271px;
+        }
+    }
+}
+@media(max-width: 991px) {
+    #fancybox-resize {
+        display: none !important;
+    }
+}
+#fancybox-close.resizer-tweaks {
+    background: $url-fancybox-resizing no-repeat transparent -68px -200px;
+}

@@ -1,0 +1,82 @@
+@import "prelude";
+
+// Left buttons
+.zetaprints-image-edit-menu {
+    float: left;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    list-style-image: none;
+    list-style-type: none;
+    font-weight: bold;
+    color: $white;
+    width: 116px;
+
+    li {
+        background: transparent $url-image-edit-line no-repeat bottom;
+        padding: 15px 14px;
+        position: relative;
+        &.last {
+            padding-bottom: 0;
+            background-image: none;
+        }
+        &.hidden {
+            display: none;
+        }
+    }
+
+    .button {
+        cursor: pointer;
+        padding: 26px 0 0;
+        background: transparent no-repeat top;
+    }
+
+    .fit-to-field-button-wrapper {
+        background: none;
+        border-bottom: 2px solid $white;
+        padding-top: 25px;
+    }
+    .note {
+        background: none;
+        padding: 10px 0 0;
+        color: $color-steel-blue;
+        font-family: $font;
+        font-size: 90%;
+        font-weight: normal;
+    }
+    .arrow {
+        display: none;
+        background: transparent $url-image-edit-sprite no-repeat;
+        background-position: -34px -37px;
+        width: 12px;
+        height: 23px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        margin-top: -11px;
+    }
+
+    #fit-to-field-button {
+        background-image: $url-image-edit-fit-to-field-crop-icon;
+    }
+
+    #rotate-right-button {
+        background-image: $url-image-edit-rotate-r;
+    }
+
+    #rotate-left-button {
+        background-image: $url-image-edit-rotate-l;
+    }
+
+    #crop-button {
+        background-image: $url-image-edit-crop;
+    }
+
+    #undo-button {
+        background-image: $url-image-edit-restore;
+    }
+
+    #delete-button {
+        background-image: $url-image-edit-delete;
+    }
+}

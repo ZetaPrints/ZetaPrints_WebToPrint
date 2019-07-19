@@ -1,0 +1,112 @@
+@import "prelude";
+
+div {
+    &.zp-text-field-editor {
+        float: left;
+        display: block;
+        margin-right: 2px;
+        width: 20px;
+        height: 16px;
+        font-size: 10px;
+        color: $color-mountain-mist;
+        line-height: 1.55;
+        &.opened {
+            div {
+                &.zp-text-field-editor-handle {
+                    border-color: $color-nobel;
+                    border-bottom-color: $white;
+                }
+                &.zp-text-field-editor-panel {
+                    display: block;
+                }
+                &.zp-text-field-editor-icon.pen {
+                    background-position: 0 -18px;
+                }
+            }
+            &.state-changed .zp-text-field-editor-icon.pen {
+                background-position: 0 -73px;
+            }
+        }
+        &.state-changed .zp-text-field-editor-icon.pen {
+            background-position: 0 -56px;
+        }
+    }
+    &.zp-text-field-editor-handle {
+        border: 1px solid transparent;
+        padding: 3px 0 0 3px;
+    }
+    &.zp-text-field-editor-panel {
+        display: none;
+        position: absolute;
+        top: 17px;
+        z-index: 2;
+        background-color: $white;
+        border: 1px solid $color-nobel;
+        padding: 1px 4px 1px 3px;
+        span {
+            vertical-align: middle;
+        }
+        input[type=radio] {
+            max-width: 15px;
+            max-height: 15px;
+            *width: 15px;
+            *height: 15px;
+        }
+        div.white-line {
+            width: 18px;
+            height: 2px;
+            margin-top: -2px;
+            margin-left: -3px;
+            background-color: $white;
+        }
+    }
+    &.zp-text-field-editor-row {
+        padding: 4px 0;
+        div.zp-text-field-editor-icon {
+            float: left;
+            margin-top: 2px;
+        }
+    }
+    &.zp-text-field-editor-clear {
+        clear: both;
+    }
+    &.zp-text-field-editor-icon {
+        background: $url-text-field-editor-sprites no-repeat;
+        height: 13px;
+        width: 13px;
+        &.color-picker {
+            background-position: -19px -17px;
+        }
+        &.pen {
+            background-position: 0 0;
+            cursor: pointer;
+        }
+    }
+    &.zp-text-field-editor-options {
+        margin-left: 10px;
+        float: left;
+    }
+    &.zp-text-field-editor-option {
+        float: left;
+        &:first-child {
+            margin-right: 8px;
+        }
+        div {
+            float: left;
+            margin-right: 2px;
+        }
+    }
+    &.zp-text-field-editor-color-example {
+        float: none;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.zp-text-field-editor-icon.pallet {
+    background-position: -79px 0;
+    width: 19px;
+    height: 15px;
+    margin-top: 1px !important;
+}

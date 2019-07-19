@@ -1,0 +1,241 @@
+@import "prelude";
+
+.ui-colorpicker {
+    width: auto;
+    white-space: nowrap;
+    //Instead of the line below you could use @include user-select($select)
+    user-select: none;
+    table {
+        width: 100%;
+        font-size: 100%;
+        margin: 0;
+        td {
+            vertical-align: top;
+        }
+    }
+}
+.ui-colorpicker-inline {
+    position: static;
+}
+.ui-colorpicker-buttonset {
+    float: left;
+    margin-left: .4em;
+    .ui-button {
+        margin: .5em 0 .5em 0;
+        cursor: pointer;
+    }
+}
+.ui-colorpicker-buttonpane {
+    background-image: none;
+    margin: .7em 0 0 0;
+    padding: 0 .2em;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    button {
+        float: right;
+        margin: .5em .2em .4em;
+        cursor: pointer;
+        padding: .2em .6em .3em .6em;
+        width: auto;
+        overflow: visible;
+        &.ui-colorpicker-current {
+            float: left;
+        }
+    }
+}
+.ui-colorpicker-padding-left {
+    padding-left: 10px;
+}
+.ui-colorpicker-padding-top {
+    padding-top: 10px;
+}
+.ui-colorpicker-border {
+    border: 1px inset;
+    display: inline-block;
+}
+.ui-colorpicker-map {
+    display: block;
+    width: 256px;
+    height: 256px;
+    overflow: hidden;
+    > * {
+        position: absolute;
+        cursor: crosshair;
+        display: block;
+        width: 256px;
+        height: 256px;
+        overflow: hidden;
+    }
+}
+.ui-colorpicker-bar {
+    display: block;
+    width: 20px;
+    height: 256px;
+    overflow: hidden;
+    background-repeat: repeat-x;
+    > * {
+        position: absolute;
+        cursor: crosshair;
+        display: block;
+        width: 20px;
+        height: 256px;
+        overflow: hidden;
+        background-repeat: repeat-x;
+    }
+}
+.ui-colorpicker-map-pointer {
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: $url-colorpicker-map-pointer no-repeat;
+}
+.ui-colorpicker-bar-pointer {
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    width: 20px;
+    height: 7px;
+    background: $url-colorpicker-bar-pointer no-repeat;
+}
+.ui-colorpicker-map-layer-1 {
+    background: $url-colorpicker-map no-repeat;
+}
+.ui-colorpicker-map-layer-2 {
+    background: $url-colorpicker-map no-repeat;
+}
+.ui-colorpicker-map-128 {
+    width: 128px;
+    height: 128px;
+    > * {
+        width: 128px;
+        height: 128px;
+    }
+    .ui-colorpicker-map-layer-1 {
+        background: $url-colorpicker-128-map no-repeat;
+    }
+    .ui-colorpicker-map-layer-2 {
+        background: $url-colorpicker-128-map no-repeat;
+    }
+}
+.ui-colorpicker-map-layer-alpha {
+    background: $url-colorpicker-map-opacity;
+}
+.ui-colorpicker-bar-128 {
+    height: 128px;
+    > * {
+        height: 128px;
+    }
+    .ui-colorpicker-bar-layer-1 {
+        background: $url-colorpicker-128-bar repeat-x;
+    }
+    .ui-colorpicker-bar-layer-2 {
+        background: $url-colorpicker-128-bar repeat-x;
+    }
+    .ui-colorpicker-bar-layer-3 {
+        background: $url-colorpicker-128-bar repeat-x;
+    }
+    .ui-colorpicker-bar-layer-4 {
+        background: $url-colorpicker-128-bar repeat-x;
+    }
+    .ui-colorpicker-bar-layer-alphabar {
+        background: $url-colorpicker-128-bar-alpha;
+    }
+}
+.ui-colorpicker-bar-layer-1 {
+    background: $url-colorpicker-bar repeat-x;
+}
+.ui-colorpicker-bar-layer-2 {
+    background: $url-colorpicker-bar repeat-x;
+}
+.ui-colorpicker-bar-layer-3 {
+    background: $url-colorpicker-bar repeat-x;
+}
+.ui-colorpicker-bar-layer-4 {
+    background: $url-colorpicker-bar repeat-x;
+}
+.ui-colorpicker-bar-layer-alpha {
+    background: $url-colorpicker-bar-opacity;
+}
+.ui-colorpicker-bar-layer-alphabar {
+    background: $url-colorpicker-bar-alpha;
+}
+.ui-colorpicker-preview {
+    text-align: center;
+    height: 20px;
+}
+.ui-colorpicker-preview-initial {
+    cursor: pointer;
+    width: 50px;
+    height: 20px;
+    display: inline-block;
+}
+.ui-colorpicker-preview-current {
+    width: 50px;
+    height: 20px;
+    display: inline-block;
+}
+.ui-colorpicker-preview-initial-alpha {
+    width: 50px;
+    height: 20px;
+    display: inline-block;
+    background: $url-colorpicker-preview-opacity repeat;
+}
+.ui-colorpicker-preview-current-alpha {
+    width: 50px;
+    height: 20px;
+    display: inline-block;
+    background: $url-colorpicker-preview-opacity repeat;
+}
+.ui-colorpicker-number {
+    margin: .1em;
+    width: 4em;
+}
+.ui-colorpicker-hex {
+    text-align: center;
+}
+.ui-colorpicker-swatches {
+    height: 256px;
+    overflow: auto;
+    background-color: $colorpicker-swatches-background;
+}
+.ui-colorpicker-swatch {
+    cursor: pointer;
+    float: left;
+    width: 11px;
+    height: 11px;
+    border-right: 1px solid $black;
+    border-bottom: 1px solid $black;
+}
+.ui-dialog.ui-colorpicker {
+    width: auto;
+    white-space: nowrap;
+    //Instead of the line below you could use @include user-select($select)
+    user-select: none;
+}
+.ui-colorpicker-rgb label {
+    width: 1.5em;
+    display: inline-block;
+}
+.ui-colorpicker-hsv label {
+    width: 1.5em;
+    display: inline-block;
+}
+.ui-colorpicker-hsl label {
+    width: 1.5em;
+    display: inline-block;
+}
+.ui-colorpicker-lab label {
+    width: 1.5em;
+    display: inline-block;
+}
+.ui-colorpicker-cmyk label {
+    width: 1.5em;
+    display: inline-block;
+}
+.ui-colorpicker-alpha label {
+    width: 1.5em;
+    display: inline-block;
+}

@@ -1,0 +1,80 @@
+@import "prelude";
+
+.zp-dataset-wrapper {
+    display: none;
+}
+
+#zp-dataset-button {
+    margin-bottom: 15px;
+}
+
+.zp-dataset-table {
+    border-collapse: collapse;
+    width: 200%;
+    thead {
+        color: $color-pigeon-post;
+        background-color: $color-firefly;
+    }
+    th {
+        font-weight: bold;
+        border: 1px solid $color-cloud;
+        padding: 4px;
+        vertical-align: middle;
+    }
+    td {
+        border: 1px solid $color-cloud;
+        padding: 4px;
+        vertical-align: middle;
+        &:hover {
+            background-color: $color-mystic;
+            cursor: pointer;
+        }
+    }
+    tr {
+        border: 1px solid $color-cloud;
+    }
+    p {
+        margin: 0;
+        padding: 0;
+        display: none;
+    }
+    .zp-dataset-first-line {
+        display: block;
+    }
+    .zp-dataset-selected p {
+        display: block;
+    }
+}
+
+.zp-dataset-active {
+    background-color: $color-mystic;
+}
+
+.zp-dataset-selected {
+    background-color: $color-mystic;
+}
+
+.zp-dataset-checkbox {
+    background-color: transparent !important;
+}
+
+.zp-dataset-popup {
+    position: absolute;
+    border: 1px solid $color-cloud;
+    padding: 4px;
+    background-color: $color-mystic;
+    z-index: 10000;
+    white-space: nowrap;
+    p {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.zp-dataset-notice {
+    text-align: left;
+    font-size: 80%;
+    margin: 10px 0 0;
+    color: $color-gunsmoke;
+}
