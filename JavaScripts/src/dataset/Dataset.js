@@ -8,7 +8,8 @@ export default class Dataset {
 
         $dataset
             .find('.zp-dataset-checkbox')
-            .hover(
+            .on(
+                'hover',
                 function () {
                     $(this)
                         .parent()
@@ -59,7 +60,7 @@ export default class Dataset {
          left: event.pageX + 15 });
          })*/
         $td
-            .click(function () {
+            .on('click', function () {
                 const $this = $(this);
 
                 if (zp.template_details['dataset-integrity-enforce']) {
@@ -113,12 +114,12 @@ export default class Dataset {
         const $inputs = $dataset.find('input');
 
         $inputs
-            .mousedown(function () {
+            .on('mousedown', function () {
                 $inputs
                     .filter(':checked')
                     .prop('checked', false);
             })
-            .click(function () {
+            .on('click', function () {
                 const page = zp.template_details.pages[zp.current_page];
 
                 const fields = page.fields;
@@ -157,7 +158,7 @@ export default class Dataset {
 
         const $button = $('#zp-dataset-button');
 
-        $button.click(function () {
+        $button.on('click', function () {
             const lightbox = new Lightbox();
             lightbox.open({
                 'type': 'inline',

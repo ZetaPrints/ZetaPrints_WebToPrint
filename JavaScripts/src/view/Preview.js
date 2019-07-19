@@ -49,14 +49,14 @@ export default class Preview {
             '</a>')
             .appendTo(product_image_element);
 
-        this._element.click((event) => {
+        this._element.on('click', (event) => {
             event.preventDefault();
             this.open_lightbox();
         });
 
         const images = this._element.children();
 
-        images.bind('load', {page_number: page_number}, function () {
+        images.on('load', {page_number: page_number}, function () {
             _this._image_on_load(this, data);
         });
     }

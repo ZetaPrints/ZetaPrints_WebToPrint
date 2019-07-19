@@ -571,7 +571,7 @@ export default class InPreviewEditController {
      * @private
      */
     _popup_field_by_name_register_box_click($box) {
-        $box.find('.fieldbox-button').click(() => {
+        $box.find('.fieldbox-button').on('click', () => {
             this.popdown_field_by_name();
 
             return false;
@@ -798,14 +798,14 @@ export default class InPreviewEditController {
         const _this = this;
 
         $(UiHelper.instance().select_image_elements_selector)
-            .mouseover(function () {
+            .on('mouseover', function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
                 const name = $(this).attr('title');
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.highlight_shape(shape, _this._get_current_shapes_container());
             })
-            .mouseout(function () {
+            .on('mouseout', function () {
                 if (!$(this).children('div.fieldbox').length) {
                     const shapes = _this.shape_repository.get_shapes_of_current_page();
                     const name = $(this).attr('title');
@@ -825,14 +825,14 @@ export default class InPreviewEditController {
         UiHelper.instance().input_fields
             .find('dd')
             .find('input, textarea, select')
-            .mouseover(function () {
+            .on('mouseover', function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
                 const name = UiHelper.get_name_for_element(this);
                 const shape = _this.get_shape_by_name(name, shapes);
 
                 _this.highlight_shape(shape, _this._get_current_shapes_container());
             })
-            .mouseout(function () {
+            .on('mouseout', function () {
                 const shapes = _this.shape_repository.get_shapes_of_current_page();
                 const name = UiHelper.get_name_for_element(this);
                 const shape = _this.get_shape_by_name(name, shapes);

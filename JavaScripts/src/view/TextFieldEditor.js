@@ -50,7 +50,7 @@ export default class TextFieldEditor {
             .append($radio_button.wrap('<div />').parent())
             .append($pallet).appendTo($options);
 
-        $('input', $row).change(function () {
+        $('input', $row).on('change', function () {
             let value = $(this).val();
 
             if (!value) {
@@ -164,7 +164,7 @@ export default class TextFieldEditor {
             '<div class="zp-text-field-editor-icon pen" />' +
             '</div>').appendTo(this._editor);
 
-        $handle.click(this._on_handle_click);
+        $handle.on('click', this._on_handle_click);
 
         return $handle;
     }

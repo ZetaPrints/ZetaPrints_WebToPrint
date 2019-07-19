@@ -45,7 +45,7 @@ export default class AbstractFancyboxButton extends AbstractButton {
         if (typeof button.jquery === 'undefined') {
             throw new TypeError('The return type of _create_button() must be jQuery element');
         }
-        button.click(() => {
+        button.on('click', () => {
             this._on_click(data);
         });
 

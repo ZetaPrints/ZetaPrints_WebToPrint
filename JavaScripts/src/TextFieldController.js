@@ -14,23 +14,23 @@ export default class TextFieldController {
         const _on_change = this._on_change = this._on_change.bind(this);
         const _on_click = this._on_click = this._on_click.bind(this);
 
-        input_fields.find('input.input-text').keypress(this._ignore_enter);
+        input_fields.find('input.input-text').on('keypress', this._ignore_enter);
 
         const text_fields = input_fields.find('.zetaprints-field').filter('textarea, :text');
         text_fields
-            .keyup(function () {
+            .on('keyup', function () {
                 _on_change(this, false);
             })
-            .change(function () {
+            .on('change', function () {
                 _on_change(this, true);
             });
 
-        text_fields.filter('[readonly]').click(function (event) {
+        text_fields.filter('[readonly]').on('click', function (event) {
             _on_click(event, this);
         });
 
         const non_text_fields = input_fields.find('.zetaprints-field').filter('select, :checkbox');
-        non_text_fields.change(function () {
+        non_text_fields.on('change', function () {
             _on_change(this, true);
         });
     }

@@ -114,7 +114,7 @@ export default class ImageEditor {
         const $user_image_container = $('#zetaprints-image-edit-container');
         this._user_image = $('#zetaprints-image-edit-user-image');
 
-        this._user_image.load(() => {
+        this._user_image.on('load', () => {
             if (container.hasClass('crop-mode') || !context.has_fit_in_field) {
                 this._crop_button_click_handler();
             } else if (container.hasClass('fit-to-field-mode')) {
@@ -131,18 +131,18 @@ export default class ImageEditor {
             height: $user_image_container.height() - 2
         };
 
-        $('#crop-button').click(() => {
+        $('#crop-button').on('click', () => {
             this._crop_button_click_handler();
         });
-        $('#fit-to-field-button').click(() => {
+        $('#fit-to-field-button').on('click', () => {
             this._fit_to_field_button_click_handler();
         });
 
-        $('#undo-button').click(() => {
+        $('#undo-button').on('click', () => {
             this._restore_image();
         });
 
-        $('#zp-image-edit-action-cancel').click(() => {
+        $('#zp-image-edit-action-cancel').on('click', () => {
             if (container.hasClass('changed') && container.hasClass('crop-mode')) {
                 this._crop_button_click_handler();
             } else {
@@ -150,19 +150,19 @@ export default class ImageEditor {
             }
         });
 
-        $('#rotate-right-button').click(() => {
+        $('#rotate-right-button').on('click', () => {
             this._server_side_rotation('r');
         });
 
-        $('#rotate-left-button').click(() => {
+        $('#rotate-left-button').on('click', () => {
             this._server_side_rotation('l');
         });
 
-        $('#delete-button').click(() => {
+        $('#delete-button').on('click', () => {
             this._delete_image();
         });
 
-        $('#image-editor-button').click(() => {
+        $('#image-editor-button').on('click', () => {
             this._image_editor_button_handler();
         });
 
@@ -340,7 +340,7 @@ export default class ImageEditor {
                 throw new TypeError('Argument "get_crop_data_callback" must be of type function');
             }
 
-            $(selector).click(() => {
+            $(selector).on('click', () => {
                 this._clear_editor();
                 const data = get_crop_data_callback();
                 if (typeof data === 'undefined') {
@@ -1420,7 +1420,6 @@ export default class ImageEditor {
             return;
         }
 
-        console.log('cropy data:', data);
         const crop_callback = simple_crop
             ? (data) => {
                 return this._cropping_callback(data);

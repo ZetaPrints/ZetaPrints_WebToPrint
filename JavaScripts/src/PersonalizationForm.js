@@ -46,6 +46,7 @@ export default class PersonalizationForm {
         }
 
         PersonalizationForm.shared_instance = this;
+        Logger.info('[Web2Print] App version ' + PersonalizationForm.version);
 
         /** @type {DataInterface} */
         const zp = this.data = data;
@@ -215,8 +216,8 @@ export default class PersonalizationForm {
      */
     _register_click_enlarge_editor() {
         const ui_helper = UiHelper.instance();
-        ui_helper.editor_button.click(this._enlarge_editor_click_handler);
-        ui_helper.enlarge_button.click(this._enlarge_editor_click_handler);
+        ui_helper.editor_button.on('click', this._enlarge_editor_click_handler);
+        ui_helper.enlarge_button.on('click', this._enlarge_editor_click_handler);
     }
 
     /**
@@ -224,7 +225,7 @@ export default class PersonalizationForm {
      */
     _register_click_form_button() {
         const data = this.data;
-        return UiHelper.instance().form_button.click(function () {
+        return UiHelper.instance().form_button.on('click', function () {
             const $fields = $('#input-fields-page-' + data.current_page + ', #stock-images-page-' + data.current_page);
             const ui_helper = UiHelper.instance();
 
@@ -390,13 +391,13 @@ export default class PersonalizationForm {
 
             $td
                 .children('.image-edit-thumb')
-                .click(thumbnail_edit_click_handler);
+                .on('click', thumbnail_edit_click_handler);
 
             const $thumb = $td.children('.image-edit-thumb');
 
             $thumb
                 .find('> .buttons-row > .zp-delete-button')
-                .click(delete_image_click_handle);
+                .on('click', delete_image_click_handle);
 
             const $img = $thumb
                 .children('img')
@@ -404,7 +405,7 @@ export default class PersonalizationForm {
                 .attr('src', url);
 
             if (on_image_load) {
-                $img.load(on_image_load);
+                $img.on('load', on_image_load);
             }
         });
     }
@@ -622,7 +623,7 @@ export default class PersonalizationForm {
     _register_window_load() {
         const personalization_form_instance = this;
         const zp = this.data;
-        $(window).load(function () {
+        $(window).on('load', function () {
             if (zp.has_shapes /*&& window.place_all_shapes_for_page && shape_handler*/) {
                 Feature.instance().call(
                     Feature.feature.inPreviewEdit,
@@ -648,7 +649,7 @@ export default class PersonalizationForm {
      * @private
      */
     _register_click_next_page() {
-        UiHelper.instance().next_page_button.click(() => {
+        UiHelper.instance().next_page_button.on('click', () => {
             const next_page_number = this.current_page + 1;
 
             $('div.zetaprints-image-tabs li img[rel="page-' + next_page_number + '"]')
@@ -663,7 +664,7 @@ export default class PersonalizationForm {
      * @private
      */
     _register_click_edit_thumbnail() {
-        $('.image-edit-thumb').click(this._get_edit_thumbnail_click_handler());
+        $('.image-edit-thumb').on('click', this._get_edit_thumbnail_click_handler());
     }
 
     /**
@@ -712,7 +713,7 @@ export default class PersonalizationForm {
     _register_delete_button_click() {
         const personalization_form_instance = this;
         const zp = this.data;
-        $('.zp-delete-button').click(function (event) {
+        $('.zp-delete-button').on('click', function (event) {
             event.stopPropagation();
             event.preventDefault();
 
@@ -746,7 +747,7 @@ export default class PersonalizationForm {
      */
     _register_image_click() {
         const personalization_form_instance = this;
-        UiHelper.instance().select_image_elements_inputs.click(function (event) {
+        UiHelper.instance().select_image_elements_inputs.on('click', function (event) {
             const $input = $(this);
             const page = personalization_form_instance.template_details.pages[personalization_form_instance.current_page];
             const field = page.images[UiHelper.get_name_for_element($input)];
@@ -768,7 +769,7 @@ export default class PersonalizationForm {
         const personalization_form_instance = this;
         const zp = this.data;
 
-        $('.zetaprints-palettes .zetaprints-field').change(function () {
+        $('.zetaprints-palettes .zetaprints-field').on('change', function () {
             const $this = $(this);
 
             const id = $this
@@ -1117,7 +1118,6 @@ export default class PersonalizationForm {
      */
     _page_get_changed(pages) {
         const changed_pages = [];
-        console.log(pages);
         for (let n in pages) {
             if (pages.hasOwnProperty(n) && DataHelper.is_user_data_changed(pages[n])) {
                 changed_pages[changed_pages.length] = n;
@@ -1215,3 +1215,8 @@ export default class PersonalizationForm {
  * @type {PersonalizationForm}
  */
 PersonalizationForm.shared_instance = null;
+
+/**
+ * @type {string}
+ */
+PersonalizationForm.version = '1.1.0';

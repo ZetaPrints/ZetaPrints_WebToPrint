@@ -158,7 +158,7 @@ export default class PreviewController {
         if (!DataHelper.page_has_updating(pages)) {
             // Enable Update preview action
             $update_preview_button.unbind('click');
-            $update_preview_button.click(() => {
+            $update_preview_button.on('click', () => {
                 this.update_preview(this.form_instance.data);
             });
 
@@ -376,7 +376,7 @@ export default class PreviewController {
         }
 
         const ui_helper = UiHelper.instance();
-        ui_helper.update_preview_form_button.click(() => {
+        ui_helper.update_preview_form_button.on('click', () => {
             Logger.log('Should update preview');
             this.update_preview(this.form_instance.data);
         });

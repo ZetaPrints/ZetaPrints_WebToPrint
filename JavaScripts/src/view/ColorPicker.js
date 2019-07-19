@@ -15,7 +15,7 @@ export default class ColorPicker {
 
         colour_picker_panels
             .find('span > a')
-            .click(function () {
+            .on('click', function () {
                 $colour_radio_button.colorpicker('open');
 
                 return false;

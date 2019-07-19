@@ -37,7 +37,7 @@ export default class AbstractRotateButton extends AbstractButton {
         if (typeof button.jquery === 'undefined') {
             throw new TypeError('The return type of _create_button() must be jQuery element');
         }
-        button.click((e) => {
+        button.on('click', (e) => {
             this._on_click(e);
         });
         button.appendTo(this._get_parent());

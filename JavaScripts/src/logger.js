@@ -1,7 +1,8 @@
 /**
  * Created by COD on 23.04.14.
  */
-import Environment from "./Environment";
+import Environment from './Environment';
+
 const ef = function () {
 };
 

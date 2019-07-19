@@ -38,7 +38,7 @@ export default class ImageSelector extends ImageSelectionController {
         this._initialize_tabs();
         this.register_fields($content.find('.zetaprints-field'));
 
-        $head.click((event) => {
+        $head.on('click', (event) => {
             event.preventDefault();
             this._handle_head_click();
             return false;
@@ -46,7 +46,7 @@ export default class ImageSelector extends ImageSelectionController {
 
         const shift = element.position().left - $('div.product-img-box').position().left;
         const full_width = shift + element.outerWidth();
-        $head.children('.collapse-expand').click((event) => {
+        $head.children('.collapse-expand').on('click', (event) => {
             event.preventDefault();
             this._handle_collapse_and_expand(shift, full_width);
             return false;

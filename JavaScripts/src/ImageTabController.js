@@ -18,7 +18,7 @@ export default class ImageTabController {
      */
     register_click() {
         const _this = this;
-        this._get_tab_buttons().click(function () {
+        this._get_tab_buttons().on('click', function () {
             _this._handle_click(this);
         });
     }

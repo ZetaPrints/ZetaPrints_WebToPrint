@@ -14,13 +14,14 @@
             },
         };
 
-        if (methods[method])
+        if (methods[method]) {
             return methods[method]
                 .apply(this, Array.prototype.slice.call(arguments, 1));
-        else if (typeof method === 'object' || !method)
+        } else if (typeof method === 'object' || !method) {
             $.extend(settings, method);
-        else
+        } else {
             $.error('Method ' + method + ' does not exist on jQuery.power_crop');
+        }
 
         var $select = $(this);
         var $selected_option = $select.children(':selected');
@@ -62,9 +63,11 @@
                 },
 
                 select: function (event, ui) {
-                    for (var i = 0; i < options.length; i++)
-                        if (options[i] == ui.item.value)
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i] == ui.item.value) {
                             break;
+                        }
+                    }
 
                     ui.item.index = i;
 
@@ -85,11 +88,12 @@
             '<div class="zp-combobox-button-icon" />' +
             '</div>' +
             '</div>')
-            .click(function () {
-                if ($field.autocomplete('widget').is(':visible'))
+            .on('click', function () {
+                if ($field.autocomplete('widget').is(':visible')) {
                     $field.autocomplete('close').focus();
-                else
+                } else {
                     $field.autocomplete('search', '').focus();
+                }
             })
             .appendTo($wrapper);
 
@@ -99,23 +103,26 @@
     function setTooltip($element, title, tooltip) {
         var content = '';
 
-        if ($.trim(title))
+        if ($.trim(title)) {
             content += title;
+        }
 
         if ($.trim(tooltip)) {
-            if (content)
+            if (content) {
                 content += '<br/>';
+            }
 
             content += '<small>' + tooltip + '</small>';
         }
 
-        if (content)
+        if (content) {
             $element.qtip({
                 content: content,
                 position: {corner: {target: 'topLeft', tooltip: 'bottomLeft'}},
                 show: {delay: 1, solo: true, when: {event: 'focus'}},
                 hide: {when: {event: 'unfocus'}}
             });
+        }
     }
 
 })(jQuery);

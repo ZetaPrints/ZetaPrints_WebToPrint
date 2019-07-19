@@ -71,7 +71,7 @@ export default class ImageUpload {
         $(
             'div.button.cancel-upload',
             button.parent()
-        ).click(function () {
+        ).on('click', function () {
             if (!$(this).hasClass('disabled')) {
                 uploader.cancel();
                 _this._enable_and_hide_spinner(uploader);

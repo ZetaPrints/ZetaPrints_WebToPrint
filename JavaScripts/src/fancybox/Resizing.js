@@ -69,7 +69,7 @@ export default class Resizing {
                 }
 
                 // add click handler
-                jQuery(this).click(function () {
+                jQuery(this).on('click', function () {
                     const $this = jQuery(this); // get ref to clicked link
 
                     $this.hide(); // hide it

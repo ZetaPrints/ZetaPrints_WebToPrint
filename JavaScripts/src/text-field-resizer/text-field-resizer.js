@@ -27,7 +27,7 @@ $.fn.text_field_resizer = function () {
                     ? 'se, sw' : 'e, w',
 
                 create: function () {
-                    $wrapper.mousedown(function () {
+                    $wrapper.on('mousedown', () => {
                         $field.focus();
                     });
 
@@ -51,10 +51,10 @@ $.fn.text_field_resizer = function () {
             });
 
             $wrapper
-                .mouseenter(function () {
+                .on('mouseenter', () => {
                     $field.unbind('blur', restore_field_style);
                 })
-                .mouseleave(function () {
+                .on('mouseleave', () => {
                     $field.bind('blur', restore_field_style);
                 });
         } else {

@@ -10,7 +10,9 @@ export default class Lightbox extends AbstractLightbox {
      */
     register(element, options = undefined) {
         Logger.debug('[Lightbox] Register', element);
+        jQuery.migrateMute = true;
         $(element).fancybox(this._prepare_options(options || new LightboxConfiguration()));
+        jQuery.migrateMute = false;
     }
 
     /**
